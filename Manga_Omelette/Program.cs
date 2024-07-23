@@ -7,6 +7,7 @@ using CloudinaryDotNet.Actions;
 using DotNetEnv;
 using Manga_Omelette.Services;
 using Manga_Omelette.ChatHub;
+using Manga_Omelette.Models_Secondary;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Manga_OmeletteDBContextConnection") ?? throw new InvalidOperationException("Connection string 'Manga_OmeletteDBContextConnection' not found.");
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<Manga_OmeletteDBContext>(options => options.UseSql
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>().AddEntityFrameworkStores<Manga_OmeletteDBContext>();
 
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddSingleton<CloudinaryService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();

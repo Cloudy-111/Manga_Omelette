@@ -1,15 +1,19 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Manga_Omelette.Models_Secondary;
+using Microsoft.Extensions.Options;
 
 namespace Manga_Omelette.Services
 {
     public class CloudinaryService
     {
         private readonly Cloudinary _cloudinary;
-        public CloudinaryService(IConfiguration configuration)
+        public CloudinaryService(IOptions<CloudinarySettings> config)
         {
             var cloudinaryAccount = new Account(
-               "dcs5nglks", "689156623666212", "_n5xGJgxx_RKaw82kSAEYxtIEEs"
+               config.Value.CloudName,
+               config.Value.ApiKey,
+               config.Value.ApiSecret
             );
             
             _cloudinary = new Cloudinary(cloudinaryAccount);
