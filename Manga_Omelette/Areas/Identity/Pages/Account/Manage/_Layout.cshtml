@@ -1,0 +1,32 @@
+﻿@using Manga_Omelette.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<User> UserManager
+
+@{
+    Layout = "/Views/Shared/_MyLayout.cshtml";
+    <link rel="stylesheet" href="~/css/AccountCSS/LayoutAccount.css" asp-append-version="true" />
+}
+
+<div class="backgroundOverlay"></div>
+
+<div class="avatar_section">
+    <div class="avatar_image_container">
+        <div class="avatar_image"></div>
+    </div>
+    <div id="username">
+        @UserManager.GetUserName(User)
+    </div>
+</div>
+
+<div class="navigation_container">
+    <div class="navigation_left">
+        <partial name="_ManageNav" />
+    </div>
+    <div class="navigation_right">
+        @RenderBody()
+    </div>
+</div>
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

@@ -1,0 +1,11 @@
+﻿@model Manga_Omelette.Models_Secondary.UploadImageModel
+@{
+    ViewBag.Title = "Upload Cloudinary";
+    Layout = "_SuperADMINLayout";
+    <link rel="stylesheet" href="~/css/PageCSS/CreateStory.css" />
+}
+
+<form method="Post" enctype="multipart/form-data" asp-controller="Administration" asp-action="UploadImage">
+    <input asp-for="imageFile" id="fileupload" type="file" multiple accept="image/*">
+    <input type="submit" value="Upload">
+</form>

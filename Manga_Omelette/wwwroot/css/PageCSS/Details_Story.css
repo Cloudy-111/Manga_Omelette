@@ -1,0 +1,264 @@
+﻿/*==============================BACKGROUND==============================*/
+
+.background_section {
+    z-index: -1;
+    position: fixed;
+    width: calc(100vw - 17px);
+    height: 100%;
+    background-color: #191A1C;
+    top: 0;
+    left: 0;
+}
+
+.background_section img{
+    z-index: -1;
+    width: 100%;
+    transition: all 0.5s ease;
+    filter: blur(10px) brightness(50%);
+}
+
+.background_section .start_position{
+    opacity: 0;
+    transform: translateX(20%);
+}
+
+.background_section .finish_position{
+    opacity: 1;
+    transform: translateX(0);
+}
+/*
+.background_section .overlay_background{
+    position: absolute;
+    width: 100%;
+    height: 40%;
+    bottom: 0;
+    background-color: #191A1C;
+}
+
+.background_section .overlay_background::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20%;
+    background-color: #191A1C;
+    transform: translateY(-20%);
+    filter: blur(10px);
+}*/
+/*==============================Effect Move==============================*/
+
+.background_section #paralleilogram_top,
+.background_section #paralleilogram_bottom{
+    z-index: 0;
+    position: fixed;
+    width: 25%;
+    height: 100vh;
+    background-color: #191A1C;
+    /*background-color: #FF6740;*/
+    opacity: 0.9;
+    top: 0;
+    transition: all 1s ease;
+}
+
+.background_section #paralleilogram_top {
+    left: 10%;
+}
+
+.background_section #paralleilogram_bottom {
+    right: 10%;
+}
+
+.background_section .start_pos_top {
+    transform: translateX(60%) skew(-15deg);
+}
+
+.background_section .end_pos_top {
+    transform: translateX(0) skew(-15deg);
+}
+
+
+.background_section .start_pos_bot {
+    transform: translateX(-50%) skew(-15deg);
+}
+
+.background_section .end_pos_bot {
+    transform: translateX(0) skew(-15deg);
+}
+/*==============================CONTAINER==============================*/
+
+.view_container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.view_container .title_section{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.view_container .title_section .right_part{
+    width: 40%;
+    height: 100%;
+}
+
+.view_container .title_section img{
+    width: 100%;
+    border-radius: 10px;
+}
+
+.view_container .title_section .left_part{
+    width: 80%;
+    word-wrap: break-word;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.view_container .title_section .left_part .btn_in_form{
+    font-size: 30px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #FF6740;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.view_container .title_section .left_part .option_btn{
+    display: flex;
+    gap: 10px;
+}
+
+.view_container .title_section .left_part .option_btn p{
+
+}
+
+.view_container .title_section .left_part .option_btn .btn_in_form:hover{
+    background-color: #d05333;
+}
+
+.view_container .title_section .left_part .option_btn #btn_login, 
+.view_container .title_section .left_part .option_btn #start_read
+{
+    background-color: #727272;
+    font-size: 30px;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.view_container .title_section .left_part .option_btn #btn_login:hover,
+.view_container .title_section .left_part .option_btn #start_read:hover{
+    background-color: #979797;
+}
+
+.view_container .title_section .left_part .title_story{
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.view_container .title_section .description_section{
+
+}
+
+.view_container .description_section{
+    margin-top: 50px;
+}
+
+.view_container .description_section .update_date{
+    font-size: 25px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.view_container .description_section .update_date p{
+    background-color: #FF6740;
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 0;
+}
+
+.view_container .bottom_section{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+}
+
+.view_container .bottom_section .comment_section,
+.view_container .bottom_section .list_chapter_section{
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.view_container .bottom_section .comment_section{
+    width: 32%;
+}
+
+.view_container .bottom_section .list_chapter_section{
+    width: 68%;
+    display: flex;
+    flex-direction: column;
+}
+
+.view_container .bottom_section .list_chapter_section .list_chapter{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 500px;
+}
+
+.view_container .bottom_section .list_chapter_section .list_chapter a{
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view_container .bottom_section .list_chapter_section .list_chapter a:nth-child(odd){
+    background-color: #495058;
+}
+
+.view_container .bottom_section .list_chapter_section .list_chapter a:hover{
+    background-color: #616a75;
+}
+
+.view_container .bottom_section .list_chapter_section .list_chapter a p{
+    margin-bottom: 0;
+}
+
+/*==============================List Genre==============================*/
+.view_container .title_section .left_part .list_tag_genres{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 5px;
+}
+
+.view_container .title_section .left_part .list_tag_genres .genre_name{
+    background-color: #2C2C2C;
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.view_container .title_section .left_part .list_tag_genres .genre_name:hover{
+    background-color: #FF6740;
+}

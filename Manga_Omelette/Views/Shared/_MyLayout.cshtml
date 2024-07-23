@@ -1,0 +1,171 @@
+﻿@using Manga_Omelette.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+
+@*Dùng để kiểm tra xem người dùng đã đưang nhập hay chưa*@
+@inject SignInManager<User> SignInManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MangaASP</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/MangaASP.styles.css" asp-append-version="true" /> *@
+    <link rel="stylesheet" href="~/css/_MyLayout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    <input type="checkbox" id="checkToggle"/>
+    <label for="checkToggle">
+        <i class="bi bi-list" id="openSidebar"></i>
+    </label>
+    <nav id="sidebar">
+        <div class="menu-bar">
+            <div class="brand">
+                <div class="brand">
+                    <a asp-controller="Home" asp-action="Index">
+                        <img src="~/Image/Brand/Omelette Logo png.png" alt="Brand" />
+                    </a>
+                </div>
+                <label class="toggleSidebar" for="checkToggle">
+                    <i class="bi bi-x" id="cancelSidebar"></i>
+                </label>
+            </div>
+            <div id="home" class="title-sidebar">                
+                <a asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house"></i>
+                    Home
+                </a>
+            </div>
+            <div id="Noti" class="title-sidebar">
+                <a asp-controller="Noti" asp-action="Index">
+                    <i class="bi bi-bell"></i>
+                    Notification
+                </a>
+            </div>
+            <div id="titles" class="title-sidebar">
+                <a asp-controller="Story" asp-action="SearchView">
+                    <i class="bi bi-search"></i>
+                    Advance Search
+                </a>
+            </div>
+            <div id="follow" class="title-sidebar">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a asp-controller="Story" asp-action="FollowList">
+                        <i class="bi bi-heart"></i>
+                        Follow
+                    </a>
+                }
+                else
+                {
+                    <a asp-area="Identity" asp-page="/Account/Login">
+                        <i class="bi bi-heart"></i>
+                        Follow
+                    </a>
+                }
+                
+            </div>
+            <div id="section-titles">
+                <div class="title-sidebar">
+                    <i class="bi bi-book"></i>
+                    Title
+                </div>
+                <div class="title-sidebar secondary" id="latest-update">
+                    <a asp-controller="Story" asp-action="Latest_Update">Latest Update</a>
+                </div>
+                <div class="title-sidebar secondary" id="top-read">
+                    <a asp-controller="Story" asp-action="Top_Read">Top Read</a>
+                </div>
+                <div class="title-sidebar secondary" id="top-like">
+                    <a asp-controller="Story" asp-action="Top_Like">Top Like</a>
+                </div>
+                <div class="title-sidebar secondary" id="for-you">
+                    <a asp-controller="Story" asp-action="For_You">For you</a>
+                </div>
+                <div class="title-sidebar secondary" id="random">
+                    <a asp-controller="Story" asp-action="Random">Random</a>
+                </div>
+            </div>
+            <div id="section-search" class="title-sidebar">                
+                <a href="#">
+                    <i class="bi bi-people"></i>
+                    Forum
+                </a>
+            </div>
+        </div>
+        <div class="bottom-content">
+            <div class="chibiLayout">
+                <img src="~/Image/InLayout/Nadeshiko.png" alt="YuruCamp" />
+            </div>
+        </div>
+    </nav>
+    <div id="backgroundHeader">
+        <div class="header_body">
+            <div class="leftHeader">
+                <div class="brandBody">
+                    <a asp-controller="Home" asp-action="Index">
+                        <img src="~/Image/Brand/Omelette Logo png.png" alt="Brand" />
+                    </a>
+                </div>
+            </div>
+            <div class="rightHeader">
+                <div class="searchField">
+                    <input id="searchHeader" placeholder="Search" />
+                    <button class="searchBtn"><i class="bi bi-search"></i></button>
+                </div>
+                <button name="notiBtn"><i class="bi bi-bell"></i></button>
+                <button name="userBtn" id="userBtn">
+                    @if (SignInManager.IsSignedIn(User))
+                    {@*
+                    <i class="bi bi-file-earmark-person"></i> *@
+                        <img src="~/Image/Brand/Omelette Logo without Text.png" />
+                    }
+                    else
+                    {
+                        <i class="bi bi-person"></i>
+                    }
+                </button>
+            </div>
+        </div>
+        <div class="profile_container" id="profile_container">
+            <partial name="_LoginPartial.cshtml" />
+        </div>
+    </div>
+    <div class="main_container">
+        <div class="backgroundBody"></div>
+        <div class="overlayBackgroundBody"></div>
+        <div class="container">
+            <main role="main" class="main" data-page="@ViewBag.PageName">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            
+        </div>
+    </footer>
+    <script src="~/js/script.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @* <script src="~/js/site.js" asp-append-version="true"></script> *@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Lấy trạng thái của checkbox từ localStorage
+            var isChecked = localStorage.getItem("myCheckboxState") === 'true';
+            $('#checkToggle').prop('checked', isChecked);
+
+            // Lưu trạng thái của checkbox vào localStorage khi checkbox được thay đổi
+            $('#checkToggle').change(function () {
+                localStorage.setItem("myCheckboxState", $(this).is(':checked'));
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

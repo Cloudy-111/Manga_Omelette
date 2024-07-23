@@ -1,0 +1,42 @@
+﻿.slider_popular_stories {
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
+    height: 400px;
+    background-color:aqua;
+}
+
+.slider_popular_stories .list_popular_stories{
+    width: max-content;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.slider_popular_stories .list_popular_stories .item{
+    width: 100%;
+    height: 100%;
+    /*position: absolute;*/
+    display: flex;
+    flex-direction: row;
+    /*background-color: aqua;*/
+}
+
+.slider_popular_stories .list_popular_stories .item .left_item_section{
+    width: 10%;
+    height: 100%;
+}
+
+.slider_popular_stories .list_popular_stories .item .left_item_section img{
+    /*position: absolute;*/
+    border-radius: 10px;
+    object-fit: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+}
+
+.slider_popular_stories .list_popular_stories .item .right_item_section{
+    width: 80%;
+    height: 100%;
+}

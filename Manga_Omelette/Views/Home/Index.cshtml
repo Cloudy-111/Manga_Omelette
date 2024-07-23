@@ -1,0 +1,38 @@
+﻿@using MangaASP.Models
+@using Manga_Omelette.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+@model IEnumerable<Story>
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+
+@{
+    ViewData["Title"] = "Home Page";
+    // <link rel="stylesheet" href="/css/PageCSS/HomePage.css" />
+}
+
+<div class="slider_popular_stories">
+    <h1>Latest Update</h1>
+    <div class="list_popular_stories">
+        @foreach(var obj in Model)
+        {
+            <div class="item active">
+                <div class="left_item_section">
+                    @* <img src="@obj.CoverImage"/> *@
+                </div>
+                <div class="right_item_section">
+                    <div class="item_title">
+                        @obj.Title
+                    </div>
+                    <div class="item_description">
+                        @obj.Description
+                    </div>
+                </div>
+
+                <a href="/titles/@obj.Id/@obj.Title">READ</a>
+                @* <a asp-controller="Story" asp-action="Details_Story" asp-route-id="@obj.Id" asp-route-title="@obj.Title">READ</a> *@
+            </div>
+        }
+    </div>
+</div>

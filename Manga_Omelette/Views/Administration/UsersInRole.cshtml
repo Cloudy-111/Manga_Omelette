@@ -1,0 +1,17 @@
+﻿@using Manga_Omelette.Areas.Identity.Data
+@model IEnumerable<User>
+@{
+    ViewBag.Title = ViewBag.RoleName;
+    Layout = "_SuperADMINLayout";
+    <link rel="stylesheet" href="~/css/AdminCSS/UserInRole.css" />
+}
+
+@foreach(var user in Model)
+{
+    <div class="user_row">
+        <p>@user.Id</p>
+        <p>@user.NameDisplay</p>
+        <p>@user.Email</p>
+        <a asp-controller="Administration" asp-action="EditUser" asp-route-userId="@user.Id">Access</a>
+    </div>
+}

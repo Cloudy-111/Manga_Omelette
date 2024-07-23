@@ -1,0 +1,293 @@
+﻿.title_chapter {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.title_chapter a{
+    text-decoration: none;
+}
+
+.comment_section {
+    width: 100%;
+    z-index: 0;
+}
+
+.comment_section form{
+    position: relative;
+    width: 100%;
+    height: 150px;
+}
+
+.comment_section form textarea{
+    width: 100%;
+    resize: none;
+    outline: none;
+    height: 100px;
+    max-height: 300px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.comment_section form button{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    background-color:#FF6740;
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.comment_section form button:hover{
+    background-color: #d05333;
+}
+
+.comment_section .list_comment{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.comment_section .list_comment .comment_item{
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.comment_section .list_comment .comment_item::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -10px;
+    height: 100%;
+    width: 1px;
+    background-color: #bfbfbf;
+}
+
+.comment_section .list_comment .comment_item p{
+    margin-bottom: 0;
+}
+
+.comment_content{
+    max-width: 100%;
+    width: fit-content;
+    background-color:#2C2C2C;
+    word-wrap:break-word;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.nameDisplay{
+    font-weight: 600;
+    font-size: .75rem;
+}
+
+.create_date{
+    font-weight: 600;
+    font-size: .875rem;
+}
+
+.comment_item .option_btn .option_btn_comment,
+.comment_item .option_btn .option_btn_comment .reply_btn {
+    text-decoration: none;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: transparent;
+    border-radius: 10px;
+    padding: 10px;
+    transition: all 0.2s ease;
+}
+
+.comment_item .option_btn .option_btn_comment i{
+    padding-right: 7px;
+}
+
+.comment_item .option_btn .option_btn_comment:hover,
+.comment_item .option_btn .option_btn_comment .reply_btn:hover{
+    background-color: #5d5d5d;
+}
+
+/*==============================SUB COMMENT==============================*/
+.comment_section .list_comment .comment_item .comment_replies{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-left: 2%;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+.comment_section .list_comment .comment_item .comment_replies .sub-comment{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment_section .list_comment .comment_item .comment_replies .sub-comment::before{
+    width: 1px;
+    height: 100%;
+    top: 0;
+    left: -10px;
+    content: "";
+    position: absolute;
+    background-color: #bfbfbf;
+    /*transform-origin: bottom;
+    transform: rotate(-90deg);*/
+}
+
+
+/*==============================POPUP DELETE COMMENT==============================*/
+.delete_cmt_popup {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    background-color: transparent;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.delete_cmt_popup .delete_cmt_popup_overlay{
+    position: absolute;
+    background-color: #2C2C2C;
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+    z-index: -1;
+}
+
+.delete_cmt_popup .delete_cmt_popup_container{
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    background-color: #3f3f3f;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.delete_cmt_popup .delete_cmt_popup_container h2{
+    text-align: center;
+    font-weight: 600;
+}
+
+.delete_cmt_popup .delete_cmt_popup_container p{
+    font-size: 20px;
+}
+
+.delete_cmt_popup .delete_cmt_popup_container .option_btn{
+    padding-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.delete_cmt_popup .delete_cmt_popup_container .option_btn button{
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    padding: 5px 10px 5px 10px;
+    font-size: 16px;
+    color: white;
+}
+
+#confirm-yes{
+
+}
+
+#confirm-no{
+
+}
+
+/*==============================SELECT CHAPTER==============================*/
+.select_chapter_container {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+}
+
+
+.select_chapter_container .selectChapter{
+    width: 60%;
+    overflow: hidden;
+    border-radius: 10px;
+    padding: 10px;
+    max-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.select_chapter_container .selectChapter .select{
+    background: #bfbfbf;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+select_chapter_container .selectChapter .select:hover {
+    background: #d8d8d8;
+}
+
+.select_chapter_container .selectChapter .select .caret{
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #fff;
+    transition: 0.3s;
+}
+
+.select_list {
+    width: 100%;
+    border-radius: 5px;
+    outline: none;
+    font-size: 20px;
+    padding: 5px;
+    max-height: 200px;
+}
+
+/*==============================LIST CHAPTER==============================*/
+.list_image_chapter_container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.list_image_chapter_container .list_image_chapter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

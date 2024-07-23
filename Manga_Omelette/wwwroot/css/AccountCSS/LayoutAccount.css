@@ -1,0 +1,112 @@
+﻿.main_container{
+
+}
+
+.overlayBackgroundBody {
+    width: 110%;
+    height: 60%;
+    bottom: 0;
+    background-color: #191A1C;
+    position: absolute;
+    filter: blur(10px);
+}
+
+.overlayBackgroundBody::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background-color: #191A1C;
+    filter: blur(10px);
+    transform: translateY(-50%);
+}
+
+.overlayBackgroundBody::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background-color: #191A1C;
+    filter: blur(10px);
+    transform: translateY(-50%);
+}
+
+.backgroundBody {
+    background: url("/Image/Background/Background_4.jpg") no-repeat;
+    background-position: top;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    padding-left: 10px;
+    top: 0;
+    left: 0;
+    position: absolute;
+    filter: blur(10px);
+}
+
+.backgroundOverlay {
+    background: url("/Image/Background/Background_4.jpg") no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+    height: 40%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #3D3D3D;
+}
+
+.avatar_section{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 20%;
+    transform: translateY(-35%);
+    padding: 15px;
+    gap: 20px;
+}
+
+.avatar_section .avatar_image_container{
+    background-color: #191A1C;
+    width: 170px;
+    height: 170px;
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid #191A1C;
+}
+
+.avatar_section .avatar_image_container .avatar_image{
+    background: url("/Image/Brand/Omelette Logo without Text.png") no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: auto;
+    height: 100%;
+}
+
+.avatar_section #username{
+    font-size: 50px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.navigation_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0 0 0 10px;
+    gap: 50px;
+}
+
+.navigation_container .navigation_left{
+    width: 25%;
+}
+
+.navigation_container .navigation_right{
+    width: 50%;
+}

@@ -1,0 +1,100 @@
+﻿@using Manga_Omelette.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+
+@*Dùng để kiểm tra xem người dùng đã đưang nhập hay chưa*@
+@inject SignInManager<User> SignInManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MangaASP</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/MangaASP.styles.css" asp-append-version="true" /> *@
+    <link rel="stylesheet" href="~/css/_SuperADMINLayout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <nav id="sidebar">
+        <div class="menu-bar">
+            <div class="brand">
+                <div class="brand">
+                    <a asp-controller="Administration" asp-action="DashboardSuperAdmin">
+                        <img src="~/Image/Brand/Omelette Logo png.png" alt="Brand" />
+                    </a>
+                </div>
+                @* <label class="toggleSidebar" for="checkToggle">
+                    <i class="bi bi-x" id="cancelSidebar"></i>
+                </label> *@
+            </div>
+            <div id="dashboard" class="title-sidebar">
+                <a asp-controller="Administration" asp-action="DashboardSuperAdmin">
+                    <i class="bi bi-house"></i>
+                    Dashboard
+                </a>
+            </div>
+            <div id="manage_user" class="title-sidebar">
+                <a asp-controller="Administration" asp-action="ManageUser">
+                    <i class="bi bi-people"></i>
+                    Manage User
+                </a>
+            </div>
+            <div id="manage_story" class="title-sidebar">
+                <a asp-controller="Administration" asp-action="ManageStory">
+                    <i class="bi bi-book"></i>
+                    Manage Story
+                </a>
+            </div>
+            <div id="manage_notification" class="title-sidebar">
+                <a asp-controller="Administration" asp-action="ManageNotification">
+                    <i class="bi bi-bell"></i>
+                    Manage Notification
+                </a>
+            </div>
+            <div id="manage_system" class="title-sidebar">
+                <a asp-controller="Administration" asp-action="ManageSystem">
+                    <i class="bi bi-gear"></i>
+                    Manage System
+                </a>
+            </div>
+            <div id="upload_cloudinary" class="title-sidebar">
+                <a asp-controller="Administration" asp-action="UploadImagetoCloudinary">
+                    <i class="bi bi-upload"></i>
+                    Upload Cloudinary
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="main_container">
+        <div class="container">
+            <main role="main" class="main" data-page="@ViewBag.PageName">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+        </div>
+    </footer>
+    <script src="~/js/script.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var currentPath = window.location.pathname;
+            var menuItems = document.querySelectorAll(".title-sidebar");
+            menuItems.forEach(item => {
+                if (currentPath === `/superadmin/${item.id}` && currentPath !== "/") {
+                    item.classList.add("active");
+                } else {
+                    item.classList.remove("active");
+                }
+            })
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+﻿form {
+    width: 100%;
+    background-color: #F3F3F3;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+form a{
+    text-decoration: none;
+    color: #ff6a00;
+}
+
+form a:hover{
+    text-decoration: underline;
+    color: #ff6a00;
+}
+
+.form_container h2{
+    text-align: center;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.form_container .mb-3 label{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+
+.form_container .mb-3 .inputForm {
+    outline: none;
+    width: 100%;
+    font-size: 20px;
+    border-radius: 8px;
+    padding: 5px;
+    transition: all 0.3s ease;
+    border: 1px solid #808080;
+}
+
+.form_container .mb-3 .inputForm.active{
+    box-shadow: 0 0 10px #808080;
+    border: 1px solid #ff6a00;
+}
+
+.form_container .remember_forgot{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 15px;
+}
+
+form_container .remember_forgot .remember-me-label{
+    display: flex;
+    align-items: center;
+}
+
+.form_container button{
+    margin-top: 30px;
+    width: 100%;
+    font-size: 30px;
+    font-weight: bold;
+    border-radius: 10px;
+    background-color: #ff6a00;
+    border: none;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.form_container button:hover{
+    box-shadow: 0 0 10px #808080;
+}
+
+.form_container .bottom_navigation{
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}

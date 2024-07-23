@@ -1,0 +1,210 @@
+﻿@using Manga_Omelette.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+
+@model Manga_Omelette.Models.DetailsStoryViewModel
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+	ViewData["Title"] = ViewBag.TitlePage;
+	<link rel="stylesheet" href="/css/PageCSS/Details_Story.css" />
+}
+
+<div class="background_section">
+	<img id="move_element" class="start_position" src="@Model.story.CoverImage" alt="@Model.story.CoverImage" />
+	<div class="overlay_background"></div>
+	<div id="paralleilogram_top" class="start_pos_top"></div>
+	<div id="paralleilogram_bottom" class="start_pos_bot"></div>
+</div>
+<div class="view_container">
+	@* <div id="paralleilogram_top" class="start_pos_top"></div>
+	<div id="paralleilogram_bottom" class="start_pos_bot"></div> *@
+	<div id="message"></div>
+
+	<div class="title_section">
+		<div class="right_part">
+			<img src="@Model.story.CoverImage" alt="@Model.story.CoverImage" />
+		</div>
+		<div class="left_part">
+			<div class="title_story">
+				@Model.story.Title
+			</div>
+			<div class="author_story"></div>
+			<div class="list_tag_genres">
+				@foreach(var genre in Model.ListGenre)
+				{
+					<div class="genre_name">
+						@genre.Name
+					</div>
+				}
+			</div>
+			<div class="description_section">
+				<p>@Model.story.Description</p>
+				<div class="update_date">
+					Update Date:
+					<p>@Model.story.UpdateDate</p>
+				</div>
+			</div>
+			<div class="option_btn">
+				@if (SignInManager.IsSignedIn(User))
+				{
+					<div id="FormRemoveFromListContainer">
+						<form method="post" id="FormRemoveFromList">
+							<input type="hidden" readonly asp-for="favorite.UserId" name="UserId" value="@Model.favorite.UserId" />
+
+							<input type="hidden" readonly asp-for="favorite.StoryId" name="StoryId" value="@Model.favorite.StoryId" />
+							<button class="btn_in_form" type="submit">Remove From Library</button>
+						</form>
+					</div>
+					<div id="FormAddToFollowListContainer">
+						<form method="post" id="FormAddToFollowList">
+							<input type="hidden" readonly asp-for="favorite.UserId" name="UserId" value="@Model.favorite.UserId" />
+
+							<input type="hidden" readonly asp-for="favorite.StoryId" name="StoryId" value="@Model.favorite.StoryId" />
+							<button class="btn_in_form" type="submit">Add to Library</button>
+						</form>
+					</div>
+				}
+				else
+				{
+					<a id="btn_login" asp-area="Identity" asp-page="/Account/Login">
+						Log in To Add library
+					</a>
+				}
+				@if (Model.chapters.FirstOrDefault() != null)
+				{
+					<a id="start_read" asp-controller="Chapter" asp-action="Index" asp-route-id="@Model.chapters.FirstOrDefault().Id">Start Reading</a>
+				}
+				else
+				{
+					<p>No chapters available.</p>
+				}
+			</div>
+		</div>
+	</div>
+	
+	<div class="bottom_section">
+		<div class="comment_section">
+			<h3>Comment</h3>
+			<div class="list_comment" id="comment_list">
+				@foreach (var obj in Model.ListComment)
+				{
+					@if (obj.ParentCommentId == null)
+					{
+						<div class="comment_item" id="comment_item_@obj.Id">
+							<div class="comment_origin">
+								@* Take UserNameDisplay By View Component *@
+								<div class="comment_content">
+									<p class="nameDisplay" id="nameDisplay">@await Component.InvokeAsync("CustomProperty", new { userId = obj.UserId })</p>
+									<p class="create_date">@obj.CreateDate</p>
+									<p class="content" style="white-space: pre-wrap; text-align: justify;">@obj.Content</p>
+								</div>
+							</div>
+							@* <div class="comment_replies">
+								@if (obj.Replies != null)
+								{
+									@foreach (var reply in obj.Replies)
+									{
+										<div class="sub-comment" id="comment_item_@reply.Id">
+											<div class="comment_content">
+												<p class="nameDisplay" id="nameDisplay">@await Component.InvokeAsync("CustomProperty", new { userId = reply.UserId })</p>
+												<p class="create_date">@reply.CreateDate</p>
+												<p style="white-space: pre-wrap; text-align: justify;">@reply.Content</p>
+											</div>
+											
+										</div>
+									}
+								}
+							</div> *@
+						</div>
+					}
+				}
+			</div>
+		</div>
+		<div class="list_chapter_section">
+			<h3>List Chapter</h3>
+			<div class="list_chapter">
+				@foreach (var obj in Model.chapters)
+				{
+					<a asp-controller="Chapter" asp-action="Index" asp-route-id="@obj.Id">
+						@obj.Title
+						<p>@obj.UpdateDate</p>
+					</a>
+				}
+			</div>
+		</div>
+	</div>
+
+</div>
+
+@section Scripts{
+	<script>
+		$(document).ready(function(){
+			var isInFavoriteList = '@Model.isInFavoriteList'.trim().toLowerCase();
+			if (isInFavoriteList === 'true') {
+				document.getElementById("FormRemoveFromListContainer").style.display = "block";
+				document.getElementById("FormAddToFollowListContainer").style.display = "none";
+			} else {
+				document.getElementById("FormRemoveFromListContainer").style.display = "none";
+				document.getElementById("FormAddToFollowListContainer").style.display = "block";
+			}
+
+			$("#FormAddToFollowList").submit(function(event){
+				event.preventDefault();
+				$.ajax({
+					url: '@Url.Action("AddToFollowList", "Story")',
+					type: 'POST',
+					data: $(this).serialize(),
+					success: function (response) {
+						showMessage(response.message, response.success ? "alert-success" : "alert-danger");
+						if (response.success) {
+							$('#FormAddToFollowListContainer').hide();
+							$('#FormRemoveFromListContainer').show();
+						}
+					},
+					error: function () {
+						$('#message').html('<div class="alert alert-danger">Failed to Add Story to Library!</div>');
+					}
+				})
+			})
+			$('#FormRemoveFromList').submit(function (event) {
+				event.preventDefault();
+
+				$.ajax({
+					url: '@Url.Action("RemoveFromList", "Story")',
+					type: 'POST',
+					data: $(this).serialize(),
+					success: function (response) {
+						showMessage(response.message, response.success ? "alert-success" : "alert-danger");
+						if (response.success) {
+							$('#FormRemoveFromListContainer').hide();
+							$('#FormAddToFollowListContainer').show();
+						}
+					},
+					error: function () {
+						$('#message').html('<div class="alert alert-danger">Failed to Remove Story from Library!</div>');
+					}
+				});
+			});
+
+			function showMessage(message, alertType) {
+				$('#message').removeClass().addClass('alert ' + alertType).text(message).fadeIn();
+
+				setTimeout(function () {
+					$('#message').fadeOut();
+				}, 2000);
+			}
+
+		})
+		window.onload = function(){
+			$('#move_element').addClass("finish_position");
+			$('#move_element').removeClass("start_position");
+
+			$('#paralleilogram_top').addClass("end_pos_top");
+			$('#paralleilogram_top').removeClass("start_pos_top");
+			$('#paralleilogram_bottom').addClass("end_pos_bot");
+			$('#paralleilogram_bottom').removeClass("start_pos_bot");
+		}
+
+	</script>
+}

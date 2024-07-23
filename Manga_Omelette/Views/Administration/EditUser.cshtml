@@ -1,0 +1,57 @@
+﻿@using Manga_Omelette.Areas.Identity.Data
+@model Manga_Omelette.Models_Secondary.EditUserViewModel
+@{
+    ViewBag.Title = "Edit User";
+    Layout = "_SuperADMINLayout";
+    <link rel="stylesheet" href="~/css/AdminCSS/EditUser.css" />
+}
+
+@if (TempData["UpdateUserSuccess"] != null)
+{
+    <h1>@TempData["UpdateUserSuccess"]</h1>
+}
+
+<h1>Edit User</h1>
+
+<form method="post" class="mt-3">
+    @*============================================== Edit Inform ==============================================*@
+    <input type="hidden" asp-for="user.Id"/>
+    <div class="form-group row">
+        <label asp-for="user.Id" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="user.Id" disabled class="form-control" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="@Model.user.Email" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="@Model.user.Email" class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="@Model.user.NameDisplay" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="@Model.user.NameDisplay" class="form-control"/>
+        </div>
+    </div>
+
+    @*============================================== Edit Roles ==============================================*@
+    <h2>Manage Roles</h2>
+    <div class="card-body">
+        @* Use for loop, not foreach, because tag-helper "asp-for" is different for each input *@
+        @for (int i = 0; i < Model.userRolesViewModels.Count; i++)
+        {
+            <div class="form-check m-1">
+                <input type="hidden" asp-for="userRolesViewModels[i].roleId"/>
+                <input type="hidden" asp-for="userRolesViewModels[i].roleName"/>
+
+                <input asp-for="userRolesViewModels[i].IsSelected" class="form-check-input"/>
+                <label asp-for="userRolesViewModels[i].IsSelected" class="form-check-label">@Model.userRolesViewModels[i].roleName</label>
+            </div>
+        }
+        <div class="text-danger" asp-validation-summary="All"></div>
+    </div>
+    <div class="form-footer">
+        <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+</form>
