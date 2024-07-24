@@ -19,7 +19,7 @@ namespace Manga_Omelette.Services
             _cloudinary = new Cloudinary(cloudinaryAccount);
         }
 
-        public ImageUploadResult UploadImage(IFormFile file)
+        public string UploadImage(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
             if (file != null)
@@ -31,9 +31,18 @@ namespace Manga_Omelette.Services
                         File = new FileDescription(file.FileName, stream)
                     };
                     uploadResult = _cloudinary.Upload(uploadParams);
+
+                    if(uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        return uploadResult.SecureUrl.AbsoluteUri.ToString();
+                    }
+                    else
+                    {
+                        throw new Exception(uploadResult.Error.Message);
+                    }
                 }
             }
-            return uploadResult;
+            throw new ArgumentNullException(nameof(file));
         }
     }
 }

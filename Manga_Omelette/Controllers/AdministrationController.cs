@@ -1,4 +1,5 @@
-﻿using Manga_Omelette.Areas.Identity.Data;
+﻿using CloudinaryDotNet.Actions;
+using Manga_Omelette.Areas.Identity.Data;
 using Manga_Omelette.Data;
 using Manga_Omelette.Models_Secondary;
 using Manga_Omelette.Services;
@@ -168,18 +169,54 @@ namespace Manga_Omelette.Controllers
             {
                 return BadRequest("Invalid file type.");
             }
-			var uploadResult = _cloudinaryService.UploadImage(model.imageFile);
-            if (uploadResult.Error != null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, uploadResult.Error.Message);
+			try
+			{
+                var uploadResultURL = _cloudinaryService.UploadImage(model.imageFile);
+				return RedirectToAction("DashboardSuperAdmin", "Administration");
             }
-            return Ok(new { uploadResult.Url });
+			catch(Exception ex)
+			{
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+			return View(model);
         }
         [HttpGet]
 		public IActionResult CreateStory()
 		{
-			return View();
+			var model = new CreateStoryViewModel()
+			{
+				story = new Story(),
+				imageFile = null
+			};
+			return View(model);
 		}
+		[HttpPost]
+		public IActionResult CreateStory(CreateStoryViewModel model)
+		{
+			if (model.imageFile == null)
+			{
+				return BadRequest("No file Choosen!");
+			}
+			var ext = Path.GetExtension(model.imageFile.FileName).ToLowerInvariant();
+			if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+			{
+				return BadRequest("Invalid file type!");
+			}
+            try
+            {
+                var uploadResultURL = _cloudinaryService.UploadImage(model.imageFile);
+				model.story.CoverImage = uploadResultURL;
+				model.story.UpdateDate = DateTime.Now;
+				_db.Add(model.story);
+				_db.SaveChanges();
+                return RedirectToAction("DashboardSuperAdmin", "Administration");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+			return View(model);
+        }
 		public IActionResult UploadImagetoCloudinary()
 		{
 			return View();
