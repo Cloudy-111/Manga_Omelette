@@ -19,6 +19,7 @@ namespace Manga_Omelette.Services
             _cloudinary = new Cloudinary(cloudinaryAccount);
         }
 
+        //Return URL String to add in Story
         public string UploadImage(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
@@ -43,6 +44,13 @@ namespace Manga_Omelette.Services
                 }
             }
             throw new ArgumentNullException(nameof(file));
+        }
+
+        public DeletionResult DeleteImage(string imageURL)
+        {
+            string publicId = Path.GetFileNameWithoutExtension(new Uri(imageURL).AbsolutePath);
+            DeletionParams deletionParams = new DeletionParams(publicId);
+            return _cloudinary.Destroy(deletionParams);
         }
     }
 }

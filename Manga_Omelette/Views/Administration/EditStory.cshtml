@@ -1,0 +1,122 @@
+﻿@model Manga_Omelette.Models_Secondary.EditStoryViewModel
+
+@{
+    ViewBag.Title = "Edit Story";
+    Layout = "_SuperADMINLayout";
+	<link rel="stylesheet" href="~/css/AdminCSS/EditStory.css" />
+}
+
+<h1>Edit @Model.story.Title</h1>
+
+<div class="view_container">
+	<form method="post" enctype="multipart/form-data" class="title_section" id="formInput">
+		<div class="right_part">
+			<img id="ImagePreview" src="@Model.story.CoverImage" alt="@Model.story.CoverImage" />
+			<input asp-for="imageFile" id="fileUpload" class="file-input" type="file" accept="image/*" />
+		</div>
+		<div class="left_part">
+			<div class="title_story">
+				<label asp-for="story.Title" class="col-md-2 col-form-label"></label>
+				<input asp-for="story.Title" class="form-control" value="@Model.story.Title"/>
+				<input type="hidden" asp-for="story.Id"/>
+			</div>
+			<div class="author_story"></div>
+			<div class="list_tag_genres">
+				@for (int i = 0; i < Model.ListGenre.Count; i++)
+				{
+					var genreId = Model.ListGenre[i].Name.Replace(' ', '-');
+					<div class="genre_item" id="@Model.ListGenre[i].Id" data-id="@Model.ListGenre[i].Id" data-name="@Model.ListGenre[i].Name">
+						<div class="genre_name">
+							@Model.ListGenre[i].Name
+						</div>
+						<i class="bi bi-x-circle"></i>
+					</div>
+				}
+			</div>
+			<div class="select_genres">
+				<label for="select_list">Select Genres:</label>
+				<select class="form-control" id="select_list" asp-items="@(new SelectList(Model.AllGenre, "Id", "Name"))"></select>
+			</div>
+			<div class="description_section">
+				<label asp-for="story.Description" class="col-md-2 col-form-label"></label>
+				<div class="col-sm-10">
+					<textarea asp-for="story.Description"></textarea>
+				</div>
+				<div class="update_date">
+					Last Update:
+					<p>@Model.story.UpdateDate</p>
+				</div>
+			</div>
+			<input type="hidden" name="ListGenreIds" id="ListGenreIds" />
+			<input type="submit" value="Update">
+		</div>
+	</form>
+</div>
+
+@section Scripts{
+	<script>
+		$(document).ready(function(){
+
+			//Script to Preview Image Upload
+			$('#fileUpload').change(function (event) {
+				var input = this;
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function (e) {
+						$('#ImagePreview').attr('src', e.target.result);
+					}
+					reader.readAsDataURL(input.files[0]);
+				}
+			})
+
+			$('#select_list').select2({
+				placeholder: "Select Genres",
+				allowClear: true,
+				multiple: false
+			})
+
+			var list_tag_genres = $('.list_tag_genres');
+			$('#select_list').change(function () {
+				var selectedOption = $(this).find('option:selected');
+				var genreId = selectedOption.val();
+				var genreName = selectedOption.text().replace(/\s+/g, '-');
+				if (genreName && $('#' + genreName).length === 0) {
+					var genre_item = $('<div></div>');
+					genre_item.attr({
+						id: genreId,
+						'data-id': genreId,
+						'data-name': genreName
+					}).addClass('genre_item');
+
+					var genre_name = $('<div></div>');
+					genre_name.addClass('genre_name').text(genreName);
+
+					var genre_delete_btn = $('<i></i>');
+					genre_delete_btn.addClass("bi bi-x-circle");
+
+					genre_item.append(genre_name);
+					genre_item.append(genre_delete_btn);
+
+					list_tag_genres.append(genre_item);
+				}
+			})
+
+			$('.list_tag_genres').on('click', 'i.bi-x-circle', function () {
+				$(this).closest('.genre_item').remove();
+			})
+
+			function GenreIdsInput(){
+				var genreIds = [];
+				$('.list_tag_genres .genre_item').each(function () {
+					genreIds.push($(this).data('id'));
+				});
+				$('#ListGenreIds').val(genreIds.join(','));
+			}
+
+			$(document).on('submit', '#formInput', function (e) {
+				//e.preventDefault();
+				GenreIdsInput();
+			})
+		})
+	</script>
+}

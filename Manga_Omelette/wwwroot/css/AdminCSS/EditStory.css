@@ -1,0 +1,171 @@
+﻿.view_container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.view_container .title_section {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.view_container .title_section .right_part {
+    width: 40%;
+    height: 100%;
+}
+
+.view_container .title_section img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.view_container .title_section .left_part {
+    width: 80%;
+    word-wrap: break-word;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.view_container .title_section .left_part .btn_in_form {
+    font-size: 30px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #FF6740;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.view_container .title_section .left_part .option_btn {
+    display: flex;
+    gap: 10px;
+}
+
+.view_container .title_section .left_part .option_btn p {
+}
+
+.view_container .title_section .left_part .option_btn .btn_in_form:hover {
+    background-color: #d05333;
+}
+
+.view_container .title_section .left_part .option_btn #btn_login,
+.view_container .title_section .left_part .option_btn #start_read {
+    background-color: #727272;
+    font-size: 30px;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.view_container .title_section .left_part .option_btn #btn_login:hover,
+.view_container .title_section .left_part .option_btn #start_read:hover {
+    background-color: #979797;
+}
+
+.view_container .title_section .left_part .title_story {
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.view_container .title_section .description_section {
+}
+
+.view_container .description_section {
+    margin-top: 50px;
+}
+
+.view_container .description_section .update_date {
+    font-size: 25px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.view_container .description_section .update_date p {
+    background-color: #FF6740;
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 0;
+}
+
+.view_container .bottom_section {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+}
+
+.view_container .title_section .left_part .list_tag_genres {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 5px;
+}
+
+.view_container .title_section .left_part .list_tag_genres .genre_name {
+    background-color: #2C2C2C;
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.view_container .title_section .left_part .list_tag_genres .genre_name:hover {
+    background-color: #FF6740;
+}
+
+/*==============================SELECT==============================*/
+
+.select2-container--default .select2-selection--single {
+    background-color: #191A1C; /* Background color of the select box */
+    border: none; /* Border style */
+    border-radius: 4px; /* Rounded corners */
+    padding: 5px;
+    color: white;
+}
+
+/* Styling the dropdown arrow */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    top: 50%; /* Center the arrow vertically */
+    transform: translateY(-50%);
+}
+
+.select2-container--default .select2-dropdown {
+    border: none;
+    border-radius: 4px;
+    background-color: #191A1C;
+}
+
+/* Styling the dropdown items */
+.select2-container--default .select2-results__option {
+    padding: 8px 12px; /* Padding inside dropdown items */
+    font-size: 16px; /* Font size */
+    border-radius: 10px;
+}
+
+/* Styling the hovered dropdown items */
+.select2-container--default .select2-results__option--highlighted {
+    background-color: #dce9f7; /* Background color when hovered */
+    color: #333; /* Text color */
+    border-radius: 10px;
+}
+
+/* Styling the selected item in the select box */
+.select2-container--default .select2-selection__rendered {
+    line-height: 38px; /* Center the text vertically */
+    padding-left: 5px; /* Padding inside the select box */
+}
+
+/* Styling placeholder text */
+.select2-container--default .select2-selection__placeholder {
+    color: #888; /* Placeholder text color */
+}

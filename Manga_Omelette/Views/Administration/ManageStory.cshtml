@@ -16,7 +16,7 @@
         <div class="grid-item">
             <img src="@obj.CoverImage" />
             <div class="grid-item-overlay">
-                <p>@obj.Title</p>
+                <a asp-controller="Administration" asp-action="EditStory" asp-route-id="@obj.Id" asp-route-title="@obj.Title">@obj.Title</a>
             </div>
         </div>
     }

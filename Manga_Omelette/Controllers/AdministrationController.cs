@@ -217,6 +217,90 @@ namespace Manga_Omelette.Controllers
             }
 			return View(model);
         }
+		[HttpGet]
+		public IActionResult EditStory(int id)
+		{
+			Story story = _storyService.getSingleStory(id);
+			var model = new EditStoryViewModel()
+			{
+				story = story,
+				imageFile = null,
+				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
+				AllGenre = _db.Genre.ToList(),
+			};
+			return View(model);
+		}
+		[HttpPost]
+		public IActionResult EditStory(EditStoryUpdate model)
+		{
+			if(model == null)
+			{
+				return NotFound();
+			}
+			Story story = _storyService.getSingleStory(model.story.Id);
+			string storyImage = story.CoverImage;
+			if (story == null)
+			{
+				return NotFound();
+				
+			}
+			var listGenreIds = Request.Form["ListGenreIds"].ToString();
+			if(listGenreIds.Length == 0) return NotFound();
+			model.GenreIds = listGenreIds;
+			var selectGenreIds = model.GenreIds.Split(',').Select(id => int.Parse(id));
+
+			var existGenre = _db.Story_Genre.Where(sg => sg.StoryId == story.Id);
+			_db.RemoveRange(existGenre);
+
+
+			var newGenreStories = new List<Story_Genre>();
+			foreach (var genreId in selectGenreIds)
+			{
+				var newGenre_Story = new Story_Genre()
+				{
+					StoryId = story.Id,
+					GenreId = genreId,
+				};
+				newGenreStories.Add(newGenre_Story);
+			}
+
+			_db.Story_Genre.AddRange(newGenreStories);
+
+			Story storyAlter = _storyService.getSingleStory(model.story.Id);
+			if(model.imageFile != null)
+			{
+				var ext = Path.GetExtension(model.imageFile.FileName).ToLower();
+				if(string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+				{
+					return BadRequest("Invalid File Type!");
+				}
+				try
+				{
+					var imageURL = _cloudinaryService.UploadImage(model.imageFile);
+					storyAlter.CoverImage = imageURL;
+					_cloudinaryService.DeleteImage(storyImage);
+				}
+				catch (Exception ex)
+				{
+					ModelState.AddModelError(string.Empty, ex.Message);
+				}
+			}
+
+			storyAlter.Title = model.story.Title;
+			storyAlter.Description = model.story.Description;
+			storyAlter.UpdateDate = DateTime.Now;
+			_db.Story.Update(storyAlter);
+			_db.SaveChanges();
+
+			var modelView = new EditStoryViewModel()
+			{
+				story = _storyService.getSingleStory(model.story.Id),
+				imageFile = null,
+				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
+				AllGenre = _db.Genre.ToList(),
+			};
+			return View(modelView);
+		}
 		public IActionResult UploadImagetoCloudinary()
 		{
 			return View();
