@@ -5,18 +5,18 @@
     ViewBag.Title = "Manage Story";
     ViewBag.PageName = "superadmin/manage_story";
     Layout = "_SuperADMINLayout";
-    <link rel="stylesheet" href="~/css/PageCSS/SearchView.css" />
+    <link rel="stylesheet" href="~/css/AdminCSS/ManageStory.css" />
 }
 
 <h1>Manage Story</h1>
-<a class="btn btn-primary" asp-controller="Administration" asp-action="CreateStory">Add New Story</a>
+<a class="create_btn" asp-controller="Story" asp-action="CreateStory">Add New Story</a>
 <div class="grid-container">
     @foreach (var obj in Model)
     {
         <div class="grid-item">
             <img src="@obj.CoverImage" />
             <div class="grid-item-overlay">
-                <a asp-controller="Administration" asp-action="EditStory" asp-route-id="@obj.Id" asp-route-title="@obj.Title">@obj.Title</a>
+                <a asp-controller="Story" asp-action="EditStory" asp-route-id="@obj.Id" asp-route-title="@obj.Title">@obj.Title</a>
             </div>
         </div>
     }

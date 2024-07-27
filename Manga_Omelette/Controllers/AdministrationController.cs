@@ -36,6 +36,8 @@ namespace Manga_Omelette.Controllers
 		{
 			return View();
 		}
+
+		//==============================================Page Manage User==============================================
 		public IActionResult ManageUser()
 		{
 			var ManageUserViewModel = new ManageUserViewModel()
@@ -44,8 +46,8 @@ namespace Manga_Omelette.Controllers
 			};
 			return View(ManageUserViewModel);
 		}
-		
-		//Display All User in 1 role
+
+		//==============================================Display All User in 1 role==============================================
 		public async Task<IActionResult> UsersInRole(string roleId)
 		{
 			var role = await _roleManager.FindByIdAsync(roleId);
@@ -145,7 +147,8 @@ namespace Manga_Omelette.Controllers
 			return RedirectToAction("EditUser", new {userId = user.Id});
 		}
 
-        public IActionResult ManageStory(int page = 1)
+		//==============================================Page ManageStory==============================================
+		public IActionResult ManageStory(int page = 1)
 		{
 			var items_per_page = 10;
             IQueryable<Story> storyList = _storyService.GetStoriesForEachPage(page, items_per_page);
@@ -180,145 +183,33 @@ namespace Manga_Omelette.Controllers
             }
 			return View(model);
         }
-        [HttpGet]
-		public IActionResult CreateStory()
-		{
-			var model = new CreateStoryViewModel()
-			{
-				story = new Story(),
-				imageFile = null
-			};
-			return View(model);
-		}
-		[HttpPost]
-		public IActionResult CreateStory(CreateStoryViewModel model)
-		{
-			if (model.imageFile == null)
-			{
-				return BadRequest("No file Choosen!");
-			}
-			var ext = Path.GetExtension(model.imageFile.FileName).ToLowerInvariant();
-			if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
-			{
-				return BadRequest("Invalid file type!");
-			}
-            try
-            {
-                var uploadResultURL = _cloudinaryService.UploadImage(model.imageFile);
-				model.story.CoverImage = uploadResultURL;
-				model.story.UpdateDate = DateTime.Now;
-				_db.Add(model.story);
-				_db.SaveChanges();
-                return RedirectToAction("DashboardSuperAdmin", "Administration");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-            }
-			return View(model);
-        }
-		[HttpGet]
-		public IActionResult EditStory(int id)
-		{
-			Story story = _storyService.getSingleStory(id);
-			var model = new EditStoryViewModel()
-			{
-				story = story,
-				imageFile = null,
-				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
-				AllGenre = _db.Genre.ToList(),
-			};
-			return View(model);
-		}
-		[HttpPost]
-		public IActionResult EditStory(EditStoryUpdate model)
-		{
-			if(model == null)
-			{
-				return NotFound();
-			}
-			Story story = _storyService.getSingleStory(model.story.Id);
-			string storyImage = story.CoverImage;
-			if (story == null)
-			{
-				return NotFound();
-				
-			}
-			var listGenreIds = Request.Form["ListGenreIds"].ToString();
-			if(listGenreIds.Length == 0) return NotFound();
-			model.GenreIds = listGenreIds;
-			var selectGenreIds = model.GenreIds.Split(',').Select(id => int.Parse(id));
 
-			var existGenre = _db.Story_Genre.Where(sg => sg.StoryId == story.Id);
-			_db.RemoveRange(existGenre);
-
-
-			var newGenreStories = new List<Story_Genre>();
-			foreach (var genreId in selectGenreIds)
-			{
-				var newGenre_Story = new Story_Genre()
-				{
-					StoryId = story.Id,
-					GenreId = genreId,
-				};
-				newGenreStories.Add(newGenre_Story);
-			}
-
-			_db.Story_Genre.AddRange(newGenreStories);
-
-			Story storyAlter = _storyService.getSingleStory(model.story.Id);
-			if(model.imageFile != null)
-			{
-				var ext = Path.GetExtension(model.imageFile.FileName).ToLower();
-				if(string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
-				{
-					return BadRequest("Invalid File Type!");
-				}
-				try
-				{
-					var imageURL = _cloudinaryService.UploadImage(model.imageFile);
-					storyAlter.CoverImage = imageURL;
-					_cloudinaryService.DeleteImage(storyImage);
-				}
-				catch (Exception ex)
-				{
-					ModelState.AddModelError(string.Empty, ex.Message);
-				}
-			}
-
-			storyAlter.Title = model.story.Title;
-			storyAlter.Description = model.story.Description;
-			storyAlter.UpdateDate = DateTime.Now;
-			_db.Story.Update(storyAlter);
-			_db.SaveChanges();
-
-			var modelView = new EditStoryViewModel()
-			{
-				story = _storyService.getSingleStory(model.story.Id),
-				imageFile = null,
-				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
-				AllGenre = _db.Genre.ToList(),
-			};
-			return View(modelView);
-		}
 		public IActionResult UploadImagetoCloudinary()
 		{
 			return View();
 		}
+
+		//==============================================Page Manage Notification==============================================
 		public IActionResult ManageNotification()
 		{
 			return View();
 		}
+
+		//==============================================Page Manage System==============================================
 		public IActionResult ManageSystem()
 		{
 			return View();
 		}
 		[Authorize(Roles = "Super ADMIN")]
+
+		//==============================================Page Create Role==============================================
 		//[HttpGet]
 		public IActionResult CreateRole()
 		{
 			return View();
 		}
+
+		//==============================================Post Create Role==============================================
 		[HttpPost]
 		public async Task<IActionResult> CreateRole(CreateRoleViewModel roleModel)
 		{

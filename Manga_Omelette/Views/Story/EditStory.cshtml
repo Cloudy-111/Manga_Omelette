@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Edit Story";
     Layout = "_SuperADMINLayout";
-	<link rel="stylesheet" href="~/css/AdminCSS/EditStory.css" />
+		<link rel="stylesheet" href="~/css/AdminCSS/EditStory.css" />
 }
 
 <h1>Edit @Model.story.Title</h1>
@@ -12,12 +12,16 @@
 	<form method="post" enctype="multipart/form-data" class="title_section" id="formInput">
 		<div class="right_part">
 			<img id="ImagePreview" src="@Model.story.CoverImage" alt="@Model.story.CoverImage" />
-			<input asp-for="imageFile" id="fileUpload" class="file-input" type="file" accept="image/*" />
+			<label for="fileUpload" class="custom-file-upload">
+				Upload Image
+			</label>
+			<input asp-for="imageFile" id="fileUpload" class="upload_btn" type="file" accept="image/*" />
 		</div>
 		<div class="left_part">
 			<div class="title_story">
 				<label asp-for="story.Title" class="col-md-2 col-form-label"></label>
 				<input asp-for="story.Title" class="form-control" value="@Model.story.Title"/>
+				<span asp-validation-for="story.Title" class="text-danger"></span>
 				<input type="hidden" asp-for="story.Id"/>
 			</div>
 			<div class="author_story"></div>
@@ -25,11 +29,11 @@
 				@for (int i = 0; i < Model.ListGenre.Count; i++)
 				{
 					var genreId = Model.ListGenre[i].Name.Replace(' ', '-');
-					<div class="genre_item" id="@Model.ListGenre[i].Id" data-id="@Model.ListGenre[i].Id" data-name="@Model.ListGenre[i].Name">
+					<div class="genre_item" id="@genreId" data-id="@Model.ListGenre[i].Id" data-name="@Model.ListGenre[i].Name">
 						<div class="genre_name">
 							@Model.ListGenre[i].Name
 						</div>
-						<i class="bi bi-x-circle"></i>
+						<i class="bi bi-x-circle-fill"></i>
 					</div>
 				}
 			</div>
@@ -38,22 +42,22 @@
 				<select class="form-control" id="select_list" asp-items="@(new SelectList(Model.AllGenre, "Id", "Name"))"></select>
 			</div>
 			<div class="description_section">
-				<label asp-for="story.Description" class="col-md-2 col-form-label"></label>
-				<div class="col-sm-10">
-					<textarea asp-for="story.Description"></textarea>
-				</div>
+				<label asp-for="story.Description"></label>
+				<textarea spellcheck="false" asp-for="story.Description"></textarea>
+				<span asp-validation-for="story.Description" class="text-danger"></span>
 				<div class="update_date">
-					Last Update:
+					<label>Last Update:</label>
 					<p>@Model.story.UpdateDate</p>
 				</div>
 			</div>
 			<input type="hidden" name="ListGenreIds" id="ListGenreIds" />
-			<input type="submit" value="Update">
+			<input class="submit_btn" type="submit" value="Update">
 		</div>
 	</form>
 </div>
 
 @section Scripts{
+	<partial name="_ValidationScriptsPartial" />
 	<script>
 		$(document).ready(function(){
 
@@ -80,10 +84,10 @@
 				var selectedOption = $(this).find('option:selected');
 				var genreId = selectedOption.val();
 				var genreName = selectedOption.text().replace(/\s+/g, '-');
-				if (genreName && $('#' + genreName).length === 0) {
+				if (genreName && $(`#${genreName}`).length === 0) {
 					var genre_item = $('<div></div>');
 					genre_item.attr({
-						id: genreId,
+						id: genreName,
 						'data-id': genreId,
 						'data-name': genreName
 					}).addClass('genre_item');
@@ -92,7 +96,7 @@
 					genre_name.addClass('genre_name').text(genreName);
 
 					var genre_delete_btn = $('<i></i>');
-					genre_delete_btn.addClass("bi bi-x-circle");
+					genre_delete_btn.addClass("bi bi-x-circle-fill");
 
 					genre_item.append(genre_name);
 					genre_item.append(genre_delete_btn);
@@ -101,7 +105,7 @@
 				}
 			})
 
-			$('.list_tag_genres').on('click', 'i.bi-x-circle', function () {
+			$('.list_tag_genres').on('click', 'i.bi-x-circle-fill', function () {
 				$(this).closest('.genre_item').remove();
 			})
 
@@ -116,7 +120,12 @@
 			$(document).on('submit', '#formInput', function (e) {
 				//e.preventDefault();
 				GenreIdsInput();
+				if ($('#ListGenreIds').val() === '') {
+					e.preventDefault();
+					alert("Please select at least one genre!");
+				}
 			})
+
 		})
 	</script>
 }

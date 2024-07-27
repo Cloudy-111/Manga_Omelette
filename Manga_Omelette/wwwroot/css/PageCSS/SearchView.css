@@ -24,8 +24,10 @@
     justify-content: center;
 }
 
-.grid-container .grid-item .grid-item-overlay p{
+.grid-container .grid-item .grid-item-overlay a{
     margin-top: 50%;
+    text-decoration: none;
+    color: white;
 }
 
 

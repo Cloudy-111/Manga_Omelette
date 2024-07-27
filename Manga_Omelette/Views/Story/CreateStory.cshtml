@@ -1,0 +1,112 @@
+﻿@model Manga_Omelette.Models_Secondary.CreateStoryViewModel
+@{
+    ViewBag.Title = "Create New Story";
+    Layout = "_SuperADMINLayout";
+    <link rel="stylesheet" href="~/css/AdminCSS/EditStory.css" />
+}
+
+<div class="view_container">
+    <form class="title_section" method="post" enctype="multipart/form-data" id="formCreate">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="right_part">
+            <div class="imagePreview">
+                <img id="ImagePreview" src="" alt="" />
+            </div>
+            <label for="fileUpload" class="custom-file-upload">
+                Upload Image
+            </label>
+            <input asp-for="imageFile" id="fileUpload" class="upload_btn" type="file" accept="image/*">
+        </div>
+        <div class="left_part">
+            <div class="title_story">
+                <label asp-for="story.Title" class="col-md-2 col-form-label"></label>
+                <input asp-for="story.Title" class="form-control" />
+                <span asp-validation-for="story.Title" class="text-danger"></span>
+            </div>
+            <div class="list_tag_genres"></div>
+            <div class="select_genres">
+                <label for="select_list">Select Genres:</label>
+                <select class="form-control" id="select_list" asp-items="@(new SelectList(Model.AllGenre, "Id", "Name"))"></select>
+            </div>
+            <div class="description_section">
+                <label asp-for="story.Description"></label>
+                <textarea spellcheck="false" asp-for="story.Description" placeholder="Add Description..."></textarea>
+                <span asp-validation-for="story.Description" class="text-danger"></span>
+            </div>
+            <input class="submit_btn" type="submit" value="Create">
+        </div>
+        <input type="hidden" asp-for="GenreIds" name="ListGenreIds" id="ListGenreIds" />
+    </form>
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            //Script to Preview Image Upload
+            $('#fileUpload').change(function (event) {
+                var input = this;
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#ImagePreview').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            })
+
+            var list_tag_genres = $('.list_tag_genres');
+            $('#select_list').change(function () {
+                var selectedOption = $(this).find('option:selected');
+                var genreId = selectedOption.val();
+                var genreName = selectedOption.text().replace(/\s+/g, '-');
+                if (genreName && $('#' + genreName).length === 0) {
+                    var genre_item = $('<div></div>');
+                    genre_item.attr({
+                        id: genreId,
+                        'data-id': genreId,
+                        'data-name': genreName
+                    }).addClass('genre_item');
+
+                    var genre_name = $('<div></div>');
+                    genre_name.addClass('genre_name').text(genreName);
+
+                    var genre_delete_btn = $('<i></i>');
+                    genre_delete_btn.addClass("bi bi-x-circle-fill");
+
+                    genre_item.append(genre_name);
+                    genre_item.append(genre_delete_btn);
+
+                    list_tag_genres.append(genre_item);
+                }
+            })
+
+            $('.list_tag_genres').on('click', 'i.bi-x-circle-fill', function () {
+                $(this).closest('.genre_item').remove();
+            })
+
+            $('#select_list').select2({
+                placeholder: "Select Genres",
+                allowClear: true,
+                multiple: false
+            })
+
+            function GenreIdsInput() {
+                var genreIds = [];
+                $('.list_tag_genres .genre_item').each(function () {
+                    genreIds.push($(this).data('id'));
+                });
+                $('#ListGenreIds').val(genreIds.join(','));
+            }
+
+            $(document).on('submit', '#formCreate', function (e) {
+                //e.preventDefault();
+                GenreIdsInput();
+                if ($('#ListGenreIds').val() === '') {
+                    e.preventDefault();
+                    alert("Please select at least one genre!");
+                }
+            })
+        })
+    </script>
+}

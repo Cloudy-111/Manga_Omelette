@@ -1,4 +1,9 @@
-﻿.view_container {
+﻿label{
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.view_container {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -11,10 +16,19 @@
     display: flex;
     justify-content: flex-start;
     gap: 10px;
+    position: relative;
 }
 
 .view_container .title_section .right_part {
     width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction:column;
+    gap: 10px;
+}
+
+.view_container .title_section .right_part .imagePreview{
+    width: 100%;
     height: 100%;
 }
 
@@ -23,64 +37,56 @@
     border-radius: 10px;
 }
 
+.view_container .title_section .right_part .custom-file-upload {
+    background: linear-gradient(#FF6740, #ed4c5e);
+    padding: 5px;
+    border-radius: 10px;
+    text-align: center;
+    width: 50%;
+    transform: translateX(50%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view_container .title_section .right_part .custom-file-upload:hover{
+    background-color: #cd593c;
+}
+
 .view_container .title_section .left_part {
     width: 80%;
     word-wrap: break-word;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: column;
-}
-
-.view_container .title_section .left_part .btn_in_form {
-    font-size: 30px;
-    border-radius: 5px;
-    padding: 10px;
-    background-color: #FF6740;
-    font-weight: 600;
-    color: white;
-    transition: all 0.3s ease;
-}
-
-.view_container .title_section .left_part .option_btn {
-    display: flex;
     gap: 10px;
 }
 
-.view_container .title_section .left_part .option_btn p {
-}
-
-.view_container .title_section .left_part .option_btn .btn_in_form:hover {
-    background-color: #d05333;
-}
-
-.view_container .title_section .left_part .option_btn #btn_login,
-.view_container .title_section .left_part .option_btn #start_read {
-    background-color: #727272;
-    font-size: 30px;
-    border-radius: 5px;
-    padding: 10px;
-    font-weight: 600;
-    color: white;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.view_container .title_section .left_part .option_btn #btn_login:hover,
-.view_container .title_section .left_part .option_btn #start_read:hover {
-    background-color: #979797;
-}
-
 .view_container .title_section .left_part .title_story {
-    font-size: 50px;
+    font-size: 30px;
     font-weight: 700;
 }
 
-.view_container .title_section .description_section {
+.view_container .title_section .left_part .title_story > input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.view_container .title_section .description_section textarea{
+    outline: none;
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    resize: none;
+    height: 200px;
 }
 
 .view_container .description_section {
+    width: 100%;
     margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .view_container .description_section .update_date {
@@ -104,11 +110,23 @@
     gap: 10px;
 }
 
+/*==============================LIST GENRE==============================*/
+
 .view_container .title_section .left_part .list_tag_genres {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     gap: 5px;
+}
+
+.view_container .title_section .left_part .list_tag_genres .genre_item {
+    display: flex;
+}
+
+.view_container .title_section .left_part .list_tag_genres .genre_item i {
+    cursor: pointer;
+    transform: translate(-5px, -5px);
+    color: red;
 }
 
 .view_container .title_section .left_part .list_tag_genres .genre_name {
@@ -124,22 +142,33 @@
 }
 
 /*==============================SELECT==============================*/
+.view_container .left_part .select_genres{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
 
 .select2-container--default .select2-selection--single {
-    background-color: #191A1C; /* Background color of the select box */
-    border: none; /* Border style */
-    border-radius: 4px; /* Rounded corners */
+    background-color: #191A1C; 
+    border: none;
+    border-radius: 4px; 
     padding: 5px;
-    color: white;
 }
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #fff;
+}
+
 
 /* Styling the dropdown arrow */
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    top: 50%; /* Center the arrow vertically */
+    top: 50%;
     transform: translateY(-50%);
+    color: white;
 }
 
 .select2-container--default .select2-dropdown {
+    padding: 5px;
     border: none;
     border-radius: 4px;
     background-color: #191A1C;
@@ -147,25 +176,48 @@
 
 /* Styling the dropdown items */
 .select2-container--default .select2-results__option {
-    padding: 8px 12px; /* Padding inside dropdown items */
-    font-size: 16px; /* Font size */
+    padding: 8px 12px;
+    font-size: 16px;
     border-radius: 10px;
 }
 
 /* Styling the hovered dropdown items */
 .select2-container--default .select2-results__option--highlighted {
-    background-color: #dce9f7; /* Background color when hovered */
-    color: #333; /* Text color */
+    color: #333;
     border-radius: 10px;
+    background: linear-gradient(#FF6740, #ed4c5e);
+    background-color: #FF6740 !important;
 }
 
 /* Styling the selected item in the select box */
 .select2-container--default .select2-selection__rendered {
-    line-height: 38px; /* Center the text vertically */
-    padding-left: 5px; /* Padding inside the select box */
+    line-height: 38px;
+    padding-left: 5px;
+    color: white;
 }
 
 /* Styling placeholder text */
 .select2-container--default .select2-selection__placeholder {
-    color: #888; /* Placeholder text color */
+    color: white;
+}
+
+.view_container .title_section .left_part .submit_btn {
+    width: 30%;
+    font-size: 40px;
+    font-weight: 600;
+    align-self: flex-end;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background-color: #FF6740;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.view_container .title_section .left_part .submit_btn:hover{
+    background-color: #cd593c;
+}
+
+.view_container .title_section .right_part .upload_btn {
+    display: none;
 }

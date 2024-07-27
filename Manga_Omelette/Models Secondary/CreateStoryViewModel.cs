@@ -6,5 +6,7 @@ namespace Manga_Omelette.Models_Secondary
     {
         public Story story {  get; set; }
         public IFormFile? imageFile { get; set; }
-    }
+        public string GenreIds { get; set; }
+		public List<Genre> AllGenre { get; set; }
+	}
 }

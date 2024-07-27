@@ -10,6 +10,9 @@ using Manga_Omelette.Areas.Identity.Data;
 using Manga_Omelette.Models;
 using Manga_Omelette.Services;
 using Microsoft.EntityFrameworkCore;
+using Manga_Omelette.Models_Secondary;
+using Microsoft.IdentityModel.Tokens;
+using Sprache;
 
 namespace MangaASP.Controllers
 {
@@ -27,12 +30,16 @@ namespace MangaASP.Controllers
         private UserManager<User> _userManager;
         private readonly ChapterService _chapterServices;
         private readonly StoryService _storyService;
-        public StoryController(Manga_OmeletteDBContext db, UserManager<User> userManager, ChapterService chapterService, StoryService storyService)
+        private readonly CloudinaryService _cloudinaryService;
+
+		private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
+		public StoryController(Manga_OmeletteDBContext db, UserManager<User> userManager, ChapterService chapterService, StoryService storyService, CloudinaryService cloudinaryService)
         {
             _db = db;
             _userManager = userManager;
 			_chapterServices = chapterService;
             _storyService = storyService;
+            _cloudinaryService = cloudinaryService;
 		}
         private IEnumerable<Story> GetStoriesForEachPage(int page)
         {
@@ -147,5 +154,169 @@ namespace MangaASP.Controllers
 			return Json(new { success = false, message = "Failed to Remove Story from Library!" });
 		}
 
+        [Authorize(Roles = "Super ADMIN, ADMIN")]
+		//==============================================Page CreateStory==============================================
+		[HttpGet]
+		public IActionResult CreateStory()
+		{
+			var model = new CreateStoryViewModel()
+			{
+				story = new Story(),
+				imageFile = null,
+				GenreIds = string.Empty,
+				AllGenre = _db.Genre.ToList(),
+			};
+			return View(model);
+		}
+
+		[Authorize(Roles = "Super ADMIN, ADMIN")]
+		//==============================================Post Create Story==============================================
+		[HttpPost]
+		public IActionResult CreateStory(CreateStoryViewModel model)
+		{
+			if (model.imageFile == null)
+			{
+				TempData["No Choosen Image"] = "Please choose 1 Image in your device!";
+				return RedirectToAction("CreateStory", "Story");
+			}
+			var ext = Path.GetExtension(model.imageFile.FileName).ToLowerInvariant();
+			if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+			{
+                TempData["Invalid File Type"] = "Invalid file type!";
+                return RedirectToAction("CreateStory", "Story");
+            }
+			try
+			{
+                var uploadResultURL = _cloudinaryService.UploadImage(model.imageFile);
+				model.story.CoverImage = uploadResultURL;
+				model.story.UpdateDate = DateTime.Now;
+				_db.Add(model.story);
+				_db.SaveChanges();
+
+				var listGenreIds = Request.Form["ListGenreIds"].ToString();
+                if (listGenreIds.Length == 0) return NotFound();
+                var selectGenreIds = listGenreIds.Split(',').Select(id => int.Parse(id));
+
+				var newGenreStories = new List<Story_Genre>();
+				foreach (var genreId in selectGenreIds)
+				{
+					var newGenre_Story = new Story_Genre()
+					{
+						StoryId = model.story.Id,
+						GenreId = genreId,
+					};
+					newGenreStories.Add(newGenre_Story);
+				}
+				_db.Story_Genre.AddRange(newGenreStories);
+				_db.SaveChanges();
+
+                TempData["Success Create Story"] = "Create Story Success";
+                return RedirectToAction("ManageStory", "Administration");
+			}
+			catch (Exception ex)
+			{
+				ModelState.AddModelError(string.Empty, ex.Message);
+			}
+			return View(model);
+		}
+
+		[Authorize(Roles = "Super ADMIN")]
+		//==============================================Page Edit Story==============================================
+		[HttpGet]
+		public IActionResult EditStory(int id)
+		{
+			Story story = _storyService.getSingleStory(id);
+			var model = new EditStoryViewModel()
+			{
+				story = story,
+				imageFile = null,
+				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
+				AllGenre = _db.Genre.ToList(),
+			};
+			return View(model);
+		}
+
+		[Authorize(Roles = "Super ADMIN")]
+		//==============================================Post Edit Story==============================================
+		[HttpPost]
+		public IActionResult EditStory(EditStoryUpdate model)
+		{
+			if (model == null)
+			{
+				return NotFound();
+			}
+			Story story = _storyService.getSingleStory(model.story.Id);
+			if (story == null)
+			{
+				return NotFound();
+
+			}
+			string storyImage = story.CoverImage;
+
+			//Take String ListGenreIds From form post in View
+			var listGenreIds = Request.Form["ListGenreIds"].ToString();
+			if (listGenreIds.Length == 0) return NotFound();
+
+			model.GenreIds = listGenreIds;
+			var selectGenreIds = model.GenreIds.Split(',').Select(id => int.Parse(id));
+
+			//If genre exist in list of genre of a story, Remove
+			//then add them again
+			var existGenre = _db.Story_Genre.Where(sg => sg.StoryId == story.Id);
+			_db.RemoveRange(existGenre);
+
+
+			var newGenreStories = new List<Story_Genre>();
+			foreach (var genreId in selectGenreIds)
+			{
+				var newGenre_Story = new Story_Genre()
+				{
+					StoryId = story.Id,
+					GenreId = genreId,
+				};
+				newGenreStories.Add(newGenre_Story);
+			}
+			//Add genre in list genre of a story
+			_db.Story_Genre.AddRange(newGenreStories);
+
+			//Check if Admin has uploaded image
+			Story storyAlter = _storyService.getSingleStory(model.story.Id);
+			if (model.imageFile != null)
+			{
+				var ext = Path.GetExtension(model.imageFile.FileName).ToLower();
+				if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+				{
+					return BadRequest("Invalid File Type!");
+				}
+				try
+				{
+					//If Upload image, delete old one by URL
+					var imageURL = _cloudinaryService.UploadImage(model.imageFile);
+					storyAlter.CoverImage = imageURL;
+					_cloudinaryService.DeleteImage(storyImage);
+				}
+				catch (Exception ex)
+				{
+					ModelState.AddModelError(string.Empty, ex.Message);
+				}
+			}
+
+			//Update Information of Story
+			storyAlter.Title = model.story.Title;
+			storyAlter.Description = model.story.Description;
+			storyAlter.UpdateDate = DateTime.Now;
+			_db.Story.Update(storyAlter);
+			_db.SaveChanges();
+
+			//Success then go again Page with new Model
+			var modelView = new EditStoryViewModel()
+			{
+				story = _storyService.getSingleStory(model.story.Id),
+				imageFile = null,
+				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
+				AllGenre = _db.Genre.ToList(),
+			};
+			return View(modelView);
+		}
 	}
 }
