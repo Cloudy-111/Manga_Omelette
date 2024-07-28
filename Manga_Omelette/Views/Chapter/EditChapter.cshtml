@@ -1,0 +1,56 @@
+﻿@model Manga_Omelette.Models_Secondary.EditChapterViewModel
+
+@{
+    ViewBag.Title = "Edit Chapter";
+    Layout = "_SuperADMINLayout";
+    <link rel="stylesheet" href="~/css/AdminCSS/EditStory.css" />
+}
+
+<form method="post" enctype="multipart/form-data" class="form_container">
+    <div class="input_title">
+        <label asp-for="chapter.Title" class=""></label>
+        <input asp-for="chapter.Title" class="form-control" />
+        <span asp-validation-for="chapter.Title" class="text-danger"></span>
+        <input asp-for="chapter.StoryId" type="hidden"/>
+        <input asp-for="chapter.Id" type="hidden" />
+    </div>
+    <div class="upload_images">
+        <input asp-for="imageFiles" id="fileUpload" class="upload_btn" type="file" multiple accept="image/*">
+        <div class="list_image_upload" id="list_image_upload"></div>
+    </div>
+    <input type="submit" class="btn btn-primary" />
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#fileUpload').change(function (event) {
+                var files = this.files;
+                var listImage = $('#list_image_upload');
+                for (let i = 0; i < files.length; i++) {
+                    var file = files[i];
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var imgItem = $('<div>').attr({
+
+                        }).addClass("imageItem");
+                        var img = $('<img>').attr({
+                            'src': e.target.result,
+                            id: `image${i}`,
+                        });
+                        var remove_btn = $('<i>').addClass("bi bi-x-circle-fill");
+                        imgItem.append(img).append(remove_btn);
+
+                        listImage.append(imgItem);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            })
+
+            $('.list_image_upload').on('click', 'i.bi-x-circle-fill', function () {
+                $(this).closest('.imageItem').remove();
+            })
+        })
+    </script>
+}

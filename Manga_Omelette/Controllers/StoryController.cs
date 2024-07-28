@@ -232,6 +232,7 @@ namespace MangaASP.Controllers
 				imageFile = null,
 				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
 				AllGenre = _db.Genre.ToList(),
+				Chapters = story.Chapters.OrderBy(c => c.Id).ToList(),
 			};
 			return View(model);
 		}
@@ -239,7 +240,7 @@ namespace MangaASP.Controllers
 		[Authorize(Roles = "Super ADMIN")]
 		//==============================================Post Edit Story==============================================
 		[HttpPost]
-		public IActionResult EditStory(EditStoryUpdate model)
+		public IActionResult EditStory(EditStoryViewModel model)
 		{
 			if (model == null)
 			{

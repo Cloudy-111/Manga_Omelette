@@ -22,7 +22,7 @@ namespace Manga_Omelette.Controllers
 		private readonly StoryService _storyService;
 		private readonly CloudinaryService _cloudinaryService;
 
-        private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
+        private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
 
         public AdministrationController(RoleManager<IdentityRole> roleManager, Manga_OmeletteDBContext db, UserManager<User> userManager, StoryService storyService, CloudinaryService cloudinaryService)
 		{
@@ -163,25 +163,29 @@ namespace Manga_Omelette.Controllers
 		[HttpPost]
 		public IActionResult UploadImage(UploadImageModel model)
 		{
-			if (model.imageFile == null)
+			if (model.imageFiles == null)
 			{
 				return BadRequest("No file Choosen");
 			}
-            var ext = Path.GetExtension(model.imageFile.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
-            {
-                return BadRequest("Invalid file type.");
-            }
-			try
+			var uploadResult = new List<string>();
+			foreach(var image in model.imageFiles)
 			{
-                var uploadResultURL = _cloudinaryService.UploadImage(model.imageFile);
-				return RedirectToAction("DashboardSuperAdmin", "Administration");
-            }
-			catch(Exception ex)
-			{
-                ModelState.AddModelError(string.Empty, ex.Message);
-            }
-			return View(model);
+				var ext = Path.GetExtension(image.FileName).ToLowerInvariant();
+				if(string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+				{
+					return BadRequest("Invalid gile Type.");
+				}
+				try
+				{
+					var uploadResultURL = _cloudinaryService.UploadImage(image);
+					uploadResult.Add(uploadResultURL);
+				}
+				catch(Exception e)
+				{
+                    ModelState.AddModelError(string.Empty, $"Error uploading file {image.FileName}: {e.Message}");
+                }
+			}
+			return Json(uploadResult);
         }
 
 		public IActionResult UploadImagetoCloudinary()

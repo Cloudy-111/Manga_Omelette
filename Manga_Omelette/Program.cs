@@ -128,8 +128,18 @@ app.UseEndpoints(endpoints =>
         pattern: "/superadmin/upload_cloudinary",
         defaults: new { controller = "Administration", action = "UploadImagetoCloudinary" }
         );
-    //Configure Endpoint For ChatHub
-    endpoints.MapHub<ChatHub>("/chat");
+    endpoints.MapControllerRoute(
+        name: "Create Chapter",
+        pattern: "admin/{storyId}/create_chapter",
+        defaults: new { controller = "Chapter", action = "CreateChapter" }
+        );
+	endpoints.MapControllerRoute(
+		name: "Edit Chapter",
+		pattern: "admin/chapter/{chapterId}/edit_chapter",
+		defaults: new { controller = "Chapter", action = "EditChapter" }
+		);
+	//Configure Endpoint For ChatHub
+	endpoints.MapHub<ChatHub>("/chat");
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

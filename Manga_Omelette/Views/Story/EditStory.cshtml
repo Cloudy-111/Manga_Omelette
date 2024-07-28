@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Edit Story";
     Layout = "_SuperADMINLayout";
-		<link rel="stylesheet" href="~/css/AdminCSS/EditStory.css" />
+	<link rel="stylesheet" href="~/css/AdminCSS/EditStory.css" />
 }
 
 <h1>Edit @Model.story.Title</h1>
@@ -54,6 +54,23 @@
 			<input class="submit_btn" type="submit" value="Update">
 		</div>
 	</form>
+	<div class="bottom_section">
+		<div class="list_chapter_section">
+			<div class="header_list_chapter">
+				<h3>List Chapter</h3>
+				<a asp-controller="Chapter" asp-action="CreateChapter" asp-route-storyId="@Model.story.Id">Add New Chapter</a>
+			</div>
+			<div class="list_chapter">
+				@foreach (var obj in Model.Chapters)
+				{
+					<a asp-controller="Chapter" asp-action="EditChapter" asp-route-chapterId="@obj.Id">
+						@obj.Title
+						<p>@obj.UpdateDate</p>
+					</a>
+				}
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts{

@@ -1,0 +1,23 @@
+﻿.view_container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.view_container .form_container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    position: relative; 
+}
+
+.form_container .upload_images .list_image_upload {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
