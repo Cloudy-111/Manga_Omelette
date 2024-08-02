@@ -1,5 +1,6 @@
 ﻿using Manga_Omelette.Areas.Identity.Data;
 using Manga_Omelette.Data;
+using Manga_Omelette.Services;
 using MangaASP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,13 @@ namespace Manga_Omelette.Controllers
 	public class CommentController : Controller
 	{
 		private readonly Manga_OmeletteDBContext _db;
+		private readonly CommentService _commentService;
 		private readonly UserManager<User> _userManager;
-		public CommentController(Manga_OmeletteDBContext db, UserManager<User> userManager)
+		public CommentController(Manga_OmeletteDBContext db, CommentService commentService, UserManager<User> userManager)
 		{
 			_db = db;
 			_userManager = userManager;
+			_commentService = commentService;
 		}
 
 		public IActionResult Index()
@@ -39,7 +42,7 @@ namespace Manga_Omelette.Controllers
 		[HttpPost]
 		public IActionResult DeleteComment(int commentId)
 		{
-			var obj = _db.Comment.Include(cmt => cmt.Replies).FirstOrDefault(cmt => cmt.Id == commentId);
+			var obj = _commentService.GetCommentById(commentId);
 			if(obj != null)
 			{
 				if(obj.Replies.Any()) {

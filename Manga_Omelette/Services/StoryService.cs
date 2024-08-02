@@ -33,10 +33,14 @@ namespace Manga_Omelette.Services
 		public IQueryable<Story> GetStoriesForEachPage(int page, int items_per_page)
 		{
 			return _db.Story
-				.OrderBy(s => s.Title)
+				//.OrderBy(s => s.Title)
 				.Skip((page - 1) * items_per_page)
 				.Take(items_per_page);
         }
+		public IEnumerable<Story_Genre> ListGenreExistInStory(int storyId)
+		{
+			return _db.Story_Genre.Where(sg => sg.StoryId == storyId);
+		}
 
     }
 }

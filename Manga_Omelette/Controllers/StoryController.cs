@@ -50,7 +50,7 @@ namespace MangaASP.Controllers
         public IActionResult SearchView(int page = 1)
         {
             int items_per_page = 10;
-            IQueryable<Story> storyList = _storyService.GetStoriesForEachPage(page, items_per_page);
+            IQueryable<Story> storyList = _storyService.GetStoriesForEachPage(page, items_per_page).OrderBy(s => s.Title);
             int totalStories = _db.Story.Count();
             int totalPages = (int)Math.Ceiling((double)totalStories / items_per_page);
             
@@ -68,7 +68,7 @@ namespace MangaASP.Controllers
         public IActionResult Latest_Update(int page = 1)
         {
             int items_per_page = 10;
-            IEnumerable<Story> storyList = GetStoriesForEachPage(page).OrderBy(s => s.UpdateDate).Skip((page - 1) * items_per_page).Take(items_per_page); ;
+            IEnumerable<Story> storyList = _storyService.GetStoriesForEachPage(page, items_per_page).OrderBy(s => s.UpdateDate);
             int totalStories = _db.Story.Count();
             int totalPages = (int)Math.Ceiling((double)totalStories / items_per_page);
 
@@ -263,7 +263,7 @@ namespace MangaASP.Controllers
 
 			//If genre exist in list of genre of a story, Remove
 			//then add them again
-			var existGenre = _db.Story_Genre.Where(sg => sg.StoryId == story.Id);
+			var existGenre = _storyService.ListGenreExistInStory(model.story.Id);
 			_db.RemoveRange(existGenre);
 
 
@@ -316,7 +316,8 @@ namespace MangaASP.Controllers
 				imageFile = null,
 				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
 				AllGenre = _db.Genre.ToList(),
-			};
+				Chapters = story.Chapters.OrderBy(c => c.Id).ToList(),
+            };
 			return View(modelView);
 		}
 	}

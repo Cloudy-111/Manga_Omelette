@@ -98,7 +98,14 @@ app.UseEndpoints(endpoints =>
         pattern: "chapter/{id}",
         defaults: new { controller = "Chapter", action = "Index" }
         );
-    endpoints.MapControllerRoute(
+
+    //Config get Comment for each chapter
+	endpoints.MapControllerRoute(
+	    name: "Get Comments",
+	    pattern: "chapter/{chapterId}/comments",
+	    defaults: new { controller = "Chapter", action = "GetComments" }
+    );
+	endpoints.MapControllerRoute(
         name: "Super Admin Dashboard",
         pattern: "/superadmin/dashboard",
         defaults: new { controller = "Administration", action = "DashboardSuperAdmin" }

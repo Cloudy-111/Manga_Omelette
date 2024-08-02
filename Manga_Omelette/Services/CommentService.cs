@@ -16,5 +16,21 @@ namespace Manga_Omelette.Services
 			IEnumerable<Comment> result = _db.Comment.Include(cmt => cmt.Replies).Where(c => c.ChapterId == chapterId);
 			return result;
 		}
+		public Comment GetCommentById(int cmtId)
+		{
+			return _db.Comment.Include(c => c.Replies).FirstOrDefault(c => c.Id == cmtId);
+		}
+		public List<Comment> GetCommentsByChapterId(int chapterId, int lastCommentId, int amount)
+		{
+			return _db.Comment
+				.Where(c => c.ChapterId == chapterId && c.Id > lastCommentId)
+				.OrderBy(c => c.Id)
+				.Take(amount)
+				.ToList();
+		}
+		public int getAmountOfComment(int chapterId)
+		{
+			return _db.Comment.Count(cmt => cmt.ChapterId == chapterId);
+		}
 	}
 }

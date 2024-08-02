@@ -39,8 +39,8 @@ namespace Manga_Omelette.Controllers
             Story story = _chapterService.GetStoryByChapterId(id);
             var ChapterViewModel = new ChapterViewModel
             {
-                ListComment = obj.Comments,
-                NewComment = new Comment
+				CommentAmount = _commentService.getAmountOfComment(id),
+				NewComment = new Comment
                 {
                     UserId = _userManager.GetUserId(User),
                     ChapterId = id,
@@ -52,6 +52,19 @@ namespace Manga_Omelette.Controllers
                 Chapters = story.Chapters.OrderBy(c => c.Id).ToList()
             };
             return View(ChapterViewModel);
+        }
+
+        [HttpGet]
+        //GetComments when click 'load-more-comment' - lazy loading, load comment has id greater last comment id
+        //Now load all origin comment, then load all Replies.
+        public IActionResult GetComments(int chapterId, int lastCommentId, int amount = 10)
+        {
+            var comments = _db.Comment
+                .Where(c => c.ChapterId == chapterId && c.Id > lastCommentId && c.ParentCommentId == null)
+                .OrderBy(c => c.Id)
+                .Take(amount)
+                .ToList();
+            return Json(comments);
         }
 
         [Authorize(Roles = "Super ADMIN, ADMIN")]
@@ -133,6 +146,7 @@ namespace Manga_Omelette.Controllers
             return View(EditChapterViewModel);
         }
 
+        [Authorize(Roles = "Super ADMIN, ADMIN")]
         [HttpPost]
         public IActionResult EditChapter(EditChapterViewModel model)
         {

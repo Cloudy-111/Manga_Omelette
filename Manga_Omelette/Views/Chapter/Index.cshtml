@@ -7,7 +7,7 @@
 @inject UserManager<User> UserManager
 
 @{
-	<link rel="stylesheet" href="/css/PageCSS/ChapterIndex.css" />
+						<link rel="stylesheet" href="/css/PageCSS/ChapterIndex.css" />
 }
 
 <div class="title_chapter">
@@ -64,6 +64,10 @@
 			<input readonly type="hidden" asp-for="@Model.NewComment.UserId" name="UserId" value="@UserManager.GetUserId(User)" id="usercomment"/>
 			<button type="submit">Post your Comment</button>
 		</form>
+		<div id="hidden_attribute" 
+			 data-user-id="@UserManager.GetUserId(User)"
+			 data-chapter-id="@Model.Chapter.Id"
+			 data-story-id="@Model.Story.Id"></div>
 	}
 	else
 	{
@@ -72,67 +76,12 @@
 		</a>
 	}
 	<div class="list_comment" id="comment_list">
-		<h3>Comment</h3>
-		@foreach(var obj in Model.ListComment)
-		{
-			@if(obj.ParentCommentId == null)
-			{
-				<div class="comment_item" id="comment_item_@obj.Id">
-					<div class="comment_origin">
-					@* Take UserNameDisplay By View Component *@
-						<div class="comment_content">
-							<p class="nameDisplay" id="nameDisplay">@await Component.InvokeAsync("CustomProperty", new { userId = obj.UserId })</p>
-							<p class="create_date">@obj.CreateDate</p>
-							<p class="content" style="white-space: pre-wrap; text-align: justify;">@obj.Content</p>
-						</div>
-						<div class="option_btn">
-							@* Display Delete Button if that comment is own of user *@
-							@if (obj.UserId == UserManager.GetUserId(User) && obj.isDeleted == false)
-							{
-								<a class="option_btn_comment" id="btn_deletecmt" data-comment-id="@obj.Id"><i class="bi bi-trash3"></i>Delete</a>
-								<a class="option_btn_comment" id="btn_editcmt" data-comment-id="@obj.Id"><i class="bi bi-pencil-square"></i>Edit</a>
-							}
-							@if (SignInManager.IsSignedIn(User))
-							{
-								<button class="option_btn_comment reply_btn"><i class="bi bi-reply"></i>Reply</button>
-								<form class="FormPostCommentReply" id="FormPostCommentReply_@obj.Id" method="post" style="display: none;" data-parent-id="@obj.Id">
-									<textarea asp-for="@Model.NewComment.Content" name="Content" placeholder="Comment Here..." id="textInputReply_@obj.Id"></textarea>
-									<span asp-validation-for="@Model.NewComment.Content" class="text-danger"></span>
-									<input readonly type="hidden" asp-for="@Model.Chapter.Id" name="ChapterId" value="@Model.Chapter.Id" />
-									<input readonly type="hidden" asp-for="@Model.Chapter.StoryId" name="StoryId" value="@Model.Chapter.StoryId" />
-									<input readonly type="hidden" asp-for="@Model.NewComment.UserId" name="UserId" value="@UserManager.GetUserId(User)" id="usercommentReply_@obj.Id" />
-									<input readonly type="hidden" asp-for="@Model.NewComment.ParentCommentId" name="ParentCommentId" value="@obj.Id" id="parentCommentId_@obj.Id" />
-									<button type="submit">Post your Reply</button>
-								</form>
-							}
-						</div>
-					</div>
-					<div class="comment_replies">
-						@if (obj.Replies != null)
-						{
-							@foreach(var reply in obj.Replies)
-							{
-								<div class="sub-comment" id="comment_item_@reply.Id">
-									<div class="comment_content">
-										<p class="nameDisplay" id="nameDisplay">@await Component.InvokeAsync("CustomProperty", new { userId = reply.UserId })</p>
-										<p class="create_date">@reply.CreateDate</p>
-										<p style="white-space: pre-wrap; text-align: justify;">@reply.Content</p>
-									</div>
-									<div class="option_btn">
-										@if (reply.UserId == UserManager.GetUserId(User))
-										{
-											<a class="option_btn_comment" id="btn_deletecmt" data-comment-id="@reply.Id"><i class="bi bi-trash3"></i>Delete</a>
-											<a class="option_btn_comment" id="btn_editcmt" data-comment-id="@reply.Id"><i class="bi bi-pencil-square"></i>Edit</a>
-										}
-									</div>
-								</div>
-							}
-						}
-					</div>
-				</div>
-			}
-		}
+		<h3>See All @Model.CommentAmount Comment</h3>
 	</div>
+	@if(Model.CommentAmount > 0)
+	{
+		<button id="load-more-comments" onclick="loadMoreComments()">Load more comments</button>
+	}
 </div>
 <div class="delete_cmt_popup" id="delete_cmt_popup" style="display: none;">
 	<div class="delete_cmt_popup_overlay"></div>
@@ -146,12 +95,91 @@
 		</div>
 	</div>
 </div>
-@* <div id="message"></div> *@
+<div id="message"></div>
 
 @section Scripts{
 	<partial name="_ValidationScriptsPartial" />
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+	<script>
+		//Script Click load more comment, load 10 comments each click
+		let chapterId = @Model.Chapter.Id;
+		let lastCommentId = 0;
+		let amount = 10;
+
+		function loadMoreComments() {
+			$.ajax({
+				url: `/chapter/${chapterId}/comments`, //Configure URL in Program
+				data: { chapterId: chapterId, lastCommentId: lastCommentId, amount: amount },
+				success: function (data) {
+					if (data.length > 0) {
+						data.forEach(comment => {
+							//Config this Comment Item
+
+							var comment_item = $('<div>').addClass("comment_item").attr({ id: `comment_item_${comment.id}` });
+							var comment_origin = $('<div>').addClass("comment_origin");
+
+							var comment_content = $('<div>').addClass("comment_content");
+
+							var create_date = $('<p>').addClass('create_date').text(new Date(comment.createDate));
+							var content = $('<p>').text(comment.content).css({
+								'white-space': 'pre-wrap',
+								'text-align': 'justify'
+							});
+
+							var userId = $('#hidden_attribute').data('user-id');
+							var storyId = $('#hidden_attribute').data('story-id');
+							var chapterId = $('#hidden_attribute').data('chapter-id');
+
+									// Option buttons logic
+							var optionBtn = $('<div>').addClass('option_btn');
+
+							//FIX THIS
+							if (comment.userId === userId) { // Assuming currentUserId is available
+								optionBtn.append('<a class="option_btn_comment" id="btn_deletecmt" data-comment-id="' + comment.id + '"><i class="bi bi-trash3"></i>Delete</a>');
+								optionBtn.append('<a class="option_btn_comment" id="btn_editcmt" data-comment-id="' + comment.id + '"><i class="bi bi-pencil-square"></i>Edit</a>');
+							}
+
+							if (userId) { // Assuming isSignedIn is available
+								optionBtn.append('<button class="option_btn_comment reply_btn"><i class="bi bi-reply"></i>Reply</button>');
+								var replyForm = $('<form>')
+										.addClass('FormPostCommentReply')
+										.attr('id', 'FormPostCommentReply_' + comment.id)
+										.attr('method', 'post')
+										.css('display', 'none')
+										.attr('data-parent-id', comment.id);
+								replyForm.append(`<textarea name="Content" placeholder="Comment Here..." id="textInputReply_${comment.id}"></textarea>`);
+								replyForm.append(`<input type="hidden" name="ChapterId" value="${chapterId}" />`);
+								replyForm.append(`<input type="hidden" name="StoryId" value="${storyId}" />`);
+								replyForm.append(`<input type="hidden" name="UserId" value="${userId}" id="usercommentReply_${comment.id}" />`);
+								replyForm.append(`<input type="hidden" name="ParentCommentId" value=${comment.id} id="parentCommentId_${comment.id}" />`);
+								replyForm.append('<button type="submit">Post your Reply</button>');
+								optionBtn.append(replyForm);
+							}
+
+							var comment_replies = $('<div>').addClass('comment_replies');
+
+							comment_content.append(create_date).append(content);
+							comment_origin.append(comment_content);
+							comment_origin.append(optionBtn);
+							comment_item.append(comment_origin);
+							comment_item.append(comment_replies);
+
+							$('#comment_list').append(comment_item);
+						});
+						//Change lastCommentId to not Mutiple comment
+						lastCommentId = data[data.length - 1].id;
+					} else {
+						$('#load-more-comments').hide();
+					}
+				},
+				error: function (error) {
+					console.error("Error loading comments:", error);
+				}
+			})
+		}
+	</script>
+
 	<script>
 		$(document).ready(function () {
 			//Create Connection Server-Client
@@ -262,14 +290,22 @@
 			});
 
 			//Ajax for Post Origin Comment
+			var isPosting = false;
 			$('#FormPostComment').submit(function(event){
 				event.preventDefault();
 
+				if (isPosting) {
+					alert("Please wait a moment before posting another comment.");
+					return;
+				}
+
+				isPosting = true;
+				
 				var user = $('#usercomment').val();
 				var content = $('#textInput').val().trim();
 				var userId = $('#usercomment').val();
 				
-
+				
 				$.ajax({
 					url: '@Url.Action("PostComment", "Comment")',
 					type: 'post',
@@ -285,6 +321,11 @@
 					},
 					error: function () {
 						$('#message').html('<div class="alert alert-danger">Failed to Post Comment</div>');
+					},// Wait 5s for post next comment
+					complete: function () {
+						setTimeout(function () {
+							isPosting = false;
+						}, 5000);
 					}
 				})
 			})
@@ -328,7 +369,7 @@
 			})
 
 			//Ajax for each Reply Comment
-			$(document).on('submit', '.FormPostCommentReply', function () {
+			$(document).on('submit', '.FormPostCommentReply', function (event) {
 				event.preventDefault();
 
 				var parentCommentId = $(this).data('parent-id');
@@ -336,10 +377,14 @@
 				var content = $(`#textInputReply_${parentCommentId}`).val().trim();
 				var userId = $(`#usercommentReply_${parentCommentId}`).val();
 
+				var serializedData = $(this).serialize();
+				var token = $('input[name="__RequestVerificationToken"]').val();
+				//Need  Token CSRF to POST Form (SUPER IMPORTANT)
+
 				$.ajax({
 					url: '@Url.Action("PostComment", "Comment")',
 					type: 'post',
-					data: $(this).serialize(),
+					data: serializedData + "&__RequestVerificationToken=" + token,
 					success: function (response) {
 						if (response.success) {
 							$(`#FormPostCommentReply_${parentCommentId}`)[0].reset();
@@ -351,8 +396,8 @@
 							$('#message').html('<div class="alert alert-danger">Failed to Post Comment in success</div>');
 						}
 					},
-					error: function () {
-						$('#message').html('<div class="alert alert-danger">Failed to Post Comment</div>');
+					error: function (xhr, status, error) {
+						$('#message').html(`<div class="alert alert-danger">Failed to Post Comment ERROR: ${xhr.responseText}</div>`);
 					}
 				})
 			})
@@ -393,7 +438,7 @@
 				});
 			}
 
-			
 		})
+		
 	</script>
 }

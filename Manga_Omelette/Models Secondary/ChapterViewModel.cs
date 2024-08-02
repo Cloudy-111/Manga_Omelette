@@ -4,7 +4,7 @@ namespace Manga_Omelette.Models
 {
 	public class ChapterViewModel
 	{
-		public IEnumerable<Comment> ListComment { get; set; }
+		public int CommentAmount { get; set; }
 		public Comment NewComment { get; set; }
 		public Chapter Chapter { get; set; }
 		public List<Chapter> Chapters { get; set; }

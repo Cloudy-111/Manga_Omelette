@@ -19,10 +19,11 @@ namespace Manga_Omelette.Services
             IEnumerable<Chapter> result = _db.Chapter.Where(c => c.StoryId == storyId);
             return result;
         }
+
+        //not load all comment in an object Chapter, load comment when call
         public Chapter GetChapterById(int id)
         {
             Chapter result = _db.Chapter
-                .Include(c => c.Comments)
                 .Include(c => c.imageInChapters)
                 .FirstOrDefault(c => c.Id == id);
             return result;
