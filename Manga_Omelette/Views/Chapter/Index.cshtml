@@ -7,7 +7,7 @@
 @inject UserManager<User> UserManager
 
 @{
-						<link rel="stylesheet" href="/css/PageCSS/ChapterIndex.css" />
+	<link rel="stylesheet" href="/css/PageCSS/ChapterIndex.css" />
 }
 
 <div class="title_chapter">
@@ -67,7 +67,8 @@
 		<div id="hidden_attribute" 
 			 data-user-id="@UserManager.GetUserId(User)"
 			 data-chapter-id="@Model.Chapter.Id"
-			 data-story-id="@Model.Story.Id"></div>
+			 data-story-id="@Model.Story.Id">
+		</div>
 	}
 	else
 	{
@@ -120,9 +121,9 @@
 							var comment_origin = $('<div>').addClass("comment_origin");
 
 							var comment_content = $('<div>').addClass("comment_content");
-
-							var create_date = $('<p>').addClass('create_date').text(new Date(comment.createDate));
-							var content = $('<p>').text(comment.content).css({
+							var nameDisplay = $('<p>').addClass("nameDisplay").text(comment.userNameDisplay);
+							var create_date = $('<p>').addClass('create_date').text(new Date(comment.createdDate).toLocaleString());
+							var content = $('<p>').text(comment.comment_content).css({
 								'white-space': 'pre-wrap',
 								'text-align': 'justify'
 							});
@@ -159,7 +160,7 @@
 
 							var comment_replies = $('<div>').addClass('comment_replies');
 
-							comment_content.append(create_date).append(content);
+							comment_content.append(nameDisplay).append(create_date).append(content);
 							comment_origin.append(comment_content);
 							comment_origin.append(optionBtn);
 							comment_item.append(comment_origin);

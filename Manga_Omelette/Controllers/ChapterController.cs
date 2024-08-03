@@ -7,6 +7,7 @@ using MangaASP.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Manga_Omelette.Controllers
 {
@@ -29,7 +30,7 @@ namespace Manga_Omelette.Controllers
             _cloudinaryService = cloudinaryService;
             _userManager = userManager;
         }
-        public IActionResult Index(int id)
+        public async Task<IActionResult> Index(int id)
         {
             Chapter obj = _chapterService.GetChapterById(id);
             if(obj == null)
@@ -63,6 +64,17 @@ namespace Manga_Omelette.Controllers
                 .Where(c => c.ChapterId == chapterId && c.Id > lastCommentId && c.ParentCommentId == null)
                 .OrderBy(c => c.Id)
                 .Take(amount)
+                //To load userNameDisplay(Additional attribute) in a comment, join table of user and comment
+                //use Include and create Forward Model (View Model to pass information)
+                .Include(c => c.User)
+                .Select(c => new Comment_User
+                {
+                    Id = c.Id,
+                    comment_content = c.Content,
+                    CreatedDate = c.CreateDate.ToString(),
+                    userId = c.UserId,
+                    userNameDisplay = c.User.NameDisplay,
+                })
                 .ToList();
             return Json(comments);
         }
