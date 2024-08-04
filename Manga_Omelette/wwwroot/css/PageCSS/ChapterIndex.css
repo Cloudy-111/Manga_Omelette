@@ -121,8 +121,47 @@
     background-color: #5d5d5d;
 }
 
+.comment_section #load-more-comments{
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    transition: all 0.2s ease;
+}
+
+.comment_section #load-more-comments:hover{
+    text-decoration: underline;
+    color: #FF6740;
+}
+
+.comment_section .comment_item .load-more-replies-comment {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.comment_section .list_comment .comment_item .load-more-replies-comment:hover {
+    text-decoration: underline;
+    color: #FF6740;
+}
+
+.comment_section .list_comment .comment_item .load-more-replies-comment::before {
+    content: "";
+    width: 1px;
+    height: 13px;
+    color: aqua;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    position: absolute;
+    transform: rotate(90deg) translate(-5px, 2px);
+}
+
 /*==============================SUB COMMENT==============================*/
-.comment_section .list_comment .comment_item .comment_replies{
+.comment_section .list_comment .comment_item .comment_replies {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -291,3 +330,4 @@ select_chapter_container .selectChapter .select:hover {
     flex-direction: column;
     align-items: center;
 }
+

@@ -32,5 +32,9 @@ namespace Manga_Omelette.Services
 		{
 			return _db.Comment.Count(cmt => cmt.ChapterId == chapterId);
 		}
+		public int getAmountOfReply(int commentId)
+		{
+			return _db.Comment.Count(cmt => cmt.ParentCommentId == commentId);
+		}
 	}
 }

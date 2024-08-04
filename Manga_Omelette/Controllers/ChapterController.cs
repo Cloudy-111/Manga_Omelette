@@ -74,6 +74,27 @@ namespace Manga_Omelette.Controllers
                     CreatedDate = c.CreateDate.ToString(),
                     userId = c.UserId,
                     userNameDisplay = c.User.NameDisplay,
+                    reply_amount = _commentService.getAmountOfReply(c.Id),
+				})
+                .ToList();
+            return Json(comments);
+        }
+
+        [HttpGet]
+        public IActionResult GetRepliesComment(int parentCommentId, int lastReplyId, int amount = 5)
+        {
+            var comments = _db.Comment
+                .Where(c => c.ParentCommentId == parentCommentId && c.Id > lastReplyId)
+                .OrderBy(c => c.Id)
+                .Take(amount)
+                .Include(c => c.User)
+                .Select(c => new Comment_User
+                {
+                    Id = c.Id,
+                    comment_content = c.Content,
+                    CreatedDate = c.CreateDate.ToString(),
+                    userId = c.UserId,
+                    userNameDisplay = c.User.NameDisplay,
                 })
                 .ToList();
             return Json(comments);

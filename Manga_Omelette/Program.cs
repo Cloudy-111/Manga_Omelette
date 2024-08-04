@@ -106,6 +106,11 @@ app.UseEndpoints(endpoints =>
 	    defaults: new { controller = "Chapter", action = "GetComments" }
     );
 	endpoints.MapControllerRoute(
+		name: "Get Comment Replies",
+		pattern: "chapter/{chapterId}/comment_replies",
+		defaults: new { controller = "Chapter", action = "GetRepliesComment" }
+	);
+	endpoints.MapControllerRoute(
         name: "Super Admin Dashboard",
         pattern: "/superadmin/dashboard",
         defaults: new { controller = "Administration", action = "DashboardSuperAdmin" }
@@ -147,6 +152,21 @@ app.UseEndpoints(endpoints =>
 		);
 	//Configure Endpoint For ChatHub
 	endpoints.MapHub<ChatHub>("/chat");
+	endpoints.MapControllerRoute(
+		name: "Delete Comment",
+		pattern: "/deleteComment",
+		defaults: new { controller = "Comment", action = "DeleteComment" }
+		);
+	endpoints.MapControllerRoute(
+		name: "Post Comment",
+		pattern: "/postComment",
+		defaults: new { controller = "Comment", action = "PostComment" }
+		);
+	endpoints.MapControllerRoute(
+		name: "Get UserNameDisplay",
+		pattern: "/getUserName",
+		defaults: new { controller = "Comment", action = "GetUserName" }
+		);
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

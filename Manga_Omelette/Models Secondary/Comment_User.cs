@@ -9,5 +9,6 @@ namespace Manga_Omelette.Models_Secondary
 		public string CreatedDate { get; set; }
 		public string userId { get; set; }
 		public string userNameDisplay { get; set; }
+		public int? reply_amount { get; set; }
 	}
 }

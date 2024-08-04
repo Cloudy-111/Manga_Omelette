@@ -7,7 +7,7 @@
 @inject UserManager<User> UserManager
 
 @{
-	<link rel="stylesheet" href="/css/PageCSS/ChapterIndex.css" />
+							<link rel="stylesheet" href="/css/PageCSS/ChapterIndex.css" />
 }
 
 <div class="title_chapter">
@@ -52,6 +52,11 @@
 	</button>
 </div>
 
+<div id="hidden_attribute"
+	 data-user-id="@UserManager.GetUserId(User)"
+	 data-chapter-id="@Model.Chapter.Id"
+	 data-story-id="@Model.Story.Id">
+</div>
 
 <div class="comment_section">
 	@if(SignInManager.IsSignedIn(User))
@@ -64,11 +69,7 @@
 			<input readonly type="hidden" asp-for="@Model.NewComment.UserId" name="UserId" value="@UserManager.GetUserId(User)" id="usercomment"/>
 			<button type="submit">Post your Comment</button>
 		</form>
-		<div id="hidden_attribute" 
-			 data-user-id="@UserManager.GetUserId(User)"
-			 data-chapter-id="@Model.Chapter.Id"
-			 data-story-id="@Model.Story.Id">
-		</div>
+		
 	}
 	else
 	{
@@ -102,265 +103,14 @@
 	<partial name="_ValidationScriptsPartial" />
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
-	<script>
-		//Script Click load more comment, load 10 comments each click
-		let chapterId = @Model.Chapter.Id;
-		let lastCommentId = 0;
-		let amount = 10;
+	<script src="~/js/ScriptChapterIndex/load_replies.js"></script>
+	<script src="~/js/ScriptChapterIndex/load_comment.js"></script>
 
-		function loadMoreComments() {
-			$.ajax({
-				url: `/chapter/${chapterId}/comments`, //Configure URL in Program
-				data: { chapterId: chapterId, lastCommentId: lastCommentId, amount: amount },
-				success: function (data) {
-					if (data.length > 0) {
-						data.forEach(comment => {
-							//Config this Comment Item
+	<script type="module" src="~/js/ScriptChapterIndex/main_script.js"></script>
 
-							var comment_item = $('<div>').addClass("comment_item").attr({ id: `comment_item_${comment.id}` });
-							var comment_origin = $('<div>').addClass("comment_origin");
-
-							var comment_content = $('<div>').addClass("comment_content");
-							var nameDisplay = $('<p>').addClass("nameDisplay").text(comment.userNameDisplay);
-							var create_date = $('<p>').addClass('create_date').text(new Date(comment.createdDate).toLocaleString());
-							var content = $('<p>').text(comment.comment_content).css({
-								'white-space': 'pre-wrap',
-								'text-align': 'justify'
-							});
-
-							var userId = $('#hidden_attribute').data('user-id');
-							var storyId = $('#hidden_attribute').data('story-id');
-							var chapterId = $('#hidden_attribute').data('chapter-id');
-
-									// Option buttons logic
-							var optionBtn = $('<div>').addClass('option_btn');
-
-							//FIX THIS
-							if (comment.userId === userId) { // Assuming currentUserId is available
-								optionBtn.append('<a class="option_btn_comment" id="btn_deletecmt" data-comment-id="' + comment.id + '"><i class="bi bi-trash3"></i>Delete</a>');
-								optionBtn.append('<a class="option_btn_comment" id="btn_editcmt" data-comment-id="' + comment.id + '"><i class="bi bi-pencil-square"></i>Edit</a>');
-							}
-
-							if (userId) { // Assuming isSignedIn is available
-								optionBtn.append('<button class="option_btn_comment reply_btn"><i class="bi bi-reply"></i>Reply</button>');
-								var replyForm = $('<form>')
-										.addClass('FormPostCommentReply')
-										.attr('id', 'FormPostCommentReply_' + comment.id)
-										.attr('method', 'post')
-										.css('display', 'none')
-										.attr('data-parent-id', comment.id);
-								replyForm.append(`<textarea name="Content" placeholder="Comment Here..." id="textInputReply_${comment.id}"></textarea>`);
-								replyForm.append(`<input type="hidden" name="ChapterId" value="${chapterId}" />`);
-								replyForm.append(`<input type="hidden" name="StoryId" value="${storyId}" />`);
-								replyForm.append(`<input type="hidden" name="UserId" value="${userId}" id="usercommentReply_${comment.id}" />`);
-								replyForm.append(`<input type="hidden" name="ParentCommentId" value=${comment.id} id="parentCommentId_${comment.id}" />`);
-								replyForm.append('<button type="submit">Post your Reply</button>');
-								optionBtn.append(replyForm);
-							}
-
-							var comment_replies = $('<div>').addClass('comment_replies');
-
-							comment_content.append(nameDisplay).append(create_date).append(content);
-							comment_origin.append(comment_content);
-							comment_origin.append(optionBtn);
-							comment_item.append(comment_origin);
-							comment_item.append(comment_replies);
-
-							$('#comment_list').append(comment_item);
-						});
-						//Change lastCommentId to not Mutiple comment
-						lastCommentId = data[data.length - 1].id;
-					} else {
-						$('#load-more-comments').hide();
-					}
-				},
-				error: function (error) {
-					console.error("Error loading comments:", error);
-				}
-			})
-		}
-	</script>
-
+	<script type="module" src="~/js/ScriptChapterIndex/Comment_SignalR/signalr_ManageActionComment.js"></script>
 	<script>
 		$(document).ready(function () {
-			//Create Connection Server-Client
-			const connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
-
-			//Connection for all Client receive message from 1 Client
-			//Ajax is for take UserNameDisplay by GET, because element of ASP.NET core Blazor not available in Javascript
-			connection.on("ReceiveComment", async function (user, message, userId, commentId) {
-				$.ajax({
-					url: '@Url.Action("GetUserName", "Comment")',
-					type: 'get',
-					data: {userId: userId},
-					success: function (response) {
-						var userNameDisplay = response.userName;
-						var newCommentHtml =
-							`<div class="comment_item" id="comment_item_${commentId}">
-								<div class="comment_origin">
-									<div class="comment_content">
-										<p class="nameDisplay" id="nameDisplay">${userNameDisplay}</p>
-										<p class="create_date">${new Date().toLocaleString()}</p>
-										<p class="content" style="white-space: pre-wrap; text-align: justify;">${message}</p>
-									</div>
-									<div class="option_btn">`;
-
-						if (userId === '@UserManager.GetUserId(User)') {
-							newCommentHtml += `
-										<a class=option_btn_comment" id="btn_deletecmt" data-comment-id="${commentId}"><i class="bi bi-trash3"></i>Delete</a>
-										<a class="option_btn_comment" id="btn_editcmt" data-comment-id="${commentId}"><i class="bi bi-pencil-square"></i>Edit</a>
-										
-										`;
-						}
-						newCommentHtml += `
-									@if (@SignInManager.IsSignedIn(User))
-									{
-										<button class="option_btn_comment reply_btn"><i class="bi bi-reply"></i>Reply</button>
-										<form class="FormPostCommentReply" id="FormPostCommentReply_${commentId}" method="post" style="display: none;" data-parent-id="${commentId}">
-											<textarea asp-for="@Model.NewComment.Content" name="Content" placeholder="Comment Here..." id="textInputReply_${commentId}"></textarea>
-											<span asp-validation-for="@Model.NewComment.Content" class="text-danger"></span>
-											<input readonly type="hidden" asp-for="@Model.Chapter.Id" name="ChapterId" value="@Model.Chapter.Id" />
-											<input readonly type="hidden" asp-for="@Model.Chapter.StoryId" name="StoryId" value="@Model.Chapter.StoryId" />
-											<input readonly type="hidden" asp-for="@Model.NewComment.UserId" name="UserId" value="@UserManager.GetUserId(User)" id="usercommentReply_${commentId}" />
-											<input readonly type="hidden" asp-for="@Model.NewComment.ParentCommentId" name="ParentCommentId" value="${commentId}" id="parentCommentId_${commentId}" />
-											<button type="submit">Post your Reply</button>
-										</form>
-									}
-						`;
-						newCommentHtml += `
-									</div>
-								</div>
-								<div class="comment_replies"></div>
-							</div>`;
-
-						$('#comment_list').append(newCommentHtml);
-
-					}
-				})
-			});
-
-			//SignalR for Receive Reply Comment
-			connection.on("ReceiveReplyComment", async function (user, content, userId, commentId, parentId) {
-				$.ajax({
-					url: '@Url.Action("GetUserName", "Comment")',
-					type: 'get',
-					data: {userId: userId},
-					success: function (response) {
-						var userNameDisplay = response.userName;
-						var newReplyComment =
-							`<div class="sub-comment" id="comment_item_${commentId}">
-								<div class="comment_content">
-									<p class="nameDisplay" id="nameDisplay">${userNameDisplay}</p>
-									<p class="create_date">${new Date().toLocaleString()}</p>
-									<p style="white-space: pre-wrap; text-align: justify;">${content}</p>
-								</div>
-								<div class="option_btn">
-							`;
-						if (userId === '@UserManager.GetUserId(User)') {
-							newReplyComment += `
-									<a class="option_btn_comment" id="btn_deletecmt" data-comment-id="${commentId}"><i class="bi bi-trash3"></i>Delete</a>
-									<a class="option_btn_comment" id="btn_editcmt" data-comment-id="${commentId}"><i class="bi bi-pencil-square"></i>Edit</a>
-							`;
-						}
-						newReplyComment += `
-								</div>
-							</div>`;
-						// var tmp = `<p>${parentId}</p>`
-
-						$(`.comment_item#comment_item_${parentId} .comment_replies`).append(newReplyComment);
-					}
-				})
-			})
-
-			//Connection for all Client receive Delete comment from 1 Client
-			connection.on("ReceiveDeletedComment", function (commentId) {
-				var commentItem = $(`#comment_item_${commentId}`);
-				var replies = commentItem.find('.comment_replies .sub-comment');
-				if (replies.length > 0) {
-					commentItem.find('.comment_origin .content').html('<p style="white-space: pre-wrap; text-align: justify;">This Comment has been Deleted!</p>')
-					commentItem.find('.comment_origin .option_btn #btn_deletecmt').remove();
-					commentItem.find('.comment_origin .option_btn #btn_editcmt').remove();
-				} else{
-					commentItem.remove();
-				}
-			});
-
-			//Start  Connection
-			connection.start().catch(function (err) {
-				return console.error(err.toString());
-			});
-
-			//Ajax for Post Origin Comment
-			var isPosting = false;
-			$('#FormPostComment').submit(function(event){
-				event.preventDefault();
-
-				if (isPosting) {
-					alert("Please wait a moment before posting another comment.");
-					return;
-				}
-
-				isPosting = true;
-				
-				var user = $('#usercomment').val();
-				var content = $('#textInput').val().trim();
-				var userId = $('#usercomment').val();
-				
-				
-				$.ajax({
-					url: '@Url.Action("PostComment", "Comment")',
-					type: 'post',
-					data: $(this).serialize(),
-					success: function (response) {
-						if (response.success) {
-							// $('#message').html('<div class="alert alert-success">Post Comment Successfully!</div>');
-							$('#FormPostComment')[0].reset();
-							addCommentInList(user, content, userId, response.commentId);
-						} else {
-							$('#message').html('<div class="alert alert-danger">Failed to Post Comment in success</div>');
-						}
-					},
-					error: function () {
-						$('#message').html('<div class="alert alert-danger">Failed to Post Comment</div>');
-					},// Wait 5s for post next comment
-					complete: function () {
-						setTimeout(function () {
-							isPosting = false;
-						}, 5000);
-					}
-				})
-			})
-
-			//Button Delete Comment of each user
-			var commentId;
-			$(document).on('click', '#btn_deletecmt', function () {
-				$('#delete_cmt_popup').show();
-				commentId = $(this).data('comment-id');
-			})
-
-			$('#confirm-yes').on('click', function(){
-				// var commentId = $(this).data('comment-id');
-
-				$.ajax({
-					url: '@Url.Action("DeleteComment", "Comment")',
-					type: 'post',
-					data: { commentId: commentId },
-					success: function (response) {
-						if (response.success) {
-							connection.invoke("DeleteComment", commentId).catch(function (err) {
-								return console.error(err.toString());
-							});
-						} else {
-							alert(response.message);
-						}
-					}
-				})
-				$('#delete_cmt_popup').hide();
-			})
-
-			$('#confirm-no').on('click', function(){
-				$('#delete_cmt_popup').hide();
-			})
 
 			//Click to show Textarea Reply
 			$('#comment_list').on('click', '.reply_btn', function () {
@@ -368,42 +118,7 @@
 				var $form = $commentItem.find('form');
 				$form.toggle();
 			})
-
-			//Ajax for each Reply Comment
-			$(document).on('submit', '.FormPostCommentReply', function (event) {
-				event.preventDefault();
-
-				var parentCommentId = $(this).data('parent-id');
-				var user = $(`#usercommentReply_${parentCommentId}`).val();
-				var content = $(`#textInputReply_${parentCommentId}`).val().trim();
-				var userId = $(`#usercommentReply_${parentCommentId}`).val();
-
-				var serializedData = $(this).serialize();
-				var token = $('input[name="__RequestVerificationToken"]').val();
-				//Need  Token CSRF to POST Form (SUPER IMPORTANT)
-
-				$.ajax({
-					url: '@Url.Action("PostComment", "Comment")',
-					type: 'post',
-					data: serializedData + "&__RequestVerificationToken=" + token,
-					success: function (response) {
-						if (response.success) {
-							$(`#FormPostCommentReply_${parentCommentId}`)[0].reset();
-							$(`#FormPostCommentReply_${parentCommentId}`).hide();
-							connection.invoke("SendReplyComment", user, content, userId, response.commentId, parentCommentId).catch(function (err) {
-								return console.error(err.toString());
-							})
-						} else {
-							$('#message').html('<div class="alert alert-danger">Failed to Post Comment in success</div>');
-						}
-					},
-					error: function (xhr, status, error) {
-						$('#message').html(`<div class="alert alert-danger">Failed to Post Comment ERROR: ${xhr.responseText}</div>`);
-					}
-				})
-			})
-
-
+			
 			//Select  Chapter
 			$('#selectChapter').on('change', function () {
 				var selectValue = $(this).val();
@@ -431,13 +146,6 @@
 					window.location.href = `/chapter/${nextIndex}`;
 				})
 			};
-
-			function addCommentInList(user, content, userId, commentId) {
-				//Take 4 paragram: user, Content, userId, commentId
-				connection.invoke("SendComment", user, content, userId, commentId).catch(function (err) {
-					return console.error(err.toString());
-				});
-			}
 
 		})
 		
