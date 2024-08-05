@@ -95,6 +95,18 @@
     padding: 10px;
 }
 
+.view_container .overlay_background{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    background-color:#191A1C;
+    z-index: -1;
+    opacity: 0.7;
+    border-radius: 10px;
+}
+
 .view_container .title_section{
     width: 100%;
     display: flex;
@@ -158,7 +170,9 @@
 }
 
 .view_container .title_section .left_part .option_btn #btn_login:hover,
-.view_container .title_section .left_part .option_btn #start_read:hover{
+.view_container .title_section .left_part .option_btn #start_read:hover,
+.view_container .title_section .left_part .option_btn .rating_section .rating_btn:hover
+{
     background-color: #979797;
 }
 
@@ -262,3 +276,61 @@
 .view_container .title_section .left_part .list_tag_genres .genre_name:hover{
     background-color: #FF6740;
 }
+
+/*==============================RATING SECTION==============================*/
+
+.view_container .title_section .left_part .option_btn .rating_section{
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.view_container .title_section .left_part .option_btn .rating_section .rating_btn{
+    cursor: pointer;
+    text-align: center;
+    background: #727272;
+    font-size: 30px;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+    transition: background 1s ease;
+    min-width: 65px;
+    min-height: 65px;
+}
+
+.view_container .title_section .left_part .option_btn .rating_section .rating_btn.rated{
+    background: linear-gradient(#FF6740, #ff40b8);
+}
+
+.view_container .title_section .left_part .option_btn .rating_section .form_rating{
+    display: none;
+    position: absolute;
+    z-index: 1;
+    background-color: #666666;
+    transform: translate(-50px, 65px);
+    margin-top: 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.view_container .title_section .left_part .option_btn .rating_section .form_rating form{
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+}
+
+.view_container .title_section .left_part .option_btn .rating_section .form_rating form button{
+    padding: 5px 15px;
+    display: flex;
+    font-size: 20px;
+    font-weight: 500;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.view_container .title_section .left_part .option_btn .rating_section .form_rating form button:hover {
+    background-color: #4e4e4e;
+}
+

@@ -106,6 +106,7 @@ namespace MangaASP.Controllers
             }
             var userId = _userManager.GetUserId(User);
             var isInFollowList = _db.FavoriteList.Any(f => f.UserId == userId && f.StoryId == id);
+			var rating = _db.Rating.Where(r => r.UserId == userId && r.StoryId == id).Select(r => r.Score).FirstOrDefault();
 			var favorite = new FavoriteList
             {
                 StoryId = id,
@@ -116,6 +117,7 @@ namespace MangaASP.Controllers
                 story = story,
                 favorite = favorite,
                 isInFavoriteList = isInFollowList,
+				rating = rating,
                 chapters = story.Chapters.OrderBy(c => c.Id).ToList(),
                 ListComment = story.Comments,
                 ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList()
@@ -154,7 +156,52 @@ namespace MangaASP.Controllers
 			return Json(new { success = false, message = "Failed to Remove Story from Library!" });
 		}
 
-        [Authorize(Roles = "Super ADMIN, ADMIN")]
+		[HttpPost]
+		public IActionResult RateStory(string userId, int storyId, int rating_point)
+		{
+			if(!string.IsNullOrEmpty(userId) && storyId > 0 && rating_point > 0)
+			{
+				Rating obj = new Rating()
+				{
+					UserId = userId,
+					StoryId = storyId,
+					Score = rating_point
+				};
+				_db.Add(obj);
+				_db.SaveChanges();
+				return Json(new { success = true });
+			}
+			return Json(new { success = false, userid = userId, storyId = storyId, rating_point = rating_point });
+		}
+
+		[HttpPost]
+		public IActionResult EditRateStory(string userId, int storyId, int rating_point)
+		{
+			if (!string.IsNullOrEmpty(userId) && storyId > 0 && rating_point > 0)
+			{
+				Rating obj = _db.Rating.FirstOrDefault(r => r.UserId == userId && r.StoryId == storyId);
+				obj.Score = rating_point;
+				_db.Rating.Update(obj);
+				_db.SaveChanges();
+				return Json(new { success = true });
+			}
+			return Json(new { success = false, userid = userId, storyId = storyId, rating_point = rating_point });
+		}
+
+		[HttpPost]
+		public IActionResult DeleteRateStory(string userId, int storyId)
+		{
+			if (!string.IsNullOrEmpty(userId) && storyId > 0)
+			{
+				Rating obj = _db.Rating.FirstOrDefault(r => r.UserId == userId && r.StoryId == storyId);
+				_db.Remove(obj);
+				_db.SaveChanges();
+				return Json(new { success = true });
+			}
+			return Json(new { success = false, userid = userId, storyId = storyId});
+		}
+
+		[Authorize(Roles = "Super ADMIN, ADMIN")]
 		//==============================================Page CreateStory==============================================
 		[HttpGet]
 		public IActionResult CreateStory()

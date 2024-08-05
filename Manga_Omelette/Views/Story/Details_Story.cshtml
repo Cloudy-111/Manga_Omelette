@@ -12,15 +12,14 @@
 
 <div class="background_section">
 	<img id="move_element" class="start_position" src="@Model.story.CoverImage" alt="@Model.story.CoverImage" />
-	<div class="overlay_background"></div>
+	
 	<div id="paralleilogram_top" class="start_pos_top"></div>
 	<div id="paralleilogram_bottom" class="start_pos_bot"></div>
+	<div class="black_panel"></div>
 </div>
 <div class="view_container">
-	@* <div id="paralleilogram_top" class="start_pos_top"></div>
-	<div id="paralleilogram_bottom" class="start_pos_bot"></div> *@
 	<div id="message"></div>
-
+	<div class="overlay_background"></div>
 	<div class="title_section">
 		<div class="right_part">
 			<img src="@Model.story.CoverImage" alt="@Model.story.CoverImage" />
@@ -64,6 +63,34 @@
 							<button class="btn_in_form" type="submit">Add to Library</button>
 						</form>
 					</div>
+					<div class="rating_section">
+						@if(Model.rating == 0)
+						{
+							<a class="rating_btn"><i class="bi bi-star"></i></a>
+						} else
+						{
+							<a class="rating_btn rated"><i class="bi bi-star"></i></a>
+						}
+
+						<div class="form_rating">
+							<form id="form_rating" method="post">
+								<button type="submit" name="rating" value="10">(10) Masterpiece</button>
+								<button type="submit" name="rating" value="9">(9) Excellent</button>
+								<button type="submit" name="rating" value="8">(8) Very Good</button>
+								<button type="submit" name="rating" value="7">(7) Good</button>
+								<button type="submit" name="rating" value="6">(6) Fair</button>
+								<button type="submit" name="rating" value="5">(5) Average</button>
+								<button type="submit" name="rating" value="4">(4) Mediocre</button>
+								<button type="submit" name="rating" value="3">(3) Poor</button>
+								<button type="submit" name="rating" value="2">(2) Awful</button>
+								<button type="submit" name="rating" value="1">(1) Terrible</button>
+								@if (Model.rating != 0)
+								{
+									<button type="submit" name="rating" value="-1">Remove Rate</button>
+								}
+							</form>
+						</div>
+					</div>
 				}
 				else
 				{
@@ -83,6 +110,12 @@
 		</div>
 	</div>
 	
+	<div id="hidden_attribute"
+		 data-user-id="@UserManager.GetUserId(User)"
+		 data-rating="@Model.rating"
+		 data-story-id="@Model.story.Id">
+	</div>
+
 	<div class="bottom_section">
 		<div class="comment_section">
 			<h3>Comment</h3>
@@ -138,6 +171,7 @@
 </div>
 
 @section Scripts{
+	<script type="module" src="~/js/ScriptDetails_Story/main_script.js"></script>
 	<script>
 		$(document).ready(function(){
 			var isInFavoriteList = '@Model.isInFavoriteList'.trim().toLowerCase();
@@ -194,6 +228,16 @@
 					$('#message').fadeOut();
 				}, 2000);
 			}
+
+			$('.rating_btn').on('click', function () {
+				$('.form_rating').toggle();
+			});
+
+			$(document).on('click', function (event) {
+				if (!$(event.target).closest('.rating_section').length) {
+					$('.form_rating').hide();
+				}
+			});
 
 		})
 		window.onload = function(){

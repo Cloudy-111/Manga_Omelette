@@ -167,6 +167,21 @@ app.UseEndpoints(endpoints =>
 		pattern: "/getUserName",
 		defaults: new { controller = "Comment", action = "GetUserName" }
 		);
+	endpoints.MapControllerRoute(
+		name: "Rate Story",
+		pattern: "/rate_story",
+		defaults: new { controller = "Story", action = "RateStory" }
+		);
+	endpoints.MapControllerRoute(
+		name: "Edit Rate Story",
+		pattern: "/edit_rate_story",
+		defaults: new { controller = "Story", action = "EditRateStory" }
+		);
+	endpoints.MapControllerRoute(
+		name: "Delete Rate Story",
+		pattern: "/delete_rate_story",
+		defaults: new { controller = "Story", action = "DeleteRateStory" }
+		);
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 
