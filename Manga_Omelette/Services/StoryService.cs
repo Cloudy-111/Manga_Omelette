@@ -41,6 +41,23 @@ namespace Manga_Omelette.Services
 		{
 			return _db.Story_Genre.Where(sg => sg.StoryId == storyId);
 		}
+		public void UpdateStoryRating(int storyId)
+		{
+			Story story = _db.Story.FirstOrDefault(s => s.Id == storyId);
+			if(story != null)
+			{
+				var rating = _db.Rating.Where(r => r.StoryId == storyId).ToList();
+				if (rating.Any())
+				{
+					story.Rate_Average = rating.Average(r => r.Score);
+				}
+				else
+				{
+					story.Rate_Average = 0;
+				}
+				_db.SaveChanges();
+			}
+		}
 
     }
 }

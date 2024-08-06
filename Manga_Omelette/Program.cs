@@ -179,7 +179,7 @@ app.UseEndpoints(endpoints =>
 		);
 	endpoints.MapControllerRoute(
 		name: "Delete Rate Story",
-		pattern: "/delete_rate_story",
+		pattern: "/api/delete_rate_story/{userId}/{storyId}",
 		defaults: new { controller = "Story", action = "DeleteRateStory" }
 		);
 });

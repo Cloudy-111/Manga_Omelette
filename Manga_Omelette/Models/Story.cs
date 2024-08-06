@@ -13,6 +13,7 @@ namespace MangaASP.Models
         public string Description { get; set; }
         [Required]
         public string CoverImage { get; set; }
+        public double Rate_Average { get; set; }
         public DateTime UpdateDate { get; set; }
         public ICollection<Author_Story> Author_Stories { get; set; }
         public ICollection<Chapter> Chapters { get; set; }

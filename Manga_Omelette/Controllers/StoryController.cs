@@ -112,16 +112,16 @@ namespace MangaASP.Controllers
                 StoryId = id,
                 UserId = userId
 			};
-            var ModelInDetails_Story = new DetailsStoryViewModel()
-            {
-                story = story,
-                favorite = favorite,
-                isInFavoriteList = isInFollowList,
+			var ModelInDetails_Story = new DetailsStoryViewModel()
+			{
+				story = story,
+				favorite = favorite,
+				isInFavoriteList = isInFollowList,
 				rating = rating,
-                chapters = story.Chapters.OrderBy(c => c.Id).ToList(),
-                ListComment = story.Comments,
-                ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList()
-            };
+				chapters = story.Chapters.OrderBy(c => c.Id).ToList(),
+				ListComment = story.Comments,
+				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
+			};
             ViewBag.TitlePage = story.Title;
             //ViewBag.Favorite = favorite;
             return View(ModelInDetails_Story);
@@ -169,6 +169,7 @@ namespace MangaASP.Controllers
 				};
 				_db.Add(obj);
 				_db.SaveChanges();
+				_storyService.UpdateStoryRating(storyId);
 				return Json(new { success = true });
 			}
 			return Json(new { success = false, userid = userId, storyId = storyId, rating_point = rating_point });
@@ -183,12 +184,13 @@ namespace MangaASP.Controllers
 				obj.Score = rating_point;
 				_db.Rating.Update(obj);
 				_db.SaveChanges();
+				_storyService.UpdateStoryRating(storyId);
 				return Json(new { success = true });
 			}
 			return Json(new { success = false, userid = userId, storyId = storyId, rating_point = rating_point });
 		}
 
-		[HttpPost]
+		[HttpDelete]
 		public IActionResult DeleteRateStory(string userId, int storyId)
 		{
 			if (!string.IsNullOrEmpty(userId) && storyId > 0)
@@ -196,6 +198,7 @@ namespace MangaASP.Controllers
 				Rating obj = _db.Rating.FirstOrDefault(r => r.UserId == userId && r.StoryId == storyId);
 				_db.Remove(obj);
 				_db.SaveChanges();
+				_storyService.UpdateStoryRating(storyId);
 				return Json(new { success = true });
 			}
 			return Json(new { success = false, userid = userId, storyId = storyId});

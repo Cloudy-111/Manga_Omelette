@@ -69,7 +69,7 @@
 							<a class="rating_btn"><i class="bi bi-star"></i></a>
 						} else
 						{
-							<a class="rating_btn rated"><i class="bi bi-star"></i></a>
+							<a class="rating_btn rated"><i class="bi bi-star"></i> @Model.rating</a>
 						}
 
 						<div class="form_rating">
@@ -86,7 +86,7 @@
 								<button type="submit" name="rating" value="1">(1) Terrible</button>
 								@if (Model.rating != 0)
 								{
-									<button type="submit" name="rating" value="-1">Remove Rate</button>
+									<button type="button" id="remove_rate">Remove Rate</button>
 								}
 							</form>
 						</div>
@@ -106,6 +106,15 @@
 				{
 					<p>No chapters available.</p>
 				}
+			</div>
+			<div class="flex flex-row gap-2 statistical">
+				<div class="average_score">
+					<i class="bi bi-star"></i> @Model.story.Rate_Average.ToString("#.##")
+				</div>
+				<div class="amount_love"></div>
+				<div class="amount_comment">
+					<i class="bi bi-chat-left"></i> @Model.ListComment.Count()
+				</div>
 			</div>
 		</div>
 	</div>
@@ -155,7 +164,7 @@
 			</div>
 		</div>
 		<div class="list_chapter_section">
-			<h3>List Chapter</h3>
+			<h3>List @Model.chapters.Count() Chapter</h3>
 			<div class="list_chapter">
 				@foreach (var obj in Model.chapters)
 				{
