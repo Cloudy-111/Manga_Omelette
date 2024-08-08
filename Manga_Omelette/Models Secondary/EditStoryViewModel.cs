@@ -10,5 +10,7 @@ namespace Manga_Omelette.Models_Secondary
         public List<Genre> AllGenre { get; set; }
 		public string GenreIds { get; set; }
         public IEnumerable<Chapter> Chapters { get; set; }
+        public List<AuthorWithRoles> ListAuthor { get; set; }
+		public List<Author> AllAuthor { get; set; }
 	}
 }

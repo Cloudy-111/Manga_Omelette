@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Create New Story";
     Layout = "_SuperADMINLayout";
-    <link rel="stylesheet" href="~/css/AdminCSS/EditStory.css" />
+                    <link rel="stylesheet" href="~/css/AdminCSS/EditStory.css" />
 }
 
 <div class="view_container">
@@ -23,6 +23,18 @@
                 <input asp-for="story.Title" class="form-control" />
                 <span asp-validation-for="story.Title" class="text-danger"></span>
             </div>
+            <div class="author_story">
+                <div class="list_author"></div>
+                <div class="select_author">
+                    <label for="select_author">Select Author:</label>
+                    <select class="form-control" id="select_author" asp-items="@(new SelectList(Model.AllAuthor, "Id", "Name"))"></select>
+                </div>
+                <div class="list_artist"></div>
+                <div class="select_artist">
+                    <label for="select_artist">Select Artist:</label>
+                    <select class="form-control" id="select_artist" asp-items="@(new SelectList(Model.AllAuthor, "Id", "Name"))"></select>
+                </div>
+            </div>
             <div class="list_tag_genres"></div>
             <div class="select_genres">
                 <label for="select_list">Select Genres:</label>
@@ -36,11 +48,16 @@
             <input class="submit_btn" type="submit" value="Create">
         </div>
         <input type="hidden" asp-for="GenreIds" name="ListGenreIds" id="ListGenreIds" />
+        <input type="hidden" name="ListAuthorIds" id="ListAuthorIds" />
+        <input type="hidden" name="ListNewAuthor" id="ListNewAuthor" />
+        <input type="hidden" name="ListArtistIds" id="ListArtistIds" />
+        <input type="hidden" name="ListNewArtist" id="ListNewArtist" />
     </form>
 </div>
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
+    <script type="module" src="~/js/ScriptCreateStory/main_script.js"></script>
     <script>
         $(document).ready(function () {
             //Script to Preview Image Upload
@@ -55,42 +72,6 @@
                 }
             })
 
-            var list_tag_genres = $('.list_tag_genres');
-            $('#select_list').change(function () {
-                var selectedOption = $(this).find('option:selected');
-                var genreId = selectedOption.val();
-                var genreName = selectedOption.text().replace(/\s+/g, '-');
-                if (genreName && $('#' + genreName).length === 0) {
-                    var genre_item = $('<div></div>');
-                    genre_item.attr({
-                        id: genreId,
-                        'data-id': genreId,
-                        'data-name': genreName
-                    }).addClass('genre_item');
-
-                    var genre_name = $('<div></div>');
-                    genre_name.addClass('genre_name').text(genreName);
-
-                    var genre_delete_btn = $('<i></i>');
-                    genre_delete_btn.addClass("bi bi-x-circle-fill");
-
-                    genre_item.append(genre_name);
-                    genre_item.append(genre_delete_btn);
-
-                    list_tag_genres.append(genre_item);
-                }
-            })
-
-            $('.list_tag_genres').on('click', 'i.bi-x-circle-fill', function () {
-                $(this).closest('.genre_item').remove();
-            })
-
-            $('#select_list').select2({
-                placeholder: "Select Genres",
-                allowClear: true,
-                multiple: false
-            })
-
             function GenreIdsInput() {
                 var genreIds = [];
                 $('.list_tag_genres .genre_item').each(function () {
@@ -98,14 +79,50 @@
                 });
                 $('#ListGenreIds').val(genreIds.join(','));
             }
+            
+            function AuthorIdsInput() {
+                var authorIds = [];
+                var newAuthor = [];
+                $('.list_author .author_item').each(function () {
+                    if ($(this).data('id') === $(this).data('name')) {
+                        newAuthor.push($(this).data('id'));
+                    } else {
+                        authorIds.push($(this).data('id'));
+                    }
+                })
+                console.log(authorIds);
+                $('#ListAuthorIds').val(authorIds.join(','));
+                $('#ListNewAuthor').val(newAuthor.join(','));
+            }
+
+            function ArtistIdsInput() {
+                var authorIds = [];
+                var newAuthor = [];
+                $('.list_artist .artist_item').each(function () {
+                    if ($(this).data('id') === $(this).data('name')) {
+                        newAuthor.push($(this).data('id'));
+                    } else {
+                        authorIds.push($(this).data('id'));
+                    }
+                })
+                $('#ListArtistIds').val(authorIds.join(','));
+                $('#ListNewArtist').val(newAuthor.join(','));
+            }
 
             $(document).on('submit', '#formCreate', function (e) {
                 //e.preventDefault();
                 GenreIdsInput();
-                if ($('#ListGenreIds').val() === '') {
+                AuthorIdsInput();
+                ArtistIdsInput();
+                var length_genre = $('.list_tag_genres .genre_item').length;
+                var length_author = $('.list_author .author_item').length;
+                var length_artist = $('.list_artist .artist_item').length;
+
+                if (length_genre === 0 || length_author === 0 || length_artist === 0) {
                     e.preventDefault();
-                    alert("Please select at least one genre!");
+                    alert("Please fill all field!");
                 }
+                
             })
         })
     </script>

@@ -13,5 +13,7 @@ namespace MangaASP.Models
         [ForeignKey("Story")]
         public int StoryId { get; set; }
         public Story Story { get; set; }
-    }
+        public bool isArtist { get; set; }
+		public bool isAuthor { get; set; }
+	}
 }

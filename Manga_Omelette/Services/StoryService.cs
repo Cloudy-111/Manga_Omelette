@@ -1,6 +1,8 @@
 ﻿using Manga_Omelette.Data;
 using MangaASP.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace Manga_Omelette.Services
 {
@@ -18,6 +20,8 @@ namespace Manga_Omelette.Services
 				.Include(s => s.Comments)
 				.Include(s => s.Story_Genres)
 				.ThenInclude(sg => sg.Genre)
+				.Include(s => s.Author_Stories)
+				.ThenInclude(aus => aus.Author)
 				.FirstOrDefault(story => story.Id == id);
 			return result;
 		}
@@ -58,6 +62,70 @@ namespace Manga_Omelette.Services
 				_db.SaveChanges();
 			}
 		}
+		public void AddAuthorStory(string listAuthorIds, string listArtistIds, int storyId)
+		{
+            var selectAuthorIds = new HashSet<int>(listAuthorIds.Split(',').Select(id => int.Parse(id)));
+			var selectArtistIds = new HashSet<int>(listArtistIds.Split(',').Select(id => int.Parse(id)));
+            
+			var allIds = selectAuthorIds.Union(selectArtistIds).ToList();
+			
+			var newAuthorStories = new List<Author_Story>();
+            foreach (var authorId in allIds)
+            {
+				bool isInAuthor = selectAuthorIds.Contains(authorId);
+				bool isInArtist = selectArtistIds.Contains(authorId);
 
+                var newAuthor_Story = new Author_Story()
+                {
+                    AuthorId = authorId,
+                    StoryId = storyId,
+                    isArtist = isInArtist,
+                    isAuthor = isInAuthor,
+                };
+                newAuthorStories.Add(newAuthor_Story);
+            }
+            _db.Author_Story.AddRange(newAuthorStories);
+        }
+
+		public async Task<List<Author>> CreateAuthor(List<string>listNewAuthor)
+		{
+			var authors = new List<Author>();
+			foreach(var name in listNewAuthor)
+			{
+				Author obj = new Author() { Name = name };
+				authors.Add(obj);
+			}
+			_db.Author.AddRange(authors);
+            await _db.SaveChangesAsync();
+
+            var authorIds = authors.Select(a => a.Id).ToList();
+
+            return authors;
+		}
+		public async Task CreateAuthorStory(string listNewAuthor, string listNewArtist, int storyId)
+		{
+			var selectAuthor = new HashSet<string>(listNewAuthor.Split(',').ToList());
+			var selectArtist = new HashSet<string>(listNewArtist.Split(',').ToList());
+
+			var allNewNames = selectAuthor.Union(selectArtist).ToList();
+
+			var newAuthors = await CreateAuthor(allNewNames);
+            var newAuthorStories = new List<Author_Story>();
+            foreach (var author in newAuthors)
+            {
+                bool isInAuthor = selectAuthor.Contains(author.Name);
+                bool isInArtist = selectArtist.Contains(author.Name);
+
+                var newAuthor_Story = new Author_Story()
+                {
+                    AuthorId = author.Id,
+                    StoryId = storyId,
+                    isArtist = isInArtist,
+                    isAuthor = isInAuthor,
+                };
+                newAuthorStories.Add(newAuthor_Story);
+            }
+            _db.Author_Story.AddRange(newAuthorStories);
+        }
     }
 }

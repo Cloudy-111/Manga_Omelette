@@ -215,6 +215,7 @@ namespace MangaASP.Controllers
 				imageFile = null,
 				GenreIds = string.Empty,
 				AllGenre = _db.Genre.ToList(),
+				AllAuthor = _db.Author.ToList(),
 			};
 			return View(model);
 		}
@@ -222,7 +223,7 @@ namespace MangaASP.Controllers
 		[Authorize(Roles = "Super ADMIN, ADMIN")]
 		//==============================================Post Create Story==============================================
 		[HttpPost]
-		public IActionResult CreateStory(CreateStoryViewModel model)
+		public async Task<IActionResult> CreateStory(CreateStoryViewModel model)
 		{
 			if (model.imageFile == null)
 			{
@@ -242,6 +243,19 @@ namespace MangaASP.Controllers
 				model.story.UpdateDate = DateTime.Now;
 				_db.Add(model.story);
 				_db.SaveChanges();
+
+				var listAuthorIds = Request.Form["ListAuthorIds"].ToString();
+				var listNewAuthor = Request.Form["ListNewAuthor"].ToString();
+
+				var listArtistIds = Request.Form["ListArtistIds"].ToString();
+				var listNewArtist = Request.Form["ListNewArtist"].ToString();
+
+				if (listAuthorIds.Length == 0 && listNewAuthor.Length == 0 && listArtistIds.Length == 0 && listNewArtist.Length == 0) { return NotFound(); }
+				else
+				{
+					if (listAuthorIds.Length != 0 || listArtistIds.Length != 0) { _storyService.AddAuthorStory(listAuthorIds, listArtistIds, model.story.Id); }
+                    if (listNewAuthor.Length != 0 || listNewArtist.Length != 0) { await _storyService.CreateAuthorStory(listNewAuthor, listNewArtist, model.story.Id); }
+                }
 
 				var listGenreIds = Request.Form["ListGenreIds"].ToString();
                 if (listGenreIds.Length == 0) return NotFound();
@@ -283,6 +297,13 @@ namespace MangaASP.Controllers
 				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
 				AllGenre = _db.Genre.ToList(),
 				Chapters = story.Chapters.OrderBy(c => c.Id).ToList(),
+				ListAuthor = story.Author_Stories.Select(aus => new AuthorWithRoles
+				{
+					Name = aus.Author.Name,
+					isArtist = aus.isArtist,
+					isAuthor = aus.isAuthor,
+				}).ToList(),
+				AllAuthor = _db.Author.ToList(),
 			};
 			return View(model);
 		}

@@ -24,7 +24,46 @@
 				<span asp-validation-for="story.Title" class="text-danger"></span>
 				<input type="hidden" asp-for="story.Id"/>
 			</div>
-			<div class="author_story"></div>
+			@* <div class="author_story">
+				<div class="list_author">
+					@for(int i = 0; i < Model.ListAuthor.Count; i++)
+					{
+						var item = Model.ListAuthor[i];
+						if (item.isAuthor)
+						{
+							<div class="author_item" data-author-id="@item.AuthorId">
+								<div class="author_name">
+									@item.Name
+								</div>
+								<i class="bi bi-x-circle-fill"></i>
+							</div>
+						}
+					}
+				</div>
+				<div class="select_author">
+					<label for="select_author">Select Author:</label>
+					<select class="form-control" id="select_author" asp-items="@(new SelectList(Model.AllAuthor, "Id", "Name"))"></select>
+				</div>
+				<div class="list_artist">
+					@for (int i = 0; i < Model.ListAuthor.Count; i++)
+					{
+						var item = Model.ListAuthor[i];
+						if (item.isArtist)
+						{
+							<div class="artist_item" data-author-id="@item.AuthorId">
+								<div class="artist_name">
+									@item.Name
+								</div>
+								<i class="bi bi-x-circle-fill"></i>
+							</div>
+						}
+					}
+				</div>
+				<div class="select_artist">
+					<label for="select_author">Select Artist:</label>
+					<select class="form-control" id="select_artist" asp-items="@(new SelectList(Model.AllAuthor, "Id", "Name"))"></select>
+				</div>
+			</div> *@
 			<div class="list_tag_genres">
 				@for (int i = 0; i < Model.ListGenre.Count; i++)
 				{
@@ -92,6 +131,18 @@
 
 			$('#select_list').select2({
 				placeholder: "Select Genres",
+				allowClear: true,
+				multiple: false
+			})
+
+			$('#select_author').select2({
+				placeholder: "Select Authors",
+				allowClear: true,
+				multiple: false
+			})
+
+			$('#select_artist').select2({
+				placeholder: "Select Artists",
 				allowClear: true,
 				multiple: false
 			})

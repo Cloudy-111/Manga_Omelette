@@ -8,5 +8,6 @@ namespace Manga_Omelette.Models_Secondary
         public IFormFile? imageFile { get; set; }
         public string GenreIds { get; set; }
 		public List<Genre> AllGenre { get; set; }
+        public List<Author> AllAuthor { get; set; }
 	}
 }

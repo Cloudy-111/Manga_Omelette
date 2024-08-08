@@ -54,6 +54,12 @@ namespace Manga_Omelette.Migrations
                     b.Property<int>("StoryId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("isArtist")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isAuthor")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
