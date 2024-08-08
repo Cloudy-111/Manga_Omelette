@@ -24,16 +24,16 @@
 				<span asp-validation-for="story.Title" class="text-danger"></span>
 				<input type="hidden" asp-for="story.Id"/>
 			</div>
-			@* <div class="author_story">
+			<div class="author_story">
 				<div class="list_author">
-					@for(int i = 0; i < Model.ListAuthor.Count; i++)
+					@for (int i = 0; i < Model.ListAuthor.Count; i++)
 					{
-						var item = Model.ListAuthor[i];
-						if (item.isAuthor)
+						if (Model.ListAuthor[i].isAuthor)
 						{
-							<div class="author_item" data-author-id="@item.AuthorId">
+							var authorId = Model.ListAuthor[i].Name.Replace(' ', '-');
+							<div class="author_item" id="@authorId" data-id="@Model.ListAuthor[i].AuthorId" data-name="@Model.ListAuthor[i].Name">
 								<div class="author_name">
-									@item.Name
+									@Model.ListAuthor[i].Name
 								</div>
 								<i class="bi bi-x-circle-fill"></i>
 							</div>
@@ -47,12 +47,12 @@
 				<div class="list_artist">
 					@for (int i = 0; i < Model.ListAuthor.Count; i++)
 					{
-						var item = Model.ListAuthor[i];
-						if (item.isArtist)
+						if (Model.ListAuthor[i].isArtist)
 						{
-							<div class="artist_item" data-author-id="@item.AuthorId">
+							var artistId = Model.ListAuthor[i].Name.Replace(' ', '-');
+							<div class="artist_item" id="@artistId" data-id="@Model.ListAuthor[i].AuthorId" data-name="@Model.ListAuthor[i].Name">
 								<div class="artist_name">
-									@item.Name
+									@Model.ListAuthor[i].Name
 								</div>
 								<i class="bi bi-x-circle-fill"></i>
 							</div>
@@ -60,10 +60,10 @@
 					}
 				</div>
 				<div class="select_artist">
-					<label for="select_author">Select Artist:</label>
+					<label for="select_artist">Select Artist:</label>
 					<select class="form-control" id="select_artist" asp-items="@(new SelectList(Model.AllAuthor, "Id", "Name"))"></select>
 				</div>
-			</div> *@
+			</div>
 			<div class="list_tag_genres">
 				@for (int i = 0; i < Model.ListGenre.Count; i++)
 				{
@@ -90,6 +90,10 @@
 				</div>
 			</div>
 			<input type="hidden" name="ListGenreIds" id="ListGenreIds" />
+			<input type="hidden" name="ListAuthorIds" id="ListAuthorIds" />
+			<input type="hidden" name="ListNewAuthor" id="ListNewAuthor" />
+			<input type="hidden" name="ListArtistIds" id="ListArtistIds" />
+			<input type="hidden" name="ListNewArtist" id="ListNewArtist" />
 			<input class="submit_btn" type="submit" value="Update">
 		</div>
 	</form>
@@ -114,6 +118,7 @@
 
 @section Scripts{
 	<partial name="_ValidationScriptsPartial" />
+	<script type="module" src="~/js/ScriptCreateStory/main_script.js"></script>
 	<script>
 		$(document).ready(function(){
 
@@ -129,54 +134,6 @@
 				}
 			})
 
-			$('#select_list').select2({
-				placeholder: "Select Genres",
-				allowClear: true,
-				multiple: false
-			})
-
-			$('#select_author').select2({
-				placeholder: "Select Authors",
-				allowClear: true,
-				multiple: false
-			})
-
-			$('#select_artist').select2({
-				placeholder: "Select Artists",
-				allowClear: true,
-				multiple: false
-			})
-
-			var list_tag_genres = $('.list_tag_genres');
-			$('#select_list').change(function () {
-				var selectedOption = $(this).find('option:selected');
-				var genreId = selectedOption.val();
-				var genreName = selectedOption.text().replace(/\s+/g, '-');
-				if (genreName && $(`#${genreName}`).length === 0) {
-					var genre_item = $('<div></div>');
-					genre_item.attr({
-						id: genreName,
-						'data-id': genreId,
-						'data-name': genreName
-					}).addClass('genre_item');
-
-					var genre_name = $('<div></div>');
-					genre_name.addClass('genre_name').text(genreName);
-
-					var genre_delete_btn = $('<i></i>');
-					genre_delete_btn.addClass("bi bi-x-circle-fill");
-
-					genre_item.append(genre_name);
-					genre_item.append(genre_delete_btn);
-
-					list_tag_genres.append(genre_item);
-				}
-			})
-
-			$('.list_tag_genres').on('click', 'i.bi-x-circle-fill', function () {
-				$(this).closest('.genre_item').remove();
-			})
-
 			function GenreIdsInput(){
 				var genreIds = [];
 				$('.list_tag_genres .genre_item').each(function () {
@@ -185,12 +142,47 @@
 				$('#ListGenreIds').val(genreIds.join(','));
 			}
 
+			function AuthorIdsInput() {
+				var authorIds = [];
+				var newAuthor = [];
+				$('.list_author .author_item').each(function () {
+					if ($(this).data('id') === $(this).data('name')) {
+						newAuthor.push($(this).data('id'));
+					} else {
+						authorIds.push($(this).data('id'));
+					}
+				})
+				console.log(authorIds);
+				$('#ListAuthorIds').val(authorIds.join(','));
+				$('#ListNewAuthor').val(newAuthor.join(','));
+			}
+
+			function ArtistIdsInput() {
+				var authorIds = [];
+				var newAuthor = [];
+				$('.list_artist .artist_item').each(function () {
+					if ($(this).data('id') === $(this).data('name')) {
+						newAuthor.push($(this).data('id'));
+					} else {
+						authorIds.push($(this).data('id'));
+					}
+				})
+				$('#ListArtistIds').val(authorIds.join(','));
+				$('#ListNewArtist').val(newAuthor.join(','));
+			}
+
 			$(document).on('submit', '#formInput', function (e) {
 				//e.preventDefault();
 				GenreIdsInput();
-				if ($('#ListGenreIds').val() === '') {
+				AuthorIdsInput();
+				ArtistIdsInput();
+				var length_genre = $('.list_tag_genres .genre_item').length;
+				var length_author = $('.list_author .author_item').length;
+				var length_artist = $('.list_artist .artist_item').length;
+
+				if (length_genre === 0 || length_author === 0 || length_artist === 0) {
 					e.preventDefault();
-					alert("Please select at least one genre!");
+					alert("Please fill all field!");
 				}
 			})
 

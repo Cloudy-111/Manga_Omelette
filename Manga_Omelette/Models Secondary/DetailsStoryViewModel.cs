@@ -1,4 +1,5 @@
-﻿using MangaASP.Models;
+﻿using Manga_Omelette.Models_Secondary;
+using MangaASP.Models;
 
 namespace Manga_Omelette.Models
 {
@@ -11,5 +12,6 @@ namespace Manga_Omelette.Models
 		public IEnumerable<Chapter> chapters { get; set; }
 		public IEnumerable<Comment> ListComment { get; set; }
 		public List<Genre> ListGenre { get; set; }
-	}
+        public List<AuthorWithRoles> ListAuthor { get; set; }
+    }
 }

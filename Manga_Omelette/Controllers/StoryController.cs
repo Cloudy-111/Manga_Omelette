@@ -121,7 +121,13 @@ namespace MangaASP.Controllers
 				chapters = story.Chapters.OrderBy(c => c.Id).ToList(),
 				ListComment = story.Comments,
 				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
-			};
+                ListAuthor = story.Author_Stories.Select(aus => new AuthorWithRoles
+                {
+                    Name = aus.Author.Name,
+                    isArtist = aus.isArtist,
+                    isAuthor = aus.isAuthor,
+                }).ToList(),
+            };
             ViewBag.TitlePage = story.Title;
             //ViewBag.Favorite = favorite;
             return View(ModelInDetails_Story);
@@ -259,19 +265,8 @@ namespace MangaASP.Controllers
 
 				var listGenreIds = Request.Form["ListGenreIds"].ToString();
                 if (listGenreIds.Length == 0) return NotFound();
-                var selectGenreIds = listGenreIds.Split(',').Select(id => int.Parse(id));
 
-				var newGenreStories = new List<Story_Genre>();
-				foreach (var genreId in selectGenreIds)
-				{
-					var newGenre_Story = new Story_Genre()
-					{
-						StoryId = model.story.Id,
-						GenreId = genreId,
-					};
-					newGenreStories.Add(newGenre_Story);
-				}
-				_db.Story_Genre.AddRange(newGenreStories);
+				_storyService.AddGenreStory(listGenreIds, model.story.Id);
 				_db.SaveChanges();
 
                 TempData["Success Create Story"] = "Create Story Success";
@@ -299,6 +294,7 @@ namespace MangaASP.Controllers
 				Chapters = story.Chapters.OrderBy(c => c.Id).ToList(),
 				ListAuthor = story.Author_Stories.Select(aus => new AuthorWithRoles
 				{
+					AuthorId = aus.AuthorId,
 					Name = aus.Author.Name,
 					isArtist = aus.isArtist,
 					isAuthor = aus.isAuthor,
@@ -311,7 +307,7 @@ namespace MangaASP.Controllers
 		[Authorize(Roles = "Super ADMIN")]
 		//==============================================Post Edit Story==============================================
 		[HttpPost]
-		public IActionResult EditStory(EditStoryViewModel model)
+		public async Task<IActionResult> EditStory(EditStoryViewModel model)
 		{
 			if (model == null)
 			{
@@ -325,31 +321,32 @@ namespace MangaASP.Controllers
 			}
 			string storyImage = story.CoverImage;
 
-			//Take String ListGenreIds From form post in View
-			var listGenreIds = Request.Form["ListGenreIds"].ToString();
-			if (listGenreIds.Length == 0) return NotFound();
+			var existAuthor = _storyService.ListAuthorExistInStory(model.story.Id);
+			_db.RemoveRange(existAuthor);
 
-			model.GenreIds = listGenreIds;
-			var selectGenreIds = model.GenreIds.Split(',').Select(id => int.Parse(id));
+			var listAuthorIds = Request.Form["ListAuthorIds"].ToString();
+			var listNewAuthor = Request.Form["ListNewAuthor"].ToString();
+
+			var listArtistIds = Request.Form["ListArtistIds"].ToString();
+			var listNewArtist = Request.Form["ListNewArtist"].ToString();
+
+			if (listAuthorIds.Length == 0 && listNewAuthor.Length == 0 && listArtistIds.Length == 0 && listNewArtist.Length == 0) { return NotFound(); }
+			else
+			{
+				if (listAuthorIds.Length != 0 || listArtistIds.Length != 0) { _storyService.AddAuthorStory(listAuthorIds, listArtistIds, model.story.Id); }
+				if (listNewAuthor.Length != 0 || listNewArtist.Length != 0) { await _storyService.CreateAuthorStory(listNewAuthor, listNewArtist, model.story.Id); }
+			}
 
 			//If genre exist in list of genre of a story, Remove
 			//then add them again
 			var existGenre = _storyService.ListGenreExistInStory(model.story.Id);
 			_db.RemoveRange(existGenre);
 
+			//Take String ListGenreIds From form post in View
+			var listGenreIds = Request.Form["ListGenreIds"].ToString();
+			if (listGenreIds.Length == 0) return NotFound();
 
-			var newGenreStories = new List<Story_Genre>();
-			foreach (var genreId in selectGenreIds)
-			{
-				var newGenre_Story = new Story_Genre()
-				{
-					StoryId = story.Id,
-					GenreId = genreId,
-				};
-				newGenreStories.Add(newGenre_Story);
-			}
-			//Add genre in list genre of a story
-			_db.Story_Genre.AddRange(newGenreStories);
+			_storyService.AddGenreStory(listGenreIds, model.story.Id);
 
 			//Check if Admin has uploaded image
 			Story storyAlter = _storyService.getSingleStory(model.story.Id);
@@ -388,7 +385,14 @@ namespace MangaASP.Controllers
 				ListGenre = story.Story_Genres.Select(sg => sg.Genre).ToList(),
 				AllGenre = _db.Genre.ToList(),
 				Chapters = story.Chapters.OrderBy(c => c.Id).ToList(),
-            };
+				ListAuthor = story.Author_Stories.Select(aus => new AuthorWithRoles
+				{
+					Name = aus.Author.Name,
+					isArtist = aus.isArtist,
+					isAuthor = aus.isAuthor,
+				}).ToList(),
+				AllAuthor = _db.Author.ToList(),
+			};
 			return View(modelView);
 		}
 	}

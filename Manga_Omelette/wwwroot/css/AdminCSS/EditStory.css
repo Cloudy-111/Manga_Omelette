@@ -112,24 +112,33 @@
 
 /*==============================LIST GENRE==============================*/
 
-.view_container .title_section .left_part .list_tag_genres {
+.view_container .title_section .left_part .list_tag_genres,
+.view_container .title_section .left_part .author_story .list_author,
+.view_container .title_section .left_part .author_story .list_artist
+{
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     gap: 5px;
 }
 
-.view_container .title_section .left_part .list_tag_genres .genre_item {
+.view_container .title_section .left_part .list_tag_genres .genre_item,
+.view_container .title_section .left_part .author_story .list_author .author_item,
+.view_container .title_section .left_part .author_story .list_artist .artist_item{
     display: flex;
 }
 
-.view_container .title_section .left_part .list_tag_genres .genre_item i {
+.view_container .title_section .left_part .list_tag_genres .genre_item i,
+.view_container .title_section .left_part .author_story .list_author .author_item i,
+.view_container .title_section .left_part .author_story .list_artist .artist_item i{
     cursor: pointer;
     transform: translate(-5px, -5px);
     color: red;
 }
 
-.view_container .title_section .left_part .list_tag_genres .genre_name {
+.view_container .title_section .left_part .list_tag_genres .genre_name,
+.view_container .title_section .left_part .author_story .list_author .author_name,
+.view_container .title_section .left_part .author_story .list_artist .artist_name{
     background-color: #2C2C2C;
     border-radius: 5px;
     padding: 5px;
@@ -137,7 +146,9 @@
     transition: all 0.3s ease;
 }
 
-.view_container .title_section .left_part .list_tag_genres .genre_name:hover {
+.view_container .title_section .left_part .list_tag_genres .genre_name:hover,
+.view_container .title_section .left_part .author_story .list_author .author_name:hover,
+.view_container .title_section .left_part .author_story .list_artist .artist_name:hover{
     background-color: #FF6740;
 }
 

@@ -45,6 +45,10 @@ namespace Manga_Omelette.Services
 		{
 			return _db.Story_Genre.Where(sg => sg.StoryId == storyId);
 		}
+		public IEnumerable<Author_Story> ListAuthorExistInStory(int storyId)
+		{
+			return _db.Author_Story.Where(aus => aus.StoryId == storyId);
+		}
 		public void UpdateStoryRating(int storyId)
 		{
 			Story story = _db.Story.FirstOrDefault(s => s.Id == storyId);
@@ -61,6 +65,22 @@ namespace Manga_Omelette.Services
 				}
 				_db.SaveChanges();
 			}
+		}
+		public void AddGenreStory(string listGenreIds, int storyId)
+		{
+			var selectGenreIds = listGenreIds.Split(',').Select(id => int.Parse(id));
+			var newGenreStories = new List<Story_Genre>();
+			foreach (var genreId in selectGenreIds)
+			{
+				var newGenre_Story = new Story_Genre()
+				{
+					StoryId = storyId,
+					GenreId = genreId,
+				};
+				newGenreStories.Add(newGenre_Story);
+			}
+			//Add genre in list genre of a story
+			_db.Story_Genre.AddRange(newGenreStories);
 		}
 		public void AddAuthorStory(string listAuthorIds, string listArtistIds, int storyId)
 		{

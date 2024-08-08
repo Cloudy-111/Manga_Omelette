@@ -28,7 +28,32 @@
 			<div class="title_story">
 				@Model.story.Title
 			</div>
-			<div class="author_story"></div>
+			<div class="author_story">
+				<div class="list_author">
+					Author: 
+					@foreach(var author in Model.ListAuthor)
+					{
+						if (author.isAuthor)
+						{
+							<div class="author_item">
+								@author.Name
+							</div>
+						}
+					}
+				</div>
+				<div class="list_artist">
+					Artist:
+					@foreach (var artist in Model.ListAuthor)
+					{
+						if (artist.isArtist)
+						{
+							<div class="artist_item">
+								@artist.Name
+							</div>
+						}
+					}
+				</div>
+			</div>
 			<div class="list_tag_genres">
 				@foreach(var genre in Model.ListGenre)
 				{
