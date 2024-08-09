@@ -182,6 +182,16 @@ app.UseEndpoints(endpoints =>
 		pattern: "/api/delete_rate_story/{userId}/{storyId}",
 		defaults: new { controller = "Story", action = "DeleteRateStory" }
 		);
+    endpoints.MapControllerRoute(
+        name: "Add Story To Follow List",
+        pattern: "/addToFollowList",
+        defaults: new { controller = "Story", action = "AddToFollowList" }
+        );
+    endpoints.MapControllerRoute(
+        name: "Remove Story From Follow List",
+        pattern: "/removeFromFollowList",
+        defaults: new { controller = "Story", action = "RemoveFromList" }
+        );
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

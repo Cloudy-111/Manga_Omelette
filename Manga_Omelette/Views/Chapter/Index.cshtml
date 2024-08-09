@@ -7,7 +7,7 @@
 @inject UserManager<User> UserManager
 
 @{
-							<link rel="stylesheet" href="/css/PageCSS/ChapterIndex.css" />
+	<link rel="stylesheet" href="/css/PageCSS/ChapterIndex.css" />
 }
 
 <div class="title_chapter">
@@ -119,33 +119,6 @@
 				$form.toggle();
 			})
 			
-			//Select  Chapter
-			$('#selectChapter').on('change', function () {
-				var selectValue = $(this).val();
-				if (selectValue) window.location.href = selectValue;
-			})
-
-			var currentIndex = @Model.Chapters.FindIndex(c => c.Id == Model.Chapter.Id) + 1;
-			var nextIndex = currentIndex < @Model.Chapters.Count ? currentIndex + 1 : currentIndex;
-			var prevIndex = currentIndex > 1 ? currentIndex - 1 : currentIndex;
-
-			if (@Model.Chapter.Id === @Model.Chapters.FirstOrDefault()?.Id) {
-				$('#prevChapter').prop('disabled', true);
-			} else { 
-				$('#prevChapter').prop('disabled', false);
-				$('#prevChapter').on('click', function () {
-					window.location.href = `/chapter/${prevIndex}`;
-				})
-			};
-
-			if (@Model.Chapter.Id === @Model.Chapters.LastOrDefault()?.Id) {
-				$('#nextChapter').prop('disabled', true);
-			} else {
-				$('#nextChapter').prop('disabled', false);
-				$('#nextChapter').on('click', function () {
-					window.location.href = `/chapter/${nextIndex}`;
-				})
-			};
 
 		})
 		

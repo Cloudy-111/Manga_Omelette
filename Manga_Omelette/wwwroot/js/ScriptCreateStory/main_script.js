@@ -1,6 +1,8 @@
 ﻿import { innitializeSelect2, innitializeSelectize, handleSelectionChange, handleItemRemoval } from '../scriptSelectDropdown.js'
-
+import { previewUpload } from '../scriptPreviewUpload.js'
 $(document).ready(function () {
+    previewUpload();
+
     innitializeSelect2('#select_list', 'Select Genres');
     innitializeSelectize('#select_author', 'Select Authors');
     innitializeSelectize('#select_artist', 'Select Artist');

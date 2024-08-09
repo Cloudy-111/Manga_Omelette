@@ -26,35 +26,5 @@
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        $(document).ready(function(){
-            $('#fileUpload').change(function (event) {
-                var files = this.files;
-                var listImage = $('#list_image_upload');
-                for (let i = 0; i < files.length; i++){
-                    var file = files[i];
-
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        var imgItem = $('<div>').attr({
-
-                        }).addClass("imageItem");
-                        var img = $('<img>').attr({
-                            'src': e.target.result,
-                            id: `image${i}`,
-                        });
-                        var remove_btn = $('<i>').addClass("bi bi-x-circle-fill");
-                        imgItem.append(img).append(remove_btn);
-
-                        listImage.append(imgItem);
-                    }
-                    reader.readAsDataURL(file);
-                }
-            })
-
-            $('.list_image_upload').on('click', 'i.bi-x-circle-fill', function () {
-                $(this).closest('.imageItem').remove();
-            })
-        })
-    </script>
+    <script type="module" src="~/js/ScriptCreateChapter/main_script.js"></script>
 }
