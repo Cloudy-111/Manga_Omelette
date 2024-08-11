@@ -192,6 +192,11 @@ app.UseEndpoints(endpoints =>
         pattern: "/removeFromFollowList",
         defaults: new { controller = "Story", action = "RemoveFromList" }
         );
+	endpoints.MapControllerRoute(
+		name: "Share Story",
+		pattern: "/share/{storyId}",
+		defaults: new { controller = "Story", action = "IncreaseShares" }
+		);
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

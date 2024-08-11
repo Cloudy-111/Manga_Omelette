@@ -25,6 +25,18 @@ namespace Manga_Omelette.Services
 				.FirstOrDefault(story => story.Id == id);
 			return result;
 		}
+		public Story getOnlyStory(int id)
+		{
+			Story result = _db.Story.FirstOrDefault(story => story.Id == id);
+			return result;
+		}
+		public Story getStoryForCalPoint(int storyId)
+		{
+			Story result = _db.Story
+				.Include(s => s.Comments)
+				.FirstOrDefault(s => s.Id == storyId);
+			return result;
+		}
 		public List<Genre> getGenreByStoryId(int id)
 		{
 			var story = _db.Story.Include(s => s.Story_Genres).ThenInclude(s => s.Genre).FirstOrDefault(s => s.Id == id);
@@ -147,5 +159,21 @@ namespace Manga_Omelette.Services
             }
             _db.Author_Story.AddRange(newAuthorStories);
         }
+		public void UpdatePopularPoint(int storyId)
+		{
+			Story story = getStoryForCalPoint(storyId);
+			var views = story.Views;
+			var shares = story.Shares;
+			var rating = story.Rate_Average;
+			var comments = story.Comments.Count();
+			var likes = _db.FavoriteList.Count(fl => fl.StoryId == storyId);
+			story.PopularPoint = 
+				(views > 0 ? Math.Log10(views) : 0) +
+				(shares > 0 ? Math.Log10(shares) : 0) +
+				(comments > 0 ? Math.Log10(comments) : 0) +
+				(likes > 0 ? Math.Log10(likes) : 0) + 
+				rating
+				;
+		}
     }
 }

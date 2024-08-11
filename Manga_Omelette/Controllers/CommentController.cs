@@ -12,12 +12,14 @@ namespace Manga_Omelette.Controllers
 	{
 		private readonly Manga_OmeletteDBContext _db;
 		private readonly CommentService _commentService;
+		private readonly StoryService _storyService;
 		private readonly UserManager<User> _userManager;
-		public CommentController(Manga_OmeletteDBContext db, CommentService commentService, UserManager<User> userManager)
+		public CommentController(Manga_OmeletteDBContext db, CommentService commentService, StoryService storyService, UserManager<User> userManager)
 		{
 			_db = db;
 			_userManager = userManager;
 			_commentService = commentService;
+			_storyService = storyService;
 		}
 
 		public IActionResult Index()
@@ -32,6 +34,7 @@ namespace Manga_Omelette.Controllers
 			{
 				obj.CreateDate = DateTime.Now;
 				_db.Add(obj);
+				_storyService.UpdatePopularPoint(obj.StoryId);
 				_db.SaveChanges();
 				return Json(new {success = true, commentId = obj.Id});
 			}
@@ -54,6 +57,7 @@ namespace Manga_Omelette.Controllers
 				else
 				{
 					_db.Remove(obj);
+					_storyService.UpdatePopularPoint(obj.StoryId);
 					_db.SaveChanges();
 					return Json(new { success = true });
 				}

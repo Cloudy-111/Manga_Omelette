@@ -257,8 +257,14 @@ namespace Manga_Omelette.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("PopularPoint")
+                        .HasColumnType("float");
+
                     b.Property<double>("Rate_Average")
                         .HasColumnType("float");
+
+                    b.Property<int>("Shares")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -267,6 +273,9 @@ namespace Manga_Omelette.Migrations
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

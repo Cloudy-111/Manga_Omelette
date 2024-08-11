@@ -41,6 +41,26 @@ export function RemoveFollowList() {
 	});
 }
 
+export function IncreaseShare() {
+	$('.share_btn').on('click', function (e) {
+		var storyId = $('#hidden_attribute').data('story-id');
+		const link = window.location.href;
+		navigator.clipboard.writeText(link).catch(function (error) {
+			$('#message').html('<div class="alert alert-danger">Failed to Copy to Clipboard!</div>');
+		})
+		$.ajax({
+			url: `/share/${storyId}`,
+			type: 'post',
+			success: function (response) {
+				showMessage(response.message, response.success ? "alert-success" : "alert-danger");
+			},
+			error: function () {
+
+			}
+		})
+	})
+}
+
 function showMessage(message, alertType) {
 	$('#message').removeClass().addClass('alert ' + alertType).text(message).fadeIn();
 

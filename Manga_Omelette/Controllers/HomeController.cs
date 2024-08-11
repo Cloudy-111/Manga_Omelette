@@ -16,10 +16,9 @@ namespace Manga_Omelette.Controllers
             _logger = logger;
             _db = db;
         }
-        private IEnumerable<Story> GetPopularStories()
+        private IQueryable<Story> GetPopularStories()
         {
-            IEnumerable<Story> stories = _db.Story;
-            IEnumerable<Story> popular_stories = stories.Take(10);
+            var popular_stories = _db.Story.OrderByDescending(s => s.PopularPoint).ThenBy(s => s.Title).Take(10);
             return popular_stories;
         }
 

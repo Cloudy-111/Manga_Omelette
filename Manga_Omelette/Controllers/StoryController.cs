@@ -112,6 +112,9 @@ namespace MangaASP.Controllers
                 StoryId = id,
                 UserId = userId
 			};
+			story.Views += 1;
+			_storyService.UpdatePopularPoint(id);
+			_db.SaveChanges();
 			var ModelInDetails_Story = new DetailsStoryViewModel()
 			{
 				story = story,
@@ -139,7 +142,8 @@ namespace MangaASP.Controllers
 			if (obj != null)
             {
                 _db.FavoriteList.Add(obj);
-                _db.SaveChanges();
+				_storyService.UpdatePopularPoint(obj.StoryId);
+				_db.SaveChanges();
 				TempData["success_add"] = "Story Add to Library Successfully!";
 				return Json(new { success = true, message = "Story Added to Library Successfully!" });
 			}
@@ -154,7 +158,8 @@ namespace MangaASP.Controllers
             if(obj != null)
             {
                 _db.FavoriteList.Remove(obj);
-                _db.SaveChanges();
+				_storyService.UpdatePopularPoint(storyId);
+				_db.SaveChanges();
 				TempData["success_remove"] = "Story Remove From List Successfully!";
 				return Json(new { success = true, message = "Story Removed from Library Successfully!" });
 			}
@@ -174,6 +179,7 @@ namespace MangaASP.Controllers
 					Score = rating_point
 				};
 				_db.Add(obj);
+				_storyService.UpdatePopularPoint(storyId);
 				_db.SaveChanges();
 				_storyService.UpdateStoryRating(storyId);
 				return Json(new { success = true });
@@ -189,6 +195,7 @@ namespace MangaASP.Controllers
 				Rating obj = _db.Rating.FirstOrDefault(r => r.UserId == userId && r.StoryId == storyId);
 				obj.Score = rating_point;
 				_db.Rating.Update(obj);
+				_storyService.UpdatePopularPoint(storyId);
 				_db.SaveChanges();
 				_storyService.UpdateStoryRating(storyId);
 				return Json(new { success = true });
@@ -203,11 +210,22 @@ namespace MangaASP.Controllers
 			{
 				Rating obj = _db.Rating.FirstOrDefault(r => r.UserId == userId && r.StoryId == storyId);
 				_db.Remove(obj);
+				_storyService.UpdatePopularPoint(storyId);
 				_db.SaveChanges();
 				_storyService.UpdateStoryRating(storyId);
 				return Json(new { success = true });
 			}
 			return Json(new { success = false, userid = userId, storyId = storyId});
+		}
+
+		[HttpPost]
+		public IActionResult IncreaseShares(int storyId)
+		{
+			Story story = _storyService.getOnlyStory(storyId);
+			story.Shares += 1;
+			_storyService.UpdatePopularPoint(storyId);
+			_db.SaveChanges();
+			return Json(new { success = true, message = "Copied to clipboard!" });
 		}
 
 		[Authorize(Roles = "Super ADMIN, ADMIN")]
