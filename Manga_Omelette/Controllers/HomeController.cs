@@ -3,6 +3,7 @@ using Manga_Omelette.Models;
 using MangaASP.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace Manga_Omelette.Controllers
@@ -18,7 +19,14 @@ namespace Manga_Omelette.Controllers
         }
         private IQueryable<Story> GetPopularStories()
         {
-            var popular_stories = _db.Story.OrderByDescending(s => s.PopularPoint).ThenBy(s => s.Title).Take(10);
+            var popular_stories = _db.Story
+                .OrderByDescending(s => s.PopularPoint)
+                .ThenBy(s => s.Title)
+                .Include(s => s.Story_Genres)
+                .ThenInclude(sg => sg.Genre)
+                .Include(s => s.Author_Stories)
+                .ThenInclude(aus => aus.Author)
+                .Take(10);
             return popular_stories;
         }
 

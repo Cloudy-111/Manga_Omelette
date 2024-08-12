@@ -9,30 +9,59 @@
 
 @{
     ViewData["Title"] = "Home Page";
-    // <link rel="stylesheet" href="/css/PageCSS/HomePage.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/css/PageCSS/HomePage.css" />
 }
 
-<div class="slider_popular_stories">
-    <h1>Popular</h1>
-    <div class="list_popular_stories">
+<h1>Popular</h1>
+<div class="menu">
+    <div class="menu--wrapper">
         @foreach(var obj in Model)
         {
-            <div class="item active">
-                <div class="left_item_section">
-                    @* <img src="@obj.CoverImage"/> *@
-                </div>
-                <div class="right_item_section">
-                    <div class="item_title">
-                        @obj.Title
+            <div class="menu--item">
+                <figure>
+                    <img src="@obj.CoverImage" alt="image" draggable="false"/>
+                    <div class="bg_overlay"></div>
+                </figure>
+                <div class="menu--item--container">
+                    <a href="@Url.Action("Details_Story", "Story", new { id = obj.Id, titles = obj.Title })" draggable="false" class="left_item_section">
+                        <img src="@obj.CoverImage" alt="image" draggable="false" />
+                    </a>
+                    <div class="right_item_section">
+                        <div class="item_title">
+                            @obj.Title
+                        </div>
+                        <div class="list_tag_genres">
+                            @foreach (var genre in obj.Story_Genres.Select(sg => sg.Genre))
+                            {
+                                <div class="genre_name">
+                                    @genre.Name
+                                </div>
+                            }
+                        </div>
+                        <div class="item_description" style="word-wrap: break-word;">
+                            @obj.Description
+                        </div>
+                        <div class="list_author">
+                            @foreach (var author in obj.Author_Stories.Select(aus => aus.Author))
+                            {
+                                <div class="author_name">
+                                    @author.Name
+                                </div>
+                            }
+                        </div>
                     </div>
-                    <div class="item_description">
-                        @obj.Description
-                    </div>
                 </div>
-
-                <a href="/titles/@obj.Id/@obj.Title">READ</a>
-                @* <a asp-controller="Story" asp-action="Details_Story" asp-route-id="@obj.Id" asp-route-title="@obj.Title">READ</a> *@
             </div>
         }
     </div>
+    <div class="overlay_btn">
+        <i id="prevBtn" class="fa fa-angle-left" aria-hidden="true"></i>
+        <i id="nextBtn" class="fa fa-angle-right" aria-hidden="true"></i>
+    </div>
 </div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script type="module" src="~/js/ScriptHomePage/main_script.js"></script>
+}
