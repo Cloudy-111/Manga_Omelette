@@ -60,9 +60,14 @@ namespace MangaASP.Controllers
             return View(storyList);
         }
         [Authorize]
-        public IActionResult FollowList()
+        public IActionResult FollowList(int page = 1)
         {
-            return View();
+			int items_per_page = 10;
+			IQueryable<Story> storyList = _storyService.GetStoriesFollowEachPage(page, items_per_page, _userManager.GetUserId(User));
+            int totalStories = storyList.Count();
+            int totalPages = (int)Math.Ceiling((double)totalStories / items_per_page);
+
+            return View(storyList);
         }
         //[CustomRoute("latest-update")]
         public IActionResult Latest_Update(int page = 1)

@@ -1,1 +1,43 @@
-﻿<h1>FOLLOW PAGE</h1>
+﻿@using MangaASP.Models
+@using Manga_Omelette.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+
+@model IQueryable<Story>
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Follow";
+    // <link rel="stylesheet" href="/css/PageCSS/FollowPage.css" />
+}
+
+<h1>FOLLOW PAGE</h1>
+<div id="hidden_attributes" data-user-id="@UserManager.GetUserId(User)"></div>
+
+@foreach(var obj in Model)
+{
+    <a class="story_link" data-id="@obj.Id" href="/titles/@obj.Id/@obj.Title"><p>@obj.Title</p></a>
+}
+
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+            var userId = $('#hidden_attributes').data('user-id');
+            $('.story_link').on('click', function (e) {
+                e.preventDefault();
+                let storyId = $(this).data('id');
+                let storyUrl = $(this).attr('href');
+
+                $.ajax({
+                    url: `/${storyId}/${userId}`,
+                    type: 'post',
+                    success: function (response) {
+                        window.location.href = storyUrl;
+                    },
+                    error: function(err){
+
+                    }
+                })
+            })
+        })
+    </script>
+}

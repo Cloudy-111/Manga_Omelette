@@ -18,10 +18,11 @@ namespace Manga_Omelette.Controllers
         private readonly CommentService _commentService;
         private readonly StoryService _storyService;
         private readonly CloudinaryService _cloudinaryService;
+        private readonly FavoriteService _favoriteService;
         private readonly UserManager<User> _userManager;
 
         private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
-        public ChapterController(Manga_OmeletteDBContext db, ChapterService chapterService, CommentService commentService, StoryService storyService, CloudinaryService cloudinaryService, UserManager<User> userManager)
+        public ChapterController(Manga_OmeletteDBContext db, ChapterService chapterService, CommentService commentService, StoryService storyService, CloudinaryService cloudinaryService, FavoriteService favoriteService ,UserManager<User> userManager)
         {
             _db = db;
             _chapterService = chapterService;
@@ -29,6 +30,7 @@ namespace Manga_Omelette.Controllers
             _storyService = storyService;
             _cloudinaryService = cloudinaryService;
             _userManager = userManager;
+            _favoriteService = favoriteService;
         }
         public async Task<IActionResult> Index(int id)
         {
@@ -162,6 +164,7 @@ namespace Manga_Omelette.Controllers
             }
 
             _db.ImageInChapter.AddRange(listImageChapter);
+            _favoriteService.UpdateWhenHasNewChapter(model.story.Id);
             _db.SaveChanges();
 
             return RedirectToAction("ManageStory", "Administration");

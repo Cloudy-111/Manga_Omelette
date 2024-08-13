@@ -27,6 +27,7 @@ builder.Services.AddScoped<ChapterService>();
 builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<StoryService>();
 builder.Services.AddScoped<CloudinaryService>();
+builder.Services.AddScoped<FavoriteService>();
 
 var app = builder.Build();
 
@@ -54,7 +55,7 @@ app.UseEndpoints(endpoints =>
         defaults: new { controller = "Story", action = "SearchView"}
         );
     endpoints.MapControllerRoute(
-        name: "Advance Search View",
+        name: "Follow Page",
         pattern: "/follow",
         defaults: new { controller = "Story", action = "FollowList" }
         );
@@ -197,6 +198,11 @@ app.UseEndpoints(endpoints =>
 		pattern: "/share/{storyId}",
 		defaults: new { controller = "Story", action = "IncreaseShares" }
 		);
+    endpoints.MapControllerRoute(
+        name: "Remove Update Chapter",
+        pattern: "/{storyId}/{userId}",
+        defaults: new { controller = "Favorite", action = "RemoveUpdateNewChapter" }
+        );
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

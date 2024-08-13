@@ -14,5 +14,6 @@ namespace MangaASP.Models
         [ForeignKey("Story")]
         public int StoryId { get; set; }
         public Story Story { get; set; }
+        public bool NewUpdate { get; set; } = false;
     }
 }

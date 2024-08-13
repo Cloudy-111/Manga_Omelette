@@ -154,6 +154,9 @@ namespace Manga_Omelette.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("NewUpdate")
+                        .HasColumnType("bit");
+
                     b.Property<int>("StoryId")
                         .HasColumnType("int");
 

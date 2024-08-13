@@ -40,7 +40,7 @@ namespace Manga_Omelette.Services
 		public List<Genre> getGenreByStoryId(int id)
 		{
 			var story = _db.Story.Include(s => s.Story_Genres).ThenInclude(s => s.Genre).FirstOrDefault(s => s.Id == id);
-			if(story != null)
+			if (story != null)
 			{
 				return story.Story_Genres.Select(sg => sg.Genre).ToList();
 			}
@@ -52,7 +52,15 @@ namespace Manga_Omelette.Services
 				//.OrderBy(s => s.Title)
 				.Skip((page - 1) * items_per_page)
 				.Take(items_per_page);
-        }
+		}
+		public IQueryable<Story> GetStoriesFollowEachPage(int page, int items_per_page, string userId)
+		{
+			return _db.Story
+				.Include(s => s.FavoriteLists)
+				.Where(s => s.FavoriteLists.Any(f => f.UserId == userId))
+				.Skip((page - 1) * items_per_page)
+				.Take(items_per_page);
+		}
 		public IEnumerable<Story_Genre> ListGenreExistInStory(int storyId)
 		{
 			return _db.Story_Genre.Where(sg => sg.StoryId == storyId);
