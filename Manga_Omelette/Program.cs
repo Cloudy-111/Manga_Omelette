@@ -200,7 +200,7 @@ app.UseEndpoints(endpoints =>
 		);
     endpoints.MapControllerRoute(
         name: "Remove Update Chapter",
-        pattern: "/{storyId}/{userId}",
+        pattern: "/removeupdatenewchapter/{storyId}/{userId}",
         defaults: new { controller = "Favorite", action = "RemoveUpdateNewChapter" }
         );
 });

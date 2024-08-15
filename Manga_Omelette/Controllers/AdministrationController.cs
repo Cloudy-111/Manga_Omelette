@@ -1,6 +1,7 @@
 ﻿using CloudinaryDotNet.Actions;
 using Manga_Omelette.Areas.Identity.Data;
 using Manga_Omelette.Data;
+using Manga_Omelette.Models;
 using Manga_Omelette.Models_Secondary;
 using Manga_Omelette.Services;
 using MangaASP.Models;
@@ -196,11 +197,15 @@ namespace Manga_Omelette.Controllers
 		//==============================================Page Manage Notification==============================================
 		public IActionResult ManageNotification()
 		{
-			return View();
+			var ManageNotificationViewModel = new ManageNotificationViewModel()
+			{
+				types = _db.TypeNotis.ToList()
+			};
+			return View(ManageNotificationViewModel);
 		}
 
-		//==============================================Page Manage System==============================================
-		public IActionResult ManageSystem()
+        //==============================================Page Manage System==============================================
+        public IActionResult ManageSystem()
 		{
 			return View();
 		}
@@ -213,8 +218,8 @@ namespace Manga_Omelette.Controllers
 			return View();
 		}
 
-		//==============================================Post Create Role==============================================
-		[HttpPost]
+        //==============================================Post Create Role==============================================
+        [HttpPost]
 		public async Task<IActionResult> CreateRole(CreateRoleViewModel roleModel)
 		{
 			if(ModelState.IsValid)

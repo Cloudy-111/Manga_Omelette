@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Reflection.Emit;
+using Manga_Omelette.Models;
 
 namespace Manga_Omelette.Data;
 
@@ -66,4 +67,8 @@ public class Manga_OmeletteDBContext : IdentityDbContext<User>
 			.HasForeignKey(c => c.ParentCommentId)
 			.OnDelete(DeleteBehavior.Restrict);
 	}
+
+public DbSet<Manga_Omelette.Models.Notification> Notification { get; set; } = default!;
+
+public DbSet<Manga_Omelette.Models.TypeNotis> TypeNotis { get; set; } = default!;
 }

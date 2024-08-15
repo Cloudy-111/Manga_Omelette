@@ -39,5 +39,5 @@ namespace Manga_Omelette.Controllers
 			return Json(new { success = true });
 		}
 
-    }
+	}
 }

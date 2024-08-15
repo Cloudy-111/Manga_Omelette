@@ -28,7 +28,7 @@
                 let storyUrl = $(this).attr('href');
 
                 $.ajax({
-                    url: `/${storyId}/${userId}`,
+                    url: `/removeupdatenewchapter/${storyId}/${userId}`,
                     type: 'post',
                     success: function (response) {
                         window.location.href = storyUrl;

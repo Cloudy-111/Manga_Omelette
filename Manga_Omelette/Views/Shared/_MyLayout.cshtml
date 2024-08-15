@@ -118,7 +118,10 @@
                     <input id="searchHeader" placeholder="Search" />
                     <button class="searchBtn"><i class="bi bi-search"></i></button>
                 </div>
-                <button name="notiBtn"><i class="bi bi-bell"></i></button>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <button name="notiBtn"><i class="bi bi-bell"></i></button>
+                }
                 <button name="userBtn" id="userBtn">
                     @if (SignInManager.IsSignedIn(User))
                     {@*

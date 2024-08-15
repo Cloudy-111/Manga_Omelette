@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Manga_Omelette.Models.Notification>
+@{
+    //ViewBag.Title = ViewBag.RoleName;
+    Layout = "_SuperADMINLayout";
+    //<link rel="stylesheet" href="~/css/AdminCSS/UserInRole.css" />
+}
+
+<a class="btn btn-primary" asp-controller="Notification" asp-action="CreateNew" asp-route-typeId="">Create new Notification</a>
+@foreach (var noti in Model)
+{
+    <div class="user_row">
+        <p>@noti.Id</p>
+        <p>@noti.Title</p>
+        <p>@noti.Content</p>
+        @* <a asp-controller="Notification" asp-action="EditNotification" asp-route-notiId="@noti.Id">Access</a> *@
+    </div>
+}

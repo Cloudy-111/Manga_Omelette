@@ -1,4 +1,51 @@
-﻿@{
+﻿@model Manga_Omelette.Models_Secondary.ManageNotificationViewModel
+@{
     ViewBag.Title = "Manage Notification";
     Layout = "_SuperADMINLayout";
 }
+
+<h1>Manage Notification</h1>
+
+<div class="left_container">
+    <h2>All Roles</h2>
+    @if (Model.types.Any())
+    {
+        <a class="btn btn-primary" asp-controller="TypeNotis" asp-action="CreateTypeNoti">Add New Type</a>
+
+        foreach (var type in Model.types)
+        {
+            <div class="card mb-3">
+                <div class="card-header" style="color: black;">
+                    Role Id : @type.Id
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a asp-controller="TypeNotis" asp-action="NotificationInType" asp-route-typeId="@type.Id">@type.Name</a>
+                    </h5>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">Edit</a>
+                    <a href="#" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-header" style="color:black;">
+                No Types created yet
+            </div>
+            <div class="card-body">
+                <h5 class="card-title" style="color:black;">
+                    Use the button below to create a type
+                </h5>
+                <a class="btn btn-primary" style="width:auto"
+                   asp-controller="TypeNotis" asp-action="CreateTypeNoti">
+                    Create Type
+                </a>
+            </div>
+        </div>
+    }
+
+</div>
