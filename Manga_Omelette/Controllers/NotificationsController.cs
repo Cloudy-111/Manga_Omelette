@@ -7,22 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Manga_Omelette.Data;
 using Manga_Omelette.Models;
+using Manga_Omelette.Models_Secondary;
 
 namespace Manga_Omelette.Controllers
 {
     public class NotificationsController : Controller
     {
-        private readonly Manga_OmeletteDBContext _context;
+        private readonly Manga_OmeletteDBContext _db;
 
-        public NotificationsController(Manga_OmeletteDBContext context)
+        public NotificationsController(Manga_OmeletteDBContext db)
         {
-            _context = context;
+            _db = db;
         }
 
         // GET: Notifications
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Notification.ToListAsync());
+            return View(await _db.Notification.ToListAsync());
         }
 
         // GET: Notifications/Details/5
@@ -33,7 +34,7 @@ namespace Manga_Omelette.Controllers
                 return NotFound();
             }
 
-            var notification = await _context.Notification
+            var notification = await _db.Notification
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (notification == null)
             {
@@ -46,7 +47,12 @@ namespace Manga_Omelette.Controllers
         // GET: Notifications/Create
         public IActionResult Create()
         {
-            return View();
+            var CreateNotificationViewModel = new CreateNotificationViewModel
+            {
+                newNotification = new Notification(),
+                types = _db.TypeNotis.ToList(),
+            };
+            return View(CreateNotificationViewModel);
         }
 
         // POST: Notifications/Create
@@ -54,15 +60,23 @@ namespace Manga_Omelette.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Content,CreateDate,SenderId,ReceiverId")] Notification notification)
+        public async Task<IActionResult> Create([FromBody] CreateNotificationViewModel model)
         {
-            if (ModelState.IsValid)
+            if (model.newNotification != null)
             {
-                _context.Add(notification);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                model.newNotification.Id = Guid.NewGuid().ToString();
+                model.newNotification.CreateDate = DateTime.Now;
+                _db.Add(model.newNotification);
+                await _db.SaveChangesAsync();
+                return Json(new
+                {
+                    success = true,
+                    notification = model.newNotification,
+                    redirectUrl = Url.Action("ManageNotification", "Administration")
+                });
             }
-            return View(notification);
+
+            return View(model);
         }
 
         // GET: Notifications/Edit/5
@@ -73,7 +87,7 @@ namespace Manga_Omelette.Controllers
                 return NotFound();
             }
 
-            var notification = await _context.Notification.FindAsync(id);
+            var notification = await _db.Notification.FindAsync(id);
             if (notification == null)
             {
                 return NotFound();
@@ -97,8 +111,8 @@ namespace Manga_Omelette.Controllers
             {
                 try
                 {
-                    _context.Update(notification);
-                    await _context.SaveChangesAsync();
+                    _db.Update(notification);
+                    await _db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +138,7 @@ namespace Manga_Omelette.Controllers
                 return NotFound();
             }
 
-            var notification = await _context.Notification
+            var notification = await _db.Notification
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (notification == null)
             {
@@ -139,19 +153,19 @@ namespace Manga_Omelette.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var notification = await _context.Notification.FindAsync(id);
+            var notification = await _db.Notification.FindAsync(id);
             if (notification != null)
             {
-                _context.Notification.Remove(notification);
+                _db.Notification.Remove(notification);
             }
 
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool NotificationExists(string id)
         {
-            return _context.Notification.Any(e => e.Id == id);
+            return _db.Notification.Any(e => e.Id == id);
         }
     }
 }

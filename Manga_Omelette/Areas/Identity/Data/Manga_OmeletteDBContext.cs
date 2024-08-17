@@ -26,6 +26,9 @@ public class Manga_OmeletteDBContext : IdentityDbContext<User>
 
     public DbSet<Story> Story { get; set; }
     public DbSet<Story_Genre> Story_Genre { get; set; }
+    public DbSet<Notification> Notification { get; set; }
+    public DbSet<TypeNotis> TypeNotis { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -66,9 +69,8 @@ public class Manga_OmeletteDBContext : IdentityDbContext<User>
 			.WithMany(c => c.Replies)
 			.HasForeignKey(c => c.ParentCommentId)
 			.OnDelete(DeleteBehavior.Restrict);
+
+        //Cho phép ReceiverId có thể Null, mặc định là true, đổi trong SQL Server cũng không được
+        builder.Entity<Notification>().Property(n => n.ReceiverId).IsRequired(false);
 	}
-
-public DbSet<Manga_Omelette.Models.Notification> Notification { get; set; } = default!;
-
-public DbSet<Manga_Omelette.Models.TypeNotis> TypeNotis { get; set; } = default!;
 }

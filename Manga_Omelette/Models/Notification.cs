@@ -6,7 +6,7 @@ namespace Manga_Omelette.Models
     public class Notification
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]

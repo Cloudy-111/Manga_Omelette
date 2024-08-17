@@ -161,12 +161,15 @@ namespace Manga_Omelette.Controllers
 
         public IActionResult NotificationInType(string typeId)
         {
-            var type = _db.TypeNotis.Find(typeId);
+            var type = _db.TypeNotis.FirstOrDefault(t => t.Id == typeId);
             if(type == null)
             {
                 return NotFound(typeId);
             }
+            var notis = _db.Notification;
             var result = _db.Notification.Where(n => n.TypeId == typeId);
+            ViewBag.TypeId = typeId;
+            ViewBag.TypeName = type.Name;
             return View(result);
         }
     }

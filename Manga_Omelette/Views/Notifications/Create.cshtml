@@ -1,8 +1,12 @@
-﻿@model Manga_Omelette.Models.Notification
+﻿@using Manga_Omelette.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+@model Manga_Omelette.Models_Secondary.CreateNotificationViewModel
 
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_MyLayout.cshtml";
+    Layout = "~/Views/Shared/_SuperADMINLayout.cshtml";
 }
 
 <h1>Create</h1>
@@ -11,38 +15,25 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" id="form_create_noti">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+                <label asp-for="newNotification.Title" class="control-label"></label>
+                <input id="title" asp-for="newNotification.Title" class="form-control" />
+                <span asp-validation-for="newNotification.Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <label asp-for="newNotification.Content" class="control-label"></label>
+                <textarea id="content" asp-for="newNotification.Content" class="form-control"></textarea>
+                <span asp-validation-for="newNotification.Content" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
+                <label asp-for="newNotification.SenderId" class="control-label"></label>
+                <input id="senderId" readonly asp-for="newNotification.SenderId" class="form-control" value="@UserManager.GetUserId(User)" />
+                <span asp-validation-for="newNotification.SenderId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SenderId" class="control-label"></label>
-                <input asp-for="SenderId" class="form-control" />
-                <span asp-validation-for="SenderId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReceiverId" class="control-label"></label>
-                <input asp-for="ReceiverId" class="form-control" />
-                <span asp-validation-for="ReceiverId" class="text-danger"></span>
-            </div>
+            <select class="form-control" id="select_type" asp-for="newNotification.TypeId" asp-items="@(new SelectList(Model.types, "Id", "Name"))"></select>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -50,7 +41,55 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#select_type').selectize({
+                create: false,
+                placeholder: "Choose A Type",
+            });
+
+            const connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+
+            $('#form_create_noti').on('submit', function (e) {
+                e.preventDefault();
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                var notificationData = {
+                    newNotification: {
+                        Title: $('#title').val(),
+                        Content: $('#content').val(),
+                        SenderId: $('#senderId').val(),
+                        TypeId: $('#select_type').val()
+                    },
+                    types: []
+                }
+
+                $.ajax({
+                    url: '/create_notification',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(notificationData),
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    type: 'post',
+                    success: function(response){
+                        if(response.success){
+                            connection.invoke("SendNotification", response.notification);
+                            window.location.href = response.redirectUrl;
+                        }
+                    },
+                    error: function (err) {
+
+                    }
+                })
+            });
+
+            connection.start().catch(function (err) {
+                return console.error(err.toString());
+            });
+        })
+    </script>
+}
 

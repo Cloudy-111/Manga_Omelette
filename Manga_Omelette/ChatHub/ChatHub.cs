@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Manga_Omelette.Models;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Manga_Omelette.ChatHub
 {
@@ -15,6 +16,10 @@ namespace Manga_Omelette.ChatHub
 		public async Task SendReplyComment(string user, string content, string userId, int commentId, int parentId)
 		{
 			await Clients.All.SendAsync("ReceiveReplyComment", user, content, userId, commentId, parentId);
+		}
+		public async Task SendNotification(Notification notification)
+		{
+			await Clients.All.SendAsync("ReceiveNotification", notification);
 		}
 	}
 }

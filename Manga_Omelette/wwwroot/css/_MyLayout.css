@@ -470,3 +470,14 @@ label #openSidebar:hover{
     background: linear-gradient(#ed4c5e, #fecda5);
     border-radius: 10px;
 }
+
+/*==============================NOTIFICATIION SECTION==============================*/
+.notification_section{
+    width: 500px;
+    height: 100px;
+    background-color:aqua;
+    position: absolute;
+    z-index: 1000;
+    right: 2%;
+    bottom: 2%;
+}

@@ -203,6 +203,11 @@ app.UseEndpoints(endpoints =>
         pattern: "/removeupdatenewchapter/{storyId}/{userId}",
         defaults: new { controller = "Favorite", action = "RemoveUpdateNewChapter" }
         );
+    endpoints.MapControllerRoute(
+        name: "Create Notification",
+        pattern: "/create_notification",
+        defaults: new { controller = "Notifications", action = "Create" }
+        );
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 
