@@ -167,5 +167,16 @@ namespace Manga_Omelette.Controllers
         {
             return _db.Notification.Any(e => e.Id == id);
         }
+
+        [HttpGet]
+        public IActionResult GetNotificationType(string notificationId)
+        {
+            var notification = _db.Notification.Include(n => n.TypeNotis).FirstOrDefault(n => n.Id == notiId);
+            if (notification == null || notification.TypeNotis == null)
+            {
+                return NotFound();
+            }
+            return Json(new { type = notification.TypeNotis.Name });
+        }
     }
 }
