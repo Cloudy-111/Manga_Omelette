@@ -9,16 +9,19 @@ using Manga_Omelette.Data;
 using Manga_Omelette.Models;
 using Manga_Omelette.Models_Secondary;
 using Microsoft.AspNetCore.Authorization;
+using Manga_Omelette.Services;
 
 namespace Manga_Omelette.Controllers
 {
     public class TypeNotisController : Controller
     {
         private readonly Manga_OmeletteDBContext _db;
+        private readonly NotificationService _notificationService;
 
-        public TypeNotisController(Manga_OmeletteDBContext db)
+        public TypeNotisController(Manga_OmeletteDBContext db, NotificationService notificationService)
         {
             _db = db;
+            _notificationService = notificationService;
         }
 
         // GET: TypeNotis
@@ -159,17 +162,23 @@ namespace Manga_Omelette.Controllers
             return _db.TypeNotis.Any(e => e.Id == id);
         }
 
-        public IActionResult NotificationInType(string typeId)
+        public IActionResult NotificationInType(string typeId, int page = 1)
         {
             var type = _db.TypeNotis.FirstOrDefault(t => t.Id == typeId);
             if(type == null)
             {
                 return NotFound(typeId);
             }
-            var notis = _db.Notification;
-            var result = _db.Notification.Where(n => n.TypeId == typeId);
+            int items_per_page = 10;
+            var result = _notificationService.GetNotificationForEachPage(page, items_per_page, typeId);
+
+            int totalNotification = _db.Notification.Where(n => n.TypeId == typeId).Count();
+            int totalPages = (int)Math.Ceiling((double)totalNotification / items_per_page);
+            
             ViewBag.TypeId = typeId;
             ViewBag.TypeName = type.Name;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Page = page;
             return View(result);
         }
     }

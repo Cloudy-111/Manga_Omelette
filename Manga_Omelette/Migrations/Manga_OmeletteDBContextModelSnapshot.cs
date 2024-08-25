@@ -390,7 +390,6 @@ namespace Manga_Omelette.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ReceiverId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SenderId")
@@ -410,6 +409,34 @@ namespace Manga_Omelette.Migrations
                     b.HasIndex("TypeId");
 
                     b.ToTable("Notification");
+                });
+
+            modelBuilder.Entity("Manga_Omelette.Models.Notification_User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("NotificationId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("isRead")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notification_User");
                 });
 
             modelBuilder.Entity("Manga_Omelette.Models.TypeNotis", b =>
@@ -700,6 +727,25 @@ namespace Manga_Omelette.Migrations
                         .IsRequired();
 
                     b.Navigation("TypeNotis");
+                });
+
+            modelBuilder.Entity("Manga_Omelette.Models.Notification_User", b =>
+                {
+                    b.HasOne("Manga_Omelette.Models.Notification", "Notification")
+                        .WithMany()
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Manga_Omelette.Areas.Identity.Data.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Notification");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

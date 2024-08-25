@@ -3,10 +3,12 @@ using Manga_Omelette.Data;
 using Manga_Omelette.Models;
 using Manga_Omelette.Models_Secondary;
 using Manga_Omelette.Services;
+using Manga_Omelette.SignalR;
 using MangaASP.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Manga_Omelette.Controllers
@@ -19,10 +21,22 @@ namespace Manga_Omelette.Controllers
         private readonly StoryService _storyService;
         private readonly CloudinaryService _cloudinaryService;
         private readonly FavoriteService _favoriteService;
+        private readonly NotificationService _notificationService;
         private readonly UserManager<User> _userManager;
 
+        private readonly IHubContext<ChatHub> _hubContext;
+
         private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
-        public ChapterController(Manga_OmeletteDBContext db, ChapterService chapterService, CommentService commentService, StoryService storyService, CloudinaryService cloudinaryService, FavoriteService favoriteService ,UserManager<User> userManager)
+        public ChapterController(
+            Manga_OmeletteDBContext db, 
+            ChapterService chapterService, 
+            CommentService commentService, 
+            StoryService storyService, 
+            CloudinaryService cloudinaryService, 
+            FavoriteService favoriteService, 
+            NotificationService notificationService,
+            IHubContext<ChatHub> hubContext,
+            UserManager<User> userManager)
         {
             _db = db;
             _chapterService = chapterService;
@@ -31,6 +45,8 @@ namespace Manga_Omelette.Controllers
             _cloudinaryService = cloudinaryService;
             _userManager = userManager;
             _favoriteService = favoriteService;
+            _notificationService = notificationService;
+            _hubContext = hubContext;
         }
         public async Task<IActionResult> Index(int id)
         {
@@ -120,7 +136,7 @@ namespace Manga_Omelette.Controllers
 
         [Authorize(Roles = "Super ADMIN, ADMIN")]
         [HttpPost]
-        public IActionResult CreateChapter(CreateChapterViewModel model)
+        public async Task<IActionResult> CreateChapter(CreateChapterViewModel model)
         {
             if(model == null)
             {
@@ -165,9 +181,38 @@ namespace Manga_Omelette.Controllers
 
             _db.ImageInChapter.AddRange(listImageChapter);
             _favoriteService.UpdateWhenHasNewChapter(model.story.Id);
+
+            //Create Notification for all user Who follow
+            var titleStory = _storyService.getOnlyStory(model.chapter.StoryId).Title;
+            var newNotification = new Notification()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Title = $"{titleStory}: New Chapter Has Been Upload",
+                Content = "from ADMIN",
+                CreateDate = DateTime.Now,
+                TypeId = _notificationService.getTypeId("ADMIN"),
+                SenderId = _userManager.GetUserId(User),
+            };
+            _db.Add(newNotification);
+
             _db.SaveChanges();
 
-            return RedirectToAction("ManageStory", "Administration");
+            var notificationViewModel = new NotificationViewModel
+            {
+                Id = newNotification.Id,
+                Title = newNotification.Title,
+                Content = newNotification.Content,
+                CreateDate = newNotification.CreateDate,
+                TypeId = newNotification.TypeId,
+                SenderId = newNotification.SenderId
+            };
+
+            return Json(new
+            {
+                success = true,
+                notification = notificationViewModel,
+                redirectUrl = Url.Action("ManageStory", "Administration")
+            });
         }
 
         [Authorize(Roles = "Super ADMIN, ADMIN")]

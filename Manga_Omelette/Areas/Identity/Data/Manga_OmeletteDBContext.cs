@@ -73,4 +73,6 @@ public class Manga_OmeletteDBContext : IdentityDbContext<User>
         //Cho phép ReceiverId có thể Null, mặc định là true, đổi trong SQL Server cũng không được
         builder.Entity<Notification>().Property(n => n.ReceiverId).IsRequired(false);
 	}
+
+public DbSet<Manga_Omelette.Models.Notification_User> Notification_User { get; set; } = default!;
 }

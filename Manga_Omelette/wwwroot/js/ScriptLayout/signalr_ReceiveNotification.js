@@ -18,7 +18,7 @@ export function ReceiveNotification() {
 
         //Ajax to call NotificationType
         let getNotificationTypePromise = $.ajax({
-            url: '/Notifications/GetNotificationType',
+            url: `/getTypeNotification/${notificationId}`,
             type: 'get',
             data: { notificationId: notificationId }
         });

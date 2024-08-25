@@ -9,7 +9,8 @@
 <h2>Story: @Model.story.Title</h2>
 <h1>Create New Chapter</h1>
 <div class="view_container">
-    <form method="post" enctype="multipart/form-data" class="form_container">
+    <form method="post" enctype="multipart/form-data" class="form_container" id="form_create_chapter">
+        @Html.AntiForgeryToken()
         <div class="input_title">
             <label asp-for="chapter.Title" class=""></label>
             <input asp-for="chapter.Title" class="form-control"/>
@@ -22,6 +23,10 @@
         </div>
         <input type="submit" class="btn btn-primary"/>
     </form>
+    <div id="hidden_attribute"
+        data-story-id="@Model.story.Id"
+        data-user-id="">
+    </div>
 </div>
 
 @section Scripts{

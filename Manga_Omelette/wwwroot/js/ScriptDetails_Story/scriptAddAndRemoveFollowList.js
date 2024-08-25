@@ -1,12 +1,22 @@
-﻿export function AddToFollowList() {
+﻿import { connection } from '../ScriptChapterIndex/Comment_SignalR/hubConnection.js';
+
+export function AddToFollowList() {
 	$("#FormAddToFollowList").submit(function (event) {
 		event.preventDefault();
+
+		var stotyId = $('#hidden_attribute').data('story-id');
+
 		$.ajax({
 			url: '/addToFollowList',
 			type: 'POST',
 			data: $(this).serialize(),
 			success: function (response) {
 				showMessage(response.message, response.success ? "alert-success" : "alert-danger");
+
+				connection.invoke("AddToGroupFollow", stotyId).catch(function (err) {
+					console.log(err.toString());
+				});
+
 				if (response.success) {
 					$('#FormAddToFollowListContainer').hide();
 					$('#FormRemoveFromListContainer').show();
@@ -29,6 +39,11 @@ export function RemoveFollowList() {
 			data: $(this).serialize(),
 			success: function (response) {
 				showMessage(response.message, response.success ? "alert-success" : "alert-danger");
+
+				connection.invoke("RemoveFromGroupFollow", $('#hidden_attribute').data('story-id')).catch(function (err) {
+					return console.error(err.toString());
+				});
+
 				if (response.success) {
 					$('#FormRemoveFromListContainer').hide();
 					$('#FormAddToFollowListContainer').show();

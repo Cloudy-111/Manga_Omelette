@@ -61,7 +61,14 @@ namespace Manga_Omelette.Services
 				.Skip((page - 1) * items_per_page)
 				.Take(items_per_page);
 		}
-		public IEnumerable<Story_Genre> ListGenreExistInStory(int storyId)
+		public IQueryable<Story> GetStoriesFollow(string userId)
+		{
+			return _db.Story
+				.Include(s => s.FavoriteLists)
+				.Where(s => s.FavoriteLists.Any(f => f.UserId == userId));
+        }
+
+        public IEnumerable<Story_Genre> ListGenreExistInStory(int storyId)
 		{
 			return _db.Story_Genre.Where(sg => sg.StoryId == storyId);
 		}

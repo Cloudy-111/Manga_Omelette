@@ -4,7 +4,9 @@
     var currentPathPage = window.location.href;
     var pagination_item = document.getElementById(`pagination_${page_num}`);
     var page = "page=" + page_num.toString();
-    var pageName = document.getElementById("page_name").innerText;
+
+    var pageName = window.location.pathname.slice(1);
+
     if (currentPathPage.includes(page) || page_num === 1) {
         pagination_item.classList.add("active");
     } else {

@@ -6,7 +6,7 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using DotNetEnv;
 using Manga_Omelette.Services;
-using Manga_Omelette.ChatHub;
+using Manga_Omelette.SignalR;
 using Manga_Omelette.Models_Secondary;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +28,9 @@ builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<StoryService>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<FavoriteService>();
+builder.Services.AddScoped<NotificationService>();
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -207,6 +210,16 @@ app.UseEndpoints(endpoints =>
         name: "Create Notification",
         pattern: "/create_notification",
         defaults: new { controller = "Notifications", action = "Create" }
+        );
+    endpoints.MapControllerRoute(
+        name: "List Notification of Type",
+        pattern: "/notifications/{typeId}",
+        defaults: new { controller = "TypeNotis", action = "NotificationInType" }
+        );
+    endpoints.MapControllerRoute(
+        name: "Get Type Of Notification",
+        pattern: "/getTypeNotification/{notificationId}",
+        defaults: new { controller = "Notifications", action = "GetNotificationType" }
         );
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations

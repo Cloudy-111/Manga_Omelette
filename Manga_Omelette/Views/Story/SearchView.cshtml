@@ -2,7 +2,6 @@
 @model IEnumerable<Story>
 @{
     ViewData["Title"] = "Advance Search";
-    ViewBag.PageName = "titles";
     <link rel="stylesheet" href="/css/PageCSS/SearchView.css"/>
 }
 
@@ -22,7 +21,6 @@
 </div>
 <p id="page_number" style="display: none;">@ViewBag.Page</p>
 <p id="total_page" style="display: none;">@ViewBag.TotalPages</p>
-<p id="page_name" style="display: none;">@ViewBag.PageName</p>
 <div class="pagination_container">
     <ul class="pagination_list">
         <li class="pagination_item" id="previousBtn">

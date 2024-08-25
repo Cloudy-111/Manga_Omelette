@@ -171,8 +171,8 @@ namespace Manga_Omelette.Controllers
         [HttpGet]
         public IActionResult GetNotificationType(string notificationId)
         {
-            var notification = _db.Notification.Include(n => n.TypeNotis).FirstOrDefault(n => n.Id == notiId);
-            if (notification == null || notification.TypeNotis == null)
+            var notification = _db.Notification.Include(n => n.TypeNotis).FirstOrDefault(n => n.Id == notificationId);
+            if (notification == null)
             {
                 return NotFound();
             }
