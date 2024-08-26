@@ -8,22 +8,58 @@ using Microsoft.EntityFrameworkCore;
 using Manga_Omelette.Data;
 using Manga_Omelette.Models;
 using Manga_Omelette.Models_Secondary;
+using Manga_Omelette.Services;
+using Microsoft.AspNetCore.Identity;
+using Manga_Omelette.Areas.Identity.Data;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Manga_Omelette.Controllers
 {
     public class NotificationsController : Controller
     {
         private readonly Manga_OmeletteDBContext _db;
+        private readonly NotificationService _notificationService;
 
-        public NotificationsController(Manga_OmeletteDBContext db)
+        private readonly UserManager<User> _userManager;
+
+        public NotificationsController(Manga_OmeletteDBContext db, NotificationService notificationService, UserManager<User> userManager)
         {
             _db = db;
+            _notificationService = notificationService;
+            _userManager = userManager;
         }
 
         // GET: Notifications
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string tab, int pageSystem = 1, int pageAdmin = 1)
         {
-            return View(await _db.Notification.ToListAsync());
+            var items_per_page = 10;
+            var SystemNotification = _notificationService.GetSystemNotification("System", pageSystem, items_per_page);
+
+            int totalSystemNotifications = _db.Notification.Where(n => n.TypeNotis.Name.ToLower() == "system").Count();
+            int totalPageSystemNotification = (int) Math.Ceiling((double)totalSystemNotifications / items_per_page);
+
+            var userId = _userManager.GetUserId(User);
+            var AdminNotification = new List<Notification>();
+            int totalPageAdminNotification = 0;
+            if (userId != null)
+            {
+                AdminNotification = _notificationService.GetAdminNotification(userId, pageAdmin, items_per_page).ToList();
+
+                int totalAdminNotifications = _db.Notification.Where(n => n.Notification_User.Any(n_u => n_u.UserId == userId)).Count();
+                totalPageAdminNotification = (int)Math.Ceiling((double)totalAdminNotifications / items_per_page);
+            }
+
+            ViewBag.TotalPageSystemNotification = totalPageSystemNotification;
+            ViewBag.TotalPageAdminNotification = totalPageAdminNotification;
+
+            var ListNotificationViewModel = new ListNotificationsViewModel
+            {
+                SystemNotifications = SystemNotification,
+                AdminNotificatons = AdminNotification,
+                tabActive = tab ?? "system"
+            };
+            return View(ListNotificationViewModel);
         }
 
         // GET: Notifications/Details/5

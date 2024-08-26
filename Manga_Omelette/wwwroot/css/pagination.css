@@ -1,0 +1,55 @@
+﻿.pagination_container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.pagination_container ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pagination_container ul li {
+    background-color: transparent;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.pagination_container ul li:hover {
+    background-color: #808080;
+}
+
+.pagination_container ul li.active {
+    background-color: #ff6a00;
+}
+
+#previousBtn, #nextBtn {
+    background-color: white;
+    a{
+        color: #ff6a00;
+    }
+
+}
+
+#previousBtn:hover, #nextBtn:hover {
+    background-color: #808080;
+}
+
+.pagination_container ul li a {
+    color: #fff;
+    font-size: 25px;
+    text-decoration: none;
+    padding: 10px;
+}
+
+.pagination_item.disabled a {
+    pointer-events: none;
+    color: #ccc; /* Màu sắc của liên kết bị vô hiệu hóa */
+}

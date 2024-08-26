@@ -1,0 +1,133 @@
+﻿@model Manga_Omelette.Models_Secondary.ListNotificationsViewModel
+
+@if(Model.tabActive == "system")
+{
+    <table class="table_notification table table-hover table-bordered">
+        <thead>
+            <tr class="text-light ">
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Create Date</th>
+                <th>Sender Id</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SystemNotifications)
+            {
+                <tr class="user_row text-light">
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.Content
+                    </td>
+                    <td>
+                        @item.CreateDate
+                    </td>
+                    <td>
+                        @item.SenderId
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="pagination_container">
+        <ul class="pagination_list">
+            <li class="pagination_item" id="previousBtn">
+                <a class="pagination_link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @if (ViewBag.TotalPageSystemNotification > 1)
+            {
+                @for (int i = 1; i <= ViewBag.TotalPageSystemNotification; i++)
+                {
+                    <li class="pagination_item" id="pagination_@i">
+                        @*Tương đương với set asp-controller, asp-action, asp-route-page*@
+                        <a class="pagination_link" data-page="@i" data-type="system">@i</a>
+                    </li>
+                }
+            }
+            <li class="pagination_item" id="nextBtn">
+                <a class="pagination_link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+}
+else if(Model.tabActive == "admin")
+{
+    <table class="table_notification table table-hover table-bordered">
+        <thead>
+            <tr class="text-light ">
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Create Date</th>
+                <th>Sender Id</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.AdminNotificatons)
+            {
+                <tr class="user_row text-light">
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.Content
+                    </td>
+                    <td>
+                        @item.CreateDate
+                    </td>
+                    <td>
+                        @item.SenderId
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="pagination_container">
+        <ul class="pagination_list">
+            <li class="pagination_item" id="previousBtn">
+                <a class="pagination_link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @if (ViewBag.TotalPageAdminNotification > 1)
+            {
+                @for (int i = 1; i <= ViewBag.TotalPageAdminNotification; i++)
+                {
+                    <li class="pagination_item" id="pagination_@i">
+                        @*Tương đương với set asp-controller, asp-action, asp-route-page*@
+                        <a class="pagination_link">@i</a>
+                    </li>
+                }
+            }
+            <li class="pagination_item" id="nextBtn">
+                <a class="pagination_link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+}

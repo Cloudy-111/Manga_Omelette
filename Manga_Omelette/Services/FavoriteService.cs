@@ -1,4 +1,5 @@
-﻿using Manga_Omelette.Data;
+﻿using Manga_Omelette.Areas.Identity.Data;
+using Manga_Omelette.Data;
 using MangaASP.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,10 @@ namespace Manga_Omelette.Services
         public void RemoveUpdateNewChapter(int storyId, string userId)
         {
             _db.Database.ExecuteSqlRaw("UPDATE FavoriteList SET NewUpdate = 0 Where StoryId = {0} AND UserId = {1}", storyId, userId);
+        }
+        public IQueryable<User> GetUserFollowOfEachStory(int storyId)
+        {
+            return _db.Users.Where(u => u.FavoriteLists.Any(fl => fl.StoryId == storyId));
         }
     }
 }

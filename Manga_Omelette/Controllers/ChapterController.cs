@@ -195,6 +195,18 @@ namespace Manga_Omelette.Controllers
             };
             _db.Add(newNotification);
 
+            var followsOfStory = _favoriteService.GetUserFollowOfEachStory(model.story.Id);
+            var NotificationsForFollow = new List<Notification_User>();
+            foreach(User user in followsOfStory)
+            {
+                NotificationsForFollow.Add(new Notification_User
+                {
+                    NotificationId = newNotification.Id,
+                    UserId = user.Id,
+                });
+            }
+            _db.Notification_User.AddRange(NotificationsForFollow);
+
             _db.SaveChanges();
 
             var notificationViewModel = new NotificationViewModel

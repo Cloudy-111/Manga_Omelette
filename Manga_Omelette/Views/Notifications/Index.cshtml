@@ -1,60 +1,87 @@
-﻿@model IEnumerable<Manga_Omelette.Models.Notification>
+﻿@model Manga_Omelette.Models_Secondary.ListNotificationsViewModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_MyLayout.cshtml";
+    <link rel="stylesheet" href="/css/pagination.css" />
 }
 
-<h1>Index</h1>
+<div class="text-center">
+    <h1 class="display-4">NOTIFICATION PAGE</h1>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SenderId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReceiverId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SenderId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReceiverId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+<div class="type_notification">
+    <a data-tab="system" class="tab_link">System</a>
+    <a data-tab="admin" class="tab_link">Admin</a>
+</div>
+
+
+<div class="notification_container">
+    <partial name="ListNotificationPartial.cshtml"/>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var isInProgress = false;
+            var loadedTab = {};
+
+            $('.type_notification').on('click', '.tab_link', function (e) {
+                e.preventDefault();
+                var tab = $(this).data('tab');
+                
+                if(loadedTab[tab]){
+                    $('.notification_container').html(loadedTab[tab]);
+                    return;
+                }
+
+                if (isInProgress) return;
+                isInProgress = true;
+
+                $.ajax({
+                    url: '@Url.Action("Index", "Notifications")',
+                    type: 'GET',
+                    data: { tab: tab},
+                    success: function(response){
+
+                        var $responseHtml = $(response);
+                        var tableHtml = $responseHtml.find('.notification_container').html();
+
+                        $('.notification_container').html(tableHtml);
+                        loadedTab[tab] = tableHtml;
+                    },
+                    error: function(){
+                        alert('Failed to load notifications.');
+                    },
+                    complete: function () {
+                        isInProgress = false;
+                    }
+                })
+            })
+
+            $('.notification_container').on('click', '.pagination_link', function (e) {
+                e.preventDefault();
+
+                var page = $(this).data('page');
+                var type = $(this).data('type');
+
+                var data = type === "system" ? { pageSystem: page } : { pageAdmin: page };
+
+                $.ajax({
+                    url: '@Url.Action("Index", "Notifications")',
+                    type: 'GET',
+                    data: data,
+                    success: function(response){
+                        var $responseHtml = $(response);
+                        var tableHtml = $responseHtml.find('.notification_container').html();
+
+                        $('.notification_container').html(tableHtml);
+                    },
+                    error: function () {
+                        alert('Failed to load notifications.');
+                    }
+                })
+            })
+        })
+    </script>
 }
-    </tbody>
-</table>

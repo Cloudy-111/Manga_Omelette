@@ -18,5 +18,6 @@ namespace Manga_Omelette.Models
         [ForeignKey("TypeNotis")]
         public string TypeId { get; set; }
         public TypeNotis TypeNotis { get; set; }
+        public ICollection<Notification_User> Notification_User { get; set;}
     }
 }
