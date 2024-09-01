@@ -1,0 +1,68 @@
+﻿.table_notification tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table_notification tbody tr:nth-child(even) {
+    background-color: #3d3d3d;
+}
+
+.table-dark {
+    background-color: #191A1C;
+}
+.table_notification {
+    padding: 10px;
+    gap: 5px;
+    table-layout: fixed;
+}
+.table_notification tbody td{
+    text-overflow: ellipsis;
+    margin-top: 10px;
+}
+
+.type_notification {
+    display: flex;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #2f2f2f;
+    width: fit-content;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.type_notification::before {
+    content: "";
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    width: 45%;
+    height: 80%;
+    background-color: #3d3d3d;
+    transition: transform 0.3s ease;
+    border-radius: 8px;
+    z-index: 0;
+    transform: translateX(0);
+}
+
+.type_notification.active-admin::before {
+    transform: translateX(100%);
+}
+
+.type_notification .tab_link {
+    padding: 10px;
+    border-radius: 5px;
+    color: #7a7a7a;
+    position: relative;
+    z-index: 1;
+}
+
+.type_notification .tab_link:hover {
+    color: #b0b0b0;
+}
+
+.type_notification .tab_link.active {
+    color: white;
+}

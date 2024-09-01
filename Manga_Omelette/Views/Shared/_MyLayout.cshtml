@@ -41,35 +41,32 @@
                     Home
                 </a>
             </div>
-            <div id="Notifications" class="title-sidebar">
-                <a asp-controller="Notifications" asp-action="Index">
-                    <i class="bi bi-bell"></i>
-                    Notification
-                </a>
-            </div>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div id="Notifications" class="title-sidebar">
+                    <a asp-controller="Notifications" asp-action="Index">
+                        <i class="bi bi-bell"></i>
+                        Notification
+                    </a>
+                </div>
+            }
             <div id="titles" class="title-sidebar">
                 <a asp-controller="Story" asp-action="SearchView">
                     <i class="bi bi-search"></i>
                     Advance Search
                 </a>
             </div>
-            <div id="follow" class="title-sidebar">
-                @if (SignInManager.IsSignedIn(User))
-                {
+            
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div id="follow" class="title-sidebar">
                     <a asp-controller="Story" asp-action="FollowList">
                         <i class="bi bi-heart"></i>
                         Follow
                     </a>
-                }
-                else
-                {
-                    <a asp-area="Identity" asp-page="/Account/Login">
-                        <i class="bi bi-heart"></i>
-                        Follow
-                    </a>
-                }
-                
-            </div>
+                </div>
+            }            
+            
             <div id="section-titles">
                 <div class="title-sidebar">
                     <i class="bi bi-book"></i>
@@ -84,9 +81,12 @@
                 <div class="title-sidebar secondary" id="top-like">
                     <a asp-controller="Story" asp-action="Top_Like">Top Like</a>
                 </div>
-                <div class="title-sidebar secondary" id="for-you">
-                    <a asp-controller="Story" asp-action="For_You">For you</a>
-                </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="title-sidebar secondary" id="for-you">
+                        <a asp-controller="Story" asp-action="For_You">For you</a>
+                    </div>
+                }
                 <div class="title-sidebar secondary" id="random">
                     <a asp-controller="Story" asp-action="Random">Random</a>
                 </div>
@@ -120,7 +120,7 @@
                 </div>
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <button name="notiBtn"><i class="bi bi-bell"></i></button>
+                    <button name="notiBtn" id="notiBtn"><i class="bi bi-bell"></i></button>
                 }
                 <button name="userBtn" id="userBtn">
                     @if (SignInManager.IsSignedIn(User))
@@ -137,6 +137,9 @@
         </div>
         <div class="profile_container" id="profile_container">
             <partial name="_LoginPartial.cshtml" />
+        </div>
+        <div class="notification_popup_container" id="notification_popup_container">
+            <partial name="_Notification_popup.cshtml" />
         </div>
     </div>
     <div class="main_container">

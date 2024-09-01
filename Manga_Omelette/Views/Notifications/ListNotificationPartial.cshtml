@@ -2,12 +2,10 @@
 
 @if(Model.tabActive == "system")
 {
-    <table class="table_notification table table-hover table-bordered">
+    <table class="table_notification table table-hover">
         <thead>
             <tr class="text-light ">
-                <th>Id</th>
                 <th>Title</th>
-                <th>Content</th>
                 <th>Create Date</th>
                 <th>Sender Id</th>
                 <th>Action</th>
@@ -18,13 +16,7 @@
             {
                 <tr class="user_row text-light">
                     <td>
-                        @item.Id
-                    </td>
-                    <td>
                         @item.Title
-                    </td>
-                    <td>
-                        @item.Content
                     </td>
                     <td>
                         @item.CreateDate
@@ -68,12 +60,10 @@
 }
 else if(Model.tabActive == "admin")
 {
-    <table class="table_notification table table-hover table-bordered">
+    <table class="table_notification table table-hover">
         <thead>
             <tr class="text-light ">
-                <th>Id</th>
                 <th>Title</th>
-                <th>Content</th>
                 <th>Create Date</th>
                 <th>Sender Id</th>
                 <th>Action</th>
@@ -84,13 +74,7 @@ else if(Model.tabActive == "admin")
             {
                 <tr class="user_row text-light">
                     <td>
-                        @item.Id
-                    </td>
-                    <td>
                         @item.Title
-                    </td>
-                    <td>
-                        @item.Content
                     </td>
                     <td>
                         @item.CreateDate

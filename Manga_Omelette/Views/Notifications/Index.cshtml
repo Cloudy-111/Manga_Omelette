@@ -4,15 +4,12 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_MyLayout.cshtml";
     <link rel="stylesheet" href="/css/pagination.css" />
+    <link rel="stylesheet" href="/css/PageCSS/NotificationsIndex.css" />
 }
 
-<div class="text-center">
-    <h1 class="display-4">NOTIFICATION PAGE</h1>
-</div>
-
 <div class="type_notification">
-    <a data-tab="system" class="tab_link">System</a>
-    <a data-tab="admin" class="tab_link">Admin</a>
+    <a data-tab="system" id="system_tab" class="tab_link active">System</a>
+    <a data-tab="admin" id="admin_tab" class="tab_link">Admin</a>
 </div>
 
 
@@ -29,7 +26,18 @@
             $('.type_notification').on('click', '.tab_link', function (e) {
                 e.preventDefault();
                 var tab = $(this).data('tab');
-                
+
+                $('.tab_link').removeClass('active');
+
+                $(this).addClass('active');
+
+                var tab_id = $(this).attr('id');
+                if (tab_id === "system_tab") {
+                    $('.type_notification').removeClass('active-admin').addClass('active-system');
+                } else if (tab_id === "admin_tab") {
+                    $('.type_notification').removeClass('active-system').addClass('active-admin');
+                }
+
                 if(loadedTab[tab]){
                     $('.notification_container').html(loadedTab[tab]);
                     return;

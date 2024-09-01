@@ -13,9 +13,11 @@ using Microsoft.AspNetCore.Identity;
 using Manga_Omelette.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Manga_Omelette.Controllers
 {
+    [Authorize]
     public class NotificationsController : Controller
     {
         private readonly Manga_OmeletteDBContext _db;
