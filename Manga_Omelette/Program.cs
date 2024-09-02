@@ -221,6 +221,11 @@ app.UseEndpoints(endpoints =>
         pattern: "/getTypeNotification/{notificationId}",
         defaults: new { controller = "Notifications", action = "GetNotificationType" }
         );
+    endpoints.MapControllerRoute(
+        name: "Get Notifications In Header",
+        pattern: "/getNotificationHeader",
+        defaults: new { controller = "Notifications", action = "GetNotificationsInIcon" }
+		);
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

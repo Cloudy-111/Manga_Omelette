@@ -216,5 +216,24 @@ namespace Manga_Omelette.Controllers
             }
             return Json(new { type = notification.TypeNotis.Name });
         }
+
+        [HttpGet]
+        public IActionResult GetNotificationsInIcon()
+        {
+			var userId = _userManager.GetUserId(User);
+            if(userId != null)
+            {
+				var SystemNotification = _notificationService.GetSystemNotification("System", 1, 5).ToList();
+                var AdminNotification = _notificationService.GetAdminNotification(userId, 1, 5).ToList();
+
+                return Json(new
+                {
+                    success = true,
+                    system_notification = SystemNotification,
+                    admin_notification = AdminNotification,
+                });
+			}
+            return NotFound();
+		}
     }
 }
