@@ -311,6 +311,23 @@ label #openSidebar:hover{
     border-bottom: 1px solid #FF6740;
 }
 
+#notiBtn{
+    position: relative;
+}
+
+#notiBtn .noti-dot{
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 60px;
+    color: red;
+    transform: translate(45%, -45%);
+}
+#notiBtn .noti-dot.active{
+    display: block;
+}
+
 /*==============================PROFILE POPUP==============================*/
 .profile_container {
     position: absolute;

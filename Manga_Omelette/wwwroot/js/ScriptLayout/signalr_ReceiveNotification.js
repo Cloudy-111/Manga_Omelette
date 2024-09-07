@@ -61,6 +61,9 @@ export function ReceiveNotification() {
 
             notification_section.prepend(notificationItem);
 
+            var signalNotiBtn = $('#notiBtn .noti-dot');
+            signalNotiBtn.addClass('active');
+
             setTimeout(function () {
                 notificationItem.addClass('hidden');
                 setTimeout(function () {

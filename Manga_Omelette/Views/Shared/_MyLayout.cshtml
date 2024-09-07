@@ -120,7 +120,10 @@
                 </div>
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <button name="notiBtn" id="notiBtn"><i class="bi bi-bell"></i></button>
+                    <button name="notiBtn" id="notiBtn">
+                        <i class="bi bi-bell"></i>
+                        <i class="bi bi-dot noti-dot"></i>
+                    </button>
                 }
                 <button name="userBtn" id="userBtn">
                     @if (SignInManager.IsSignedIn(User))

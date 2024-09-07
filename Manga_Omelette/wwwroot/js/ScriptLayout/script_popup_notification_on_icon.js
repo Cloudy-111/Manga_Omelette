@@ -3,6 +3,7 @@
 export function PopupNotification() {
 
     var notiBtn = $('#notiBtn');
+    var notiBtnDot = $('#notiBtn .noti-dot');
     var notification_popup_container = $('#notification_popup_container');
     var overlay = $('#overlay');
     var loadNoti = {};
@@ -35,6 +36,7 @@ export function PopupNotification() {
 
                 overlay.toggleClass("appear");
                 notification_popup_container.toggleClass("appear");
+                notiBtnDot.removeClass('active');
             },
             error: function (err) {
 
