@@ -10,6 +10,7 @@ export function PopupNotification() {
     notiBtn.on('click', function (e) {
         e.preventDefault();
 
+        notiBtnDot.removeClass('active');
         if (loadNoti["System"] || loadNoti["Admin"]) {
             $("#system_notis").html(loadNoti["System"]);
             $("#admin_notis").html(loadNoti["Admin"]);
@@ -36,7 +37,6 @@ export function PopupNotification() {
 
                 overlay.toggleClass("appear");
                 notification_popup_container.toggleClass("appear");
-                notiBtnDot.removeClass('active');
             },
             error: function (err) {
 

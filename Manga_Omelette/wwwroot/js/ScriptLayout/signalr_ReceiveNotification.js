@@ -1,4 +1,6 @@
 ﻿import { connection } from '../ScriptChapterIndex/Comment_SignalR/hubConnection.js';
+import { formatDate } from '../Ultilities/DateTimeConvert.js';
+
 
 export function ReceiveNotification() {
     connection.on("ReceiveNotification", async function (notification) {
@@ -64,6 +66,8 @@ export function ReceiveNotification() {
             var signalNotiBtn = $('#notiBtn .noti-dot');
             signalNotiBtn.addClass('active');
 
+            addNotificationToList(notification, $('#new_notis'));
+
             setTimeout(function () {
                 notificationItem.addClass('hidden');
                 setTimeout(function () {
@@ -73,4 +77,20 @@ export function ReceiveNotification() {
         })
         
     })
+}
+
+function addNotificationToList(notifications, container) {
+    let noti_item = $('<div>').addClass("notification_item_popup");
+    let noti_item_col = $('<div>').addClass("notification_item_col");
+    let noti_header = $('<div>').addClass("notification_header_popup");
+    let noti_title = $('<div>').addClass("notification_title_popup").text(notifications.title);
+
+    let noti_content = $('<div>').addClass("notification_content_popup").text(notifications.content);
+    let noti_datetime = $('<div>').addClass("notification_time_popup").text(formatDate(notifications.createDate));
+
+    noti_header.append(noti_title);
+    noti_item_col.append(noti_header).append(noti_content).append(noti_datetime);
+    noti_item.append(noti_item_col);
+
+    container.append(noti_item);
 }

@@ -1,4 +1,9 @@
-﻿.notification_container_popup {
+﻿.notification_popup_container {
+    overflow-y: auto;
+    height: 90vh;
+}
+
+.notification_container_popup {
     padding: 10px;
     font-weight: 500;
     width: 100%;
@@ -12,6 +17,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.notification_container_popup .notis_section#new_notis{
+    flex-direction: column-reverse;
 }
 
 #notification_popup_container {
