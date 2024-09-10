@@ -1,15 +1,25 @@
 ﻿using Manga_Omelette.Data;
 using Manga_Omelette.Models;
+using Manga_Omelette.Models_Secondary;
+using MongoDB.Driver;
 
 namespace Manga_Omelette.Services
 {
     public class NotificationService
     {
         private readonly Manga_OmeletteDBContext _db;
+        private readonly IMongoCollection<NotificationMongo> _notificationsMongo;
 
-        public NotificationService(Manga_OmeletteDBContext db)
+        public NotificationService(Manga_OmeletteDBContext db, IMongoDatabase mdb)
         {
             _db = db;
+            _notificationsMongo = mdb.GetCollection<NotificationMongo>("Notifications");
+        }
+
+        //Add 1 Notification in MongoDB
+        public Task CreateNotification(NotificationMongo notificationMongo)
+        {
+            return _notificationsMongo.InsertOneAsync(notificationMongo);
         }
 
         public IQueryable<Notification> GetNotificationForEachPage(int page, int items_per_page, string typeId)
@@ -39,6 +49,12 @@ namespace Manga_Omelette.Services
 				.OrderByDescending(n => n.CreateDate)
                 .Skip((page - 1) * items_per_page)
                 .Take(items_per_page);
+        }
+
+        //Get 1 Notification By Id
+        public async Task<NotificationMongo> GetSingleNotification(string notificationId)
+        {
+            return await _notificationsMongo.Find(notification => notification.Id == notificationId).FirstOrDefaultAsync();
         }
     }
 }

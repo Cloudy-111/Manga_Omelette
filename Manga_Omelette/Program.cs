@@ -8,6 +8,9 @@ using DotNetEnv;
 using Manga_Omelette.Services;
 using Manga_Omelette.SignalR;
 using Manga_Omelette.Models_Secondary;
+using Manga_Omelette.MongoDB;
+using MongoDB.Driver;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Manga_OmeletteDBContextConnection") ?? throw new InvalidOperationException("Connection string 'Manga_OmeletteDBContextConnection' not found.");
@@ -31,6 +34,23 @@ builder.Services.AddScoped<FavoriteService>();
 builder.Services.AddScoped<NotificationService>();
 
 builder.Services.AddSignalR();
+
+//Take information from appsetting.json
+builder.Services.Configure<MongoDBSetting>(builder.Configuration.GetSection("MongoDB"));
+
+//Configuration MongoDB Client
+builder.Services.AddSingleton<IMongoClient, MongoClient>(sp =>
+{
+    var setting = sp.GetRequiredService<IOptions<MongoDBSetting>>().Value;
+    return new MongoClient(setting.ConnectionString);
+});
+
+builder.Services.AddSingleton<IMongoDatabase>(sp =>
+{
+    var setting = sp.GetRequiredService<IOptions<MongoDBSetting>>().Value;
+    var client = sp.GetRequiredService<IMongoClient>();
+    return client.GetDatabase(setting.DatabaseName);
+});
 
 var app = builder.Build();
 

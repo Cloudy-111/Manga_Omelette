@@ -87,7 +87,7 @@ namespace Manga_Omelette.Controllers
         {
             var CreateNotificationViewModel = new CreateNotificationViewModel
             {
-                newNotification = new Notification(),
+                newNotification = new NotificationMongo(),
                 types = _db.TypeNotis.ToList(),
             };
             return View(CreateNotificationViewModel);
@@ -102,17 +102,29 @@ namespace Manga_Omelette.Controllers
         {
             if (model.newNotification != null)
             {
-                model.newNotification.Id = Guid.NewGuid().ToString();
-                model.newNotification.CreateDate = DateTime.Now;
-                _db.Add(model.newNotification);
-                await _db.SaveChangesAsync();
-                return Json(new
-                {
-                    success = true,
-                    notification = model.newNotification,
-                    redirectUrl = Url.Action("ManageNotification", "Administration")
-                });
-            }
+				//model.newNotification.Id = Guid.NewGuid().ToString();
+				//model.newNotification.CreateDate = DateTime.Now;
+				//_db.Add(model.newNotification);
+				//await _db.SaveChangesAsync();
+				//return Json(new
+				//{
+				//    success = true,
+				//    notification = model.newNotification,
+				//    redirectUrl = Url.Action("ManageNotification", "Administration")
+				//});
+
+				model.newNotification.Id = Guid.NewGuid().ToString();
+				model.newNotification.CreateDate = DateTime.Now;
+
+				await _notificationService.CreateNotification(model.newNotification);
+
+				return Json(new
+				{
+					success = true,
+					notification = model.newNotification,
+					redirectUrl = Url.Action("ManageNotification", "Administration")
+				});
+			}
 
             return View(model);
         }
@@ -207,14 +219,15 @@ namespace Manga_Omelette.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetNotificationType(string notificationId)
+        public async Task<IActionResult> GetNotificationType(string notificationId)
         {
-            var notification = _db.Notification.Include(n => n.TypeNotis).FirstOrDefault(n => n.Id == notificationId);
+            //var notification = _db.Notification.Include(n => n.TypeNotis).FirstOrDefault(n => n.Id == notificationId);
+            var notification = await _notificationService.GetSingleNotification(notificationId);
             if (notification == null)
             {
                 return NotFound();
             }
-            return Json(new { type = notification.TypeNotis.Name });
+            return Json(new { type = _db.TypeNotis.FirstOrDefault(t_n => t_n.Id == notification.TypeId).Name });
         }
 
         [HttpGet]
