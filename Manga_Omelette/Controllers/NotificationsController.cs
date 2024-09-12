@@ -36,17 +36,17 @@ namespace Manga_Omelette.Controllers
         public async Task<IActionResult> Index(string tab, int pageSystem = 1, int pageAdmin = 1)
         {
             var items_per_page = 10;
-            var SystemNotification = _notificationService.GetSystemNotification("System", pageSystem, items_per_page);
+            var SystemNotification = await _notificationService.GetSystemNotification("System", pageSystem, items_per_page);
 
             int totalSystemNotifications = _db.Notification.Where(n => n.TypeNotis.Name.ToLower() == "system").Count();
             int totalPageSystemNotification = (int) Math.Ceiling((double)totalSystemNotifications / items_per_page);
 
             var userId = _userManager.GetUserId(User);
-            var AdminNotification = new List<Notification>();
+            var AdminNotification = new List<NotificationMongo>();
             int totalPageAdminNotification = 0;
             if (userId != null)
             {
-                AdminNotification = _notificationService.GetAdminNotification(userId, pageAdmin, items_per_page).ToList();
+                AdminNotification = await _notificationService.GetAdminNotificationByUseridAsync(userId, pageAdmin, items_per_page);
 
                 int totalAdminNotifications = _db.Notification.Where(n => n.Notification_User.Any(n_u => n_u.UserId == userId)).Count();
                 totalPageAdminNotification = (int)Math.Ceiling((double)totalAdminNotifications / items_per_page);
@@ -231,13 +231,13 @@ namespace Manga_Omelette.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetNotificationsInIcon()
+        public async Task<IActionResult> GetNotificationsInIcon()
         {
 			var userId = _userManager.GetUserId(User);
             if(userId != null)
             {
-				var SystemNotification = _notificationService.GetSystemNotification("System", 1, 5).ToList();
-                var AdminNotification = _notificationService.GetAdminNotification(userId, 1, 5).ToList();
+				var SystemNotification = await _notificationService.GetSystemNotification("System", 1, 5);
+                var AdminNotification = await _notificationService.GetAdminNotificationByUseridAsync(userId, 1, 5);
 
                 return Json(new
                 {

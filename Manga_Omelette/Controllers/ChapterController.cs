@@ -184,7 +184,7 @@ namespace Manga_Omelette.Controllers
 
             //Create Notification for all user Who follow
             var titleStory = _storyService.getOnlyStory(model.chapter.StoryId).Title;
-            var newNotification = new Notification()
+            var newNotification = new NotificationMongo()
             {
                 Id = Guid.NewGuid().ToString(),
                 Title = $"{titleStory}: New Chapter Has Been Upload",
@@ -193,21 +193,20 @@ namespace Manga_Omelette.Controllers
                 TypeId = _notificationService.getTypeId("ADMIN"),
                 SenderId = _userManager.GetUserId(User),
             };
-            _db.Add(newNotification);
+			await _notificationService.CreateNotification(newNotification);
 
-            var followsOfStory = _favoriteService.GetUserFollowOfEachStory(model.story.Id);
-            var NotificationsForFollow = new List<Notification_User>();
+			var followsOfStory = _favoriteService.GetUserFollowOfEachStory(model.story.Id);
+            var NotificationsForFollow = new List<Notification_UserMongo>();
             foreach(User user in followsOfStory)
             {
-                NotificationsForFollow.Add(new Notification_User
-                {
+                NotificationsForFollow.Add(new Notification_UserMongo
+				{
+                    Id = Guid.NewGuid().ToString(),
                     NotificationId = newNotification.Id,
                     UserId = user.Id,
                 });
             }
-            _db.Notification_User.AddRange(NotificationsForFollow);
-
-            _db.SaveChanges();
+            await _notificationService.InsertManyAsync(NotificationsForFollow);
 
             var notificationViewModel = new NotificationViewModel
             {
