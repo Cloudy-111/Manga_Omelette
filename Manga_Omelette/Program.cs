@@ -109,7 +109,7 @@ app.UseEndpoints(endpoints =>
         );
     endpoints.MapControllerRoute(
         name: "Details Story",
-        pattern: "titles/{id}/{titles}",
+        pattern: "titles/{id}/{titles?}",
         defaults: new { controller = "Story", action = "Details_Story" }
         );
     endpoints.MapControllerRoute(
@@ -246,6 +246,12 @@ app.UseEndpoints(endpoints =>
         pattern: "/getNotificationHeader",
         defaults: new { controller = "Notifications", action = "GetNotificationsInIcon" }
 		);
+    //CLEAR ALL NOTIFICATIONS --- DANGER
+    endpoints.MapControllerRoute(
+        name: "Clear Notificaiton",
+        pattern: "/clearNotificaiton",
+        defaults: new { controller = "Notifications", action = "DeleteAllNotification" }
+        );
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

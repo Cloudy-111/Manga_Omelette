@@ -6,6 +6,11 @@
 
 <h1>Manage Notification</h1>
 
+<form id="deleteAllNotificationsForm">
+    @Html.AntiForgeryToken()
+    <button type="button" id="btnDELETE" class="btn btn-danger">Delete All Notifications</button>
+</form>
+
 <div class="left_container">
     <h2>All Roles</h2>
     @if (Model.types.Any())
@@ -49,3 +54,30 @@
     }
 
 </div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+
+            $('#btnDELETE').click(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: '/clearNotificaiton',
+                    type: 'delete',
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (error) {
+                        alert('Error clearing notifications.');
+                    }
+                })
+            })
+        })
+    </script>
+}

@@ -72,8 +72,7 @@ namespace Manga_Omelette.Controllers
                 return NotFound();
             }
 
-            var notification = await _db.Notification
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var notification = await _notificationService.GetSingleNotification(id);
             if (notification == null)
             {
                 return NotFound();
@@ -248,5 +247,14 @@ namespace Manga_Omelette.Controllers
 			}
             return NotFound();
 		}
+
+        [HttpDelete]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAllNotification()
+        {
+            await _notificationService.ClearNotificationsAsync();
+            await _notificationService.ClearNotificationsUserAsync();
+            return Json(new { success = true, message = "All notifications and user notifications have been cleared." });
+        }
     }
 }

@@ -181,6 +181,7 @@ namespace Manga_Omelette.Controllers
 
             _db.ImageInChapter.AddRange(listImageChapter);
             _favoriteService.UpdateWhenHasNewChapter(model.story.Id);
+            _db.SaveChanges();
 
             //Create Notification for all user Who follow
             var titleStory = _storyService.getOnlyStory(model.chapter.StoryId).Title;
@@ -192,7 +193,8 @@ namespace Manga_Omelette.Controllers
                 CreateDate = DateTime.Now,
                 TypeId = _notificationService.getTypeId("ADMIN"),
                 SenderId = _userManager.GetUserId(User),
-            };
+                StoryId = model.story.Id
+			};
 			await _notificationService.CreateNotification(newNotification);
 
 			var followsOfStory = _favoriteService.GetUserFollowOfEachStory(model.story.Id);

@@ -1,4 +1,5 @@
 ﻿import { formatDate } from '../Ultilities/DateTimeConvert.js';
+import { HrefNotificationItem } from './script_href_notification.js';
 
 export function PopupNotification() {
 
@@ -35,6 +36,8 @@ export function PopupNotification() {
                 admin_notiHTML = admin_notis.prop("outerHTML");
                 loadNoti["Admin"] = admin_notiHTML;
 
+                HrefNotificationItem();
+
                 overlay.toggleClass("appear");
                 notification_popup_container.toggleClass("appear");
             },
@@ -56,11 +59,13 @@ function addNotificationToList(notifications, container) {
         let noti_item_col = $('<div>').addClass("notification_item_col");
         let noti_header = $('<div>').addClass("notification_header_popup");
         let noti_title = $('<div>').addClass("notification_title_popup").text(noti.title);
+        let noti_id = $('<div>').addClass("notification_id").text(noti.id).hide();
+        let noti_story_id = $('<div>').addClass("notification_story_id").text(noti.storyId).hide();
 
         let noti_content = $('<div>').addClass("notification_content_popup").text(noti.content);
         let noti_datetime = $('<div>').addClass("notification_time_popup").text(formatDate(noti.createDate));
 
-        noti_header.append(noti_title);
+        noti_header.append(noti_title).append(noti_id).append(noti_story_id);
         noti_item_col.append(noti_header).append(noti_content).append(noti_datetime);
         noti_item.append(noti_item_col);
 

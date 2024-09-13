@@ -30,5 +30,8 @@ namespace Manga_Omelette.Models_Secondary
 
 		[BsonElement("typeId")]
 		public string TypeId { get; set; }
+
+		[BsonElement("storyId")]
+		public int StoryId { get; set; } = 0;
 	}
 }

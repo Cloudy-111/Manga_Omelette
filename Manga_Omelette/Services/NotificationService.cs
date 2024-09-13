@@ -96,5 +96,16 @@ namespace Manga_Omelette.Services
 
             await _notification_userMongo.UpdateOneAsync(notificationUser, update);
         }
-    }
+
+        public async Task ClearNotificationsAsync()
+        {
+            await _notificationsMongo.DeleteManyAsync(Builders<NotificationMongo>.Filter.Empty);
+        }
+
+        public async Task ClearNotificationsUserAsync()
+        {
+            await _notification_userMongo.DeleteManyAsync(Builders<Notification_UserMongo>.Filter.Empty);
+        }
+
+	}
 }
