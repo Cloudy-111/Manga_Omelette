@@ -40,8 +40,25 @@ namespace Manga_Omelette.Services
             return _db.TypeNotis.FirstOrDefault(tn => tn.Name == typeName).Id;
         }
 
-
         public async Task<List<NotificationMongo>> GetAdminNotificationByUseridAsync(string userId, int page, int items_per_page)
+        {
+            var user = Builders<Notification_UserMongo>.Filter.Eq(n_u => n_u.UserId, userId);
+            var userNotification = await _notification_userMongo.Find(user).ToListAsync();
+
+            var notiIds = userNotification.Select(n_u => n_u.NotificationId).ToList();
+
+            var filterNotis = Builders<NotificationMongo>.Filter.In(n => n.Id, notiIds);
+            var notifications = await _notificationsMongo
+                                        .Find(filterNotis)
+                                        .SortByDescending(n => n.CreateDate)
+                                        .Skip((page - 1) * items_per_page)
+                                        .Limit(items_per_page)
+                                        .ToListAsync();
+
+            return notifications;
+        }
+
+        public async Task<List<NotificationWithReadStatus>> GetAdminNotificationWithReadStatusByUseridAsync(string userId, int page, int items_per_page)
         {
 			var user = Builders<Notification_UserMongo>.Filter.Eq(n_u => n_u.UserId, userId);
             var userNotification = await _notification_userMongo.Find(user).ToListAsync();
@@ -56,7 +73,25 @@ namespace Manga_Omelette.Services
 										.Limit(items_per_page)
 										.ToListAsync();
 
-            return notifications;
+            var result = notifications
+                            .Join(userNotification,
+                                noti => noti.Id,
+                                userNoti => userNoti.NotificationId,
+                                (noti, userNoti) => new NotificationWithReadStatus
+                                {
+                                    Id = noti.Id,
+                                    Title = noti.Title,
+                                    Content = noti.Content,
+                                    CreateDate = noti.CreateDate,
+                                    SenderId = noti.SenderId,
+                                    ReceiverId = noti.ReceiverId,
+                                    TypeId = noti.TypeId,
+                                    StoryId = noti.StoryId,
+                                    isRead = userNoti.isRead
+                                })
+                            .ToList();
+
+            return result;
         }
 
         public async Task<List<NotificationMongo>> GetSystemNotification(string typeName, int page, int items_per_page)
@@ -86,7 +121,7 @@ namespace Manga_Omelette.Services
             await _notification_userMongo.InsertManyAsync(notification_user);
         }
 
-        //Mark as Read Notification
+        //Mark as Read a Notification
         public async Task MarkAsRead(string userId, string NotificationId)
         {
 			var notificationUser = Builders<Notification_UserMongo>.Filter.Eq(n => n.NotificationId, NotificationId) & 
@@ -95,6 +130,16 @@ namespace Manga_Omelette.Services
             var update = Builders<Notification_UserMongo>.Update.Set(n => n.isRead, true);
 
             await _notification_userMongo.UpdateOneAsync(notificationUser, update);
+        }
+
+        //Mark as Read All Notification
+        public async Task MarkAsReadAllNotification(string userId)
+        {
+            var notificationUser = Builders<Notification_UserMongo>.Filter.Eq(n => n.UserId, userId);
+
+            var update = Builders<Notification_UserMongo>.Update.Set(n => n.isRead, true);
+
+            await _notification_userMongo.UpdateManyAsync(notificationUser, update);
         }
 
         public async Task ClearNotificationsAsync()

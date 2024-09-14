@@ -252,6 +252,16 @@ app.UseEndpoints(endpoints =>
         pattern: "/clearNotificaiton",
         defaults: new { controller = "Notifications", action = "DeleteAllNotification" }
         );
+    endpoints.MapControllerRoute(
+        name: "Mark As Read Single Notification",
+        pattern: "/markAsReadSingleNotification",
+        defaults: new { controller = "Notifications", action = "MarkAsReadSignleNotification" }
+        );
+    endpoints.MapControllerRoute(
+        name: "Mark As Read All Notification",
+        pattern: "/markAllAsRead",
+        defaults: new { controller = "Notifications", action = "MarkAsReadAllNotification" }
+        );
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

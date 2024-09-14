@@ -236,7 +236,7 @@ namespace Manga_Omelette.Controllers
             if(userId != null)
             {
 				var SystemNotification = await _notificationService.GetSystemNotification("System", 1, 5);
-                var AdminNotification = await _notificationService.GetAdminNotificationByUseridAsync(userId, 1, 5);
+                var AdminNotification = await _notificationService.GetAdminNotificationWithReadStatusByUseridAsync(userId, 1, 5);
 
                 return Json(new
                 {
@@ -255,6 +255,22 @@ namespace Manga_Omelette.Controllers
             await _notificationService.ClearNotificationsAsync();
             await _notificationService.ClearNotificationsUserAsync();
             return Json(new { success = true, message = "All notifications and user notifications have been cleared." });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task MarkAsReadSignleNotification(string notificationId)
+        {
+            var userId = _userManager.GetUserId(User);
+            await _notificationService.MarkAsRead(userId, notificationId);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task MarkAsReadAllNotification()
+        {
+            var userId = _userManager.GetUserId(User);
+            await _notificationService.MarkAsReadAllNotification(userId);
         }
     }
 }

@@ -42,7 +42,7 @@ export function PopupNotification() {
                 notification_popup_container.toggleClass("appear");
             },
             error: function (err) {
-
+                alert("Failed to Get Notifications");
             }
         })
     })
@@ -68,6 +68,20 @@ function addNotificationToList(notifications, container) {
         noti_header.append(noti_title).append(noti_id).append(noti_story_id);
         noti_item_col.append(noti_header).append(noti_content).append(noti_datetime);
         noti_item.append(noti_item_col);
+
+        let isRead = noti.isRead;
+
+        let noti_sign_unread = $('<i>').addClass("bi bi-dot notification_sign_unread");
+        let noti_overlay = $('<div>').addClass("notification_overlay");
+
+        if (isRead === false) {
+            noti_sign_unread.addClass('active');
+        } else if (isRead === true) {
+            noti_overlay.addClass('active');
+        }
+
+        noti_item.append(noti_sign_unread);
+        noti_item.append(noti_overlay);
 
         container.append(noti_item);
     });

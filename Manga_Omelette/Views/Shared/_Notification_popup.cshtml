@@ -11,7 +11,10 @@
 @if (SignInManager.IsSignedIn(User))
 {
 	<div class="notification_container_popup">
-		<h2>Notifications</h2>
+		<div class="notification_container_popup_header">
+			<h2>Notifications</h2>
+			<button id="mark_read_btn" class="btn btn-secondary">Mark all as Read</button>
+		</div>
 		<h3>NEW</h3>
 		<div class="notis_section" id="new_notis"></div>
 		<div class="notis_section" id="system_notis">

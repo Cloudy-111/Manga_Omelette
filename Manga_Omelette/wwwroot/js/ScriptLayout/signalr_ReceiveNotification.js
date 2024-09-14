@@ -84,11 +84,13 @@ function addNotificationToList(notifications, container) {
     let noti_item_col = $('<div>').addClass("notification_item_col");
     let noti_header = $('<div>').addClass("notification_header_popup");
     let noti_title = $('<div>').addClass("notification_title_popup").text(notifications.title);
+    let noti_id = $('<div>').addClass("notification_id").text(notifications.id).hide();
+    let noti_story_id = $('<div>').addClass("notification_story_id").text(notifications.storyId).hide();
 
     let noti_content = $('<div>').addClass("notification_content_popup").text(notifications.content);
     let noti_datetime = $('<div>').addClass("notification_time_popup").text(formatDate(notifications.createDate));
 
-    noti_header.append(noti_title);
+    noti_header.append(noti_title).append(noti_id).append(noti_story_id);
     noti_item_col.append(noti_header).append(noti_content).append(noti_datetime);
     noti_item.append(noti_item_col);
 
