@@ -115,8 +115,7 @@
             </div>
             <div class="rightHeader">
                 <div class="searchField">
-                    <input id="searchHeader" placeholder="Search" />
-                    <button class="searchBtn"><i class="bi bi-search"></i></button>
+                    <partial name="_Search_result_popup.cshtml" />
                 </div>
                 @if (SignInManager.IsSignedIn(User))
                 {

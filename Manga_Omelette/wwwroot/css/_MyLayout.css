@@ -13,7 +13,7 @@ body {
     opacity: 0.3;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: 99;
     background-color: #000000;
     display: none;
 }
@@ -233,13 +233,23 @@ label #openSidebar:hover{
 }
 
 .header_body .rightHeader,
-.header_body .rightHeader .searchField,
 .header_body .leftHeader .brandBody {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     align-content: center;
+    position: relative;
+}
+
+.header_body .rightHeader .searchField{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    position: relative;
+    gap: 10px;
 }
 
 .header_body .rightHeader {
@@ -248,22 +258,6 @@ label #openSidebar:hover{
 
 .header_body .rightHeader .searchField{
     gap: 10px
-}
-
-.header_body .rightHeader .searchField input{
-    font-size: 20px;
-    border-radius: 10px;
-    background-color: #2C2C2C;
-    border: none;
-    color: #ffffff;
-    padding-left: 10px;
-    transition: all 0.3s ease;
-    width: 200px;
-}
-
-.header_body .rightHeader .searchField input.active{
-    width: 500px;
-    outline: 1px solid #FF6740;
 }
 
 .header_body .rightHeader button{

@@ -1,5 +1,6 @@
 using Manga_Omelette.Data;
 using Manga_Omelette.Models;
+using Manga_Omelette.Services;
 using MangaASP.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace Manga_Omelette.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly Manga_OmeletteDBContext _db;
-        public HomeController(Manga_OmeletteDBContext db, ILogger<HomeController> logger)
+        private readonly StoryService _storyService;
+        public HomeController(Manga_OmeletteDBContext db, ILogger<HomeController> logger, StoryService storyService)
         {
             _logger = logger;
             _db = db;
+            _storyService = storyService;
         }
         private IQueryable<Story> GetPopularStories()
         {
@@ -49,6 +52,17 @@ namespace Manga_Omelette.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet]
+        public IActionResult Search(string term)
+        {
+            if (string.IsNullOrEmpty(term))
+            {
+                return Json(new { message = "No results found!" });
+            }
+            var results = _storyService.GetStoryByTerm(term);
+            return Json(results);
         }
     }
 }

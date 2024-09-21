@@ -1,18 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
-    var inputHeader = document.getElementById("searchHeader");
-    var overlay = document.getElementById("overlay");
-    inputHeader.addEventListener('focus', function () {
-        inputHeader.classList.add('active');
-        overlay.classList.add("appear");
-    });
-
-    inputHeader.addEventListener('blur', function () {
-        inputHeader.classList.remove('active');
-        overlay.classList.remove("appear");
-    });
-})
-
-
+﻿
 //Scroll thì hiện background header
 var backgroundHeader = document.getElementById("backgroundHeader");
 var main_container = document.querySelector(".main_container");
@@ -40,20 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 })
 
-document.addEventListener("DOMContentLoaded", function () {
-    var userBtn = document.getElementById("userBtn");
-    var overlay = document.getElementById("overlay");
-    var profile_container = document.getElementById("profile_container");
-    userBtn.addEventListener("click", function () {
-        overlay.classList.toggle("appear");
-        profile_container.classList.toggle("appear");
-    });
 
-    overlay.addEventListener("click", function () {
-        overlay.classList.remove("appear");
-        profile_container.classList.remove("appear");
-    })
-});
 
 // Lưu trạng thái checkbox khi thay đổi
 document.getElementById('checkToggle').addEventListener('change', function () {

@@ -262,6 +262,11 @@ app.UseEndpoints(endpoints =>
         pattern: "/markAllAsRead",
         defaults: new { controller = "Notifications", action = "MarkAsReadAllNotification" }
         );
+    endpoints.MapControllerRoute(
+        name: "Live Search Ajax",
+        pattern: "/Home/Search",
+        defaults: new { controller = "Home", action = "Search" }
+        );
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

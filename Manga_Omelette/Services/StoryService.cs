@@ -1,4 +1,5 @@
 ﻿using Manga_Omelette.Data;
+using Manga_Omelette.Models_Secondary;
 using MangaASP.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -189,6 +190,23 @@ namespace Manga_Omelette.Services
 				(likes > 0 ? Math.Log10(likes) : 0) + 
 				rating
 				;
+		}
+
+		public List<StoriesSearchResultViewModel> GetStoryByTerm(string term)
+		{
+			if (string.IsNullOrEmpty(term))
+			{
+				return null;
+			}
+			var results = _db.Story
+							.Where(s => s.Title.ToLower().Contains(term.ToLower()))
+							.Select(s => new StoriesSearchResultViewModel
+							{
+								Title = s.Title,
+								Id = s.Id
+							})
+							.ToList();
+			return results;
 		}
     }
 }
