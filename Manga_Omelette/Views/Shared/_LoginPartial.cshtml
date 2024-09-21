@@ -4,103 +4,111 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
+@{
+    <link rel="stylesheet" href="~/css/Ultilities/User_popup_container.css" />
+}
+
 <style>
     hr{
         color: #fff;
     }
 </style>
 
-@if (SignInManager.IsSignedIn(User))
-{
-    <div class="profile_content">
-        <div class="section primary" id="user">
-            <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" style="text-decoration: none; color: #fff;">
-                <div class="avatar_user" id="avatar_user">
-                    <img src="~/Image/Brand/Omelette Logo without Text.png" />
+<div class="overlay" id="overlay_user"></div>
+
+<div class="profile_container" id="profile_container">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="profile_content">
+            <div class="section primary" id="user">
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" style="text-decoration: none; color: #fff;">
+                    <div class="avatar_user" id="avatar_user">
+                        <img src="~/Image/Brand/Omelette Logo without Text.png" />
+                    </div>
+                    <div class="username" id="username_popup">
+                        @* @UserManager.GetUserName(User) *@
+                        @* Sử dụng hàm InvokeAsync với tham số là tên ViewComponent *@
+                        @await Component.InvokeAsync("CustomProperty", new { userId = UserManager.GetUserId(User) })
+                    </div>
+                </a>
+            </div>
+            <hr />
+            <div class="section primary" id="option">
+                <div class="section secondary" id="setting_option">
+                    <a asp-controller="Home" asp-action="Setting">
+                        <i class="bi bi-gear"></i>
+                        Setting
+                    </a>
                 </div>
-                <div class="username" id="username_popup">
-                    @* @UserManager.GetUserName(User) *@
-                    @* Sử dụng hàm InvokeAsync với tham số là tên ViewComponent *@
-                    @await Component.InvokeAsync("CustomProperty", new { userId = UserManager.GetUserId(User) })
+                <div class="section secondary" id="feedback_option">
+                    <a href="#">
+                        <i class="bi bi-chat-square-text-fill"></i>
+                        Feedback
+                    </a>
                 </div>
-            </a>
-        </div>
-        <hr />
-        <div class="section primary" id="option">
-            <div class="section secondary" id="setting_option">
-                <a asp-controller="Home" asp-action="Setting">
-                    <i class="bi bi-gear"></i>
-                    Setting
-                </a>
-            </div>
-            <div class="section secondary" id="feedback_option">
-                <a href="#">
-                    <i class="bi bi-chat-square-text-fill"></i>
-                    Feedback
-                </a>
-            </div>
-            <div class="section secondary" id="upload_option">
-                <a href="#">
-                    <i class="bi bi-upload"></i>
-                    Upload
-                </a>
-            </div>
-        </div>
-        <hr />
-        <div class="section primary" id="access">
-            <div class="section secondary" id="logout_option">
-                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                    <button id="logout" type="submit">
-                        <i class="bi bi-box-arrow-right"></i>
-                        Logout
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="profile_content">
-        <div class="section primary" id="user">
-            <a asp-area="Identity" asp-page="/Account/Login" style="text-decoration: none; color: #fff;">
-                <div class="avatar_user" id="avatar_user">
-                    <i class="bi bi-person"></i>
+                <div class="section secondary" id="upload_option">
+                    <a href="#">
+                        <i class="bi bi-upload"></i>
+                        Upload
+                    </a>
                 </div>
-                <div class="username" id="username_popup">
-                    GUEST
+            </div>
+            <hr />
+            <div class="section primary" id="access">
+                <div class="section secondary" id="logout_option">
+                    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button id="logout" type="submit">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Logout
+                        </button>
+                    </form>
                 </div>
-            </a>
-        </div>
-        <hr />
-        <div class="section primary" id="option">
-            <div class="section secondary" id="setting_option">
-                <a asp-controller="Home" asp-action="Setting">
-                    <i class="bi bi-gear"></i>
-                    Setting
-                </a>
-            </div>
-            <div class="section secondary" id="feedback_option">
-                <a href="#">
-                    <i class="bi bi-chat-square-text-fill"></i>
-                    Feedback
-                </a>
             </div>
         </div>
-        <hr />
-        <div class="section primary" id="access">
-            <div class="section secondary" id="login_option">
-                <a asp-area="Identity" asp-page="/Account/Login">
-                    <i class="bi bi-door-open"></i>
-                    Log in
+    }
+    else
+    {
+        <div class="profile_content">
+            <div class="section primary" id="user">
+                <a asp-area="Identity" asp-page="/Account/Login" style="text-decoration: none; color: #fff;">
+                    <div class="avatar_user" id="avatar_user">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div class="username" id="username_popup">
+                        GUEST
+                    </div>
                 </a>
             </div>
-            <div class="section secondary" id="register_option">
-                <a asp-area="Identity" asp-page="/Account/Register">
-                    <i class="bi bi-person-add"></i>
-                    Register
-                </a>
+            <hr />
+            <div class="section primary" id="option">
+                <div class="section secondary" id="setting_option">
+                    <a asp-controller="Home" asp-action="Setting">
+                        <i class="bi bi-gear"></i>
+                        Setting
+                    </a>
+                </div>
+                <div class="section secondary" id="feedback_option">
+                    <a href="#">
+                        <i class="bi bi-chat-square-text-fill"></i>
+                        Feedback
+                    </a>
+                </div>
+            </div>
+            <hr />
+            <div class="section primary" id="access">
+                <div class="section secondary" id="login_option">
+                    <a asp-area="Identity" asp-page="/Account/Login">
+                        <i class="bi bi-door-open"></i>
+                        Log in
+                    </a>
+                </div>
+                <div class="section secondary" id="register_option">
+                    <a asp-area="Identity" asp-page="/Account/Register">
+                        <i class="bi bi-person-add"></i>
+                        Register
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>

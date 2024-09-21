@@ -6,7 +6,7 @@ export function PopupNotification() {
     var notiBtn = $('#notiBtn');
     var notiBtnDot = $('#notiBtn .noti-dot');
     var notification_popup_container = $('#notification_popup_container');
-    var overlay = $('#overlay');
+    var overlay = $('#overlay_notification');
     var loadNoti = {};
     notiBtn.on('click', function (e) {
         e.preventDefault();
@@ -51,6 +51,12 @@ export function PopupNotification() {
         overlay.removeClass("appear");
         notification_popup_container.removeClass("appear");
     })
+    //$(document).on('click', function (e) {
+    //    var $notification_popup_container = $('#notification_popup_container');
+    //    if (!$notification_popup_container.is(e.target) && $notification_popup_container.has(e.target).length === 0) {
+    //        $('#notification_popup_container').hide();
+    //    }
+    //});
 }
 
 function addNotificationToList(notifications, container) {

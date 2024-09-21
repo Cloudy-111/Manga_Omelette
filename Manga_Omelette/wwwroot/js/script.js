@@ -1,13 +1,13 @@
 ﻿
 //Scroll thì hiện background header
-var backgroundHeader = document.getElementById("backgroundHeader");
+var layoutHeader = document.getElementById("layoutHeader");
 var main_container = document.querySelector(".main_container");
 
 main_container.addEventListener("scroll", function () {
     if (main_container.scrollTop === 0) {
-        backgroundHeader.classList.remove("scrolled");
+        layoutHeader.classList.remove("scrolled");
     } else {
-        backgroundHeader.classList.add("scrolled");
+        layoutHeader.classList.add("scrolled");
     }
 })
 

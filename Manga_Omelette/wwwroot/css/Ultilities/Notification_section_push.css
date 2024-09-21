@@ -1,0 +1,57 @@
+﻿/*==============================NOTIFICATIION SECTION==============================*/
+.notification_section {
+    width: 500px;
+    height: 100px;
+    position: absolute;
+    z-index: 1000;
+    right: 2%;
+    bottom: 2%;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 5px;
+}
+
+.notification_section .notification_item {
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.781);
+    background-color: #ECEDED;
+    color: black;
+    border-radius: 5px;
+    opacity: 0.9;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 1;
+    transition: box-shadow 0.3s ease;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.notification_section .notification_item:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.781);
+}
+
+.notification_section .notification_item.hidden {
+    opacity: 0;
+}
+
+.notification_section .notification_item .notification_header {
+    font-weight: 600;
+}
+
+.notification_section .notification_item .notification_header .notification_title {
+    font-size: 20px;
+}
+
+.notification_section .notification_item .notification_header .notification_header {
+    font-size: 16px;
+}
+
+.name_and_type p,
+.notification_title p,
+.notification_content p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,6 +1,6 @@
 ﻿export function ClickInputHeader() {
     var inputHeader = $('#searchHeader');
-    var overlay = $('#overlay');
+    var overlay = $('#overlay_search');
     var search_result = $('.search_result');
     inputHeader.on('focus', function () {
         inputHeader.addClass('active');

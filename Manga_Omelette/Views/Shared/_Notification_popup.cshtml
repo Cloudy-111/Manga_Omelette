@@ -8,20 +8,23 @@
 	<link rel="stylesheet" href="~/css/Ultilities/Notification_popup_container.css"/>
 }
 
-@if (SignInManager.IsSignedIn(User))
-{
-	<div class="notification_container_popup">
-		<div class="notification_container_popup_header">
-			<h2>Notifications</h2>
-			<button id="mark_read_btn" class="btn btn-secondary">Mark all as Read</button>
+<div class="overlay" id="overlay_notification"></div>
+<div class="notification_popup_container" id="notification_popup_container">
+	@if (SignInManager.IsSignedIn(User))
+	{
+		<div class="notification_container_popup">
+			<div class="notification_container_popup_header">
+				<h2>Notifications</h2>
+				<button id="mark_read_btn" class="btn btn-secondary">Mark all as Read</button>
+			</div>
+			<h3>NEW</h3>
+			<div class="notis_section" id="new_notis"></div>
+			<div class="notis_section" id="system_notis">
+				<h3>System</h3>
+			</div>
+			<div class="notis_section" id="admin_notis">
+				<h3>Admin</h3>
+			</div>
 		</div>
-		<h3>NEW</h3>
-		<div class="notis_section" id="new_notis"></div>
-		<div class="notis_section" id="system_notis">
-			<h3>System</h3>
-		</div>
-		<div class="notis_section" id="admin_notis">
-			<h3>Admin</h3>
-		</div>
-	</div>
-}
+	}
+</div>

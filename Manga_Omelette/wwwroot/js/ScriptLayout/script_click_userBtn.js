@@ -1,6 +1,6 @@
 ﻿export function ClickUserBtn() {
     var userBtn = $('#userBtn');
-    var overlay = $('#overlay');
+    var overlay = $('#overlay_user');
     var profile_container = $('#profile_container');
     userBtn.on("click", function () {
         overlay.toggleClass("appear");
