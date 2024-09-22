@@ -32,6 +32,7 @@ builder.Services.AddScoped<StoryService>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<FavoriteService>();
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<AuthorService>();
 
 builder.Services.AddSignalR();
 

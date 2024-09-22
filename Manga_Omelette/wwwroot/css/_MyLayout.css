@@ -25,6 +25,14 @@ body {
     display: block;
 }
 
+#overlay_main {
+    z-index: 1;
+    display: none;
+}
+
+#checkToggle:checked ~ #overlay_main{
+    display: none;
+}
 /*==============================SIDEBAR==============================*/
 #sidebar .brand img {
     width: 80%;
@@ -309,4 +317,20 @@ label #openSidebar:hover{
 }
 #notiBtn .noti-dot.active{
     display: block;
+}
+
+
+/*==============================RESPONSIVE==============================*/
+@media(max-width: 480px){
+    .main_container{
+        left: 0;
+        width: 100%;
+    }
+    #overlay_main{
+        opacity: 0.3;
+        display: block;
+    }
+    #checkToggle:checked ~ #overlay_main {
+        display: none;
+    }
 }

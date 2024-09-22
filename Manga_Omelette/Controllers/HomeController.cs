@@ -1,5 +1,6 @@
 using Manga_Omelette.Data;
 using Manga_Omelette.Models;
+using Manga_Omelette.Models_Secondary;
 using Manga_Omelette.Services;
 using MangaASP.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -14,11 +15,17 @@ namespace Manga_Omelette.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly Manga_OmeletteDBContext _db;
         private readonly StoryService _storyService;
-        public HomeController(Manga_OmeletteDBContext db, ILogger<HomeController> logger, StoryService storyService)
+        private readonly AuthorService _authorService;
+        public HomeController(
+            Manga_OmeletteDBContext db, 
+            ILogger<HomeController> logger, 
+            StoryService storyService,
+            AuthorService authorService)
         {
             _logger = logger;
             _db = db;
             _storyService = storyService;
+            _authorService = authorService;
         }
         private IQueryable<Story> GetPopularStories()
         {
@@ -57,11 +64,18 @@ namespace Manga_Omelette.Controllers
         [HttpGet]
         public IActionResult Search(string term)
         {
-            if (string.IsNullOrEmpty(term))
+            var results = new SearchResultPopupViewModel
             {
-                return Json(new { message = "No results found!" });
-            }
-            var results = _storyService.GetStoryByTerm(term);
+                storiesSearchResult = new List<StoriesSearchResultViewModel>(),
+                authorSearchResult = new List<AuthorSearchResultViewModel>()
+            };
+            var story_results = _storyService.GetStoryByTerm(term);
+            var author_results = _authorService.GetAuthorByTerm(term);
+            if (!string.IsNullOrEmpty(term))
+            {
+                results.storiesSearchResult = story_results;
+                results.authorSearchResult = author_results;
+            };
             return Json(results);
         }
     }

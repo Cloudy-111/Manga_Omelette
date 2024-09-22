@@ -205,6 +205,7 @@ namespace Manga_Omelette.Services
 								Title = s.Title,
 								Id = s.Id
 							})
+							.Take(5)
 							.ToList();
 			return results;
 		}

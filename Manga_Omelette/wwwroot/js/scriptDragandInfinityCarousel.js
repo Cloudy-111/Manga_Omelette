@@ -71,6 +71,11 @@
     $menu.on('mouseleave', handleTouchEnd)
     $menu.on('mouseup', handleTouchEnd)
 
+    $menu.on('touchstart', handleTouchStart)
+    $menu.on('touchmove', handleTouchMove)
+    $menu.on('touchcancel', handleTouchEnd)
+    $menu.on('touchend', handleTouchEnd)
+
     $menu.on('selectstart', () => { return false })
 
     let isDraggingLink = false;

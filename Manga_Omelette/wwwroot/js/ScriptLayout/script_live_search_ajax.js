@@ -10,14 +10,16 @@
             $('.instruction_search').hide();
         } else {
             $('.clear_input').hide();
+            $('.search_result').show();
             $('.instruction_search').show();
+            $('.search_result ul').empty();
         }
 
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(function () {
             if (term.length === 0) {
-                $('.search_result').hide();
+                $('.search_result ul').empty();
                 return;
             }
 
@@ -33,12 +35,24 @@
                     var results = $('.search_result ul');
                     results.empty();
 
-                    if (data.length === 0) {
+                    var authors = data.authorSearchResult;
+                    var stories = data.storiesSearchResult;
+
+                    if (stories === 0 && authors === 0) {
                         results.append('<p>No results found</p>');
                     } else {
-                        $.each(data, function (i, item) {
-                            results.append(`<li><a href="/titles/${item.id}">${item.title}</a></li>`);
-                        });
+                        if (authors.length > 0) {
+                            results.append('<p>Authors</p>')
+                            $.each(authors, function (i, item) {
+                                results.append(`<li>${item.name}</li>`);
+                            })
+                        }
+                        if (stories.length > 0) {
+                            results.append('<p>Mangas</p>');
+                            $.each(stories, function (i, item) {
+                                results.append(`<li><a href="/titles/${item.id}">${item.title}</a></li>`);
+                            })
+                        }
                     }
 
                     $('.search_result').show();
