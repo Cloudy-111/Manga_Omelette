@@ -28,7 +28,7 @@ After successfully setting up and running the project, follow these steps:
 
 - Create an account by signing up or log in using existing credentials.
 - Browse the manga collection, search for specific titles, and start reading.
-- You can also post comments on manga chapters.
+- You can also post comments on manga chapters, save manga on your favorite, evaluate manga from 1 - 10.
 - Notifications about new chapters or system updates will be sent to you in real-time via SignalR.
 ### Admins:
 
