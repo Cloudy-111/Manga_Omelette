@@ -149,10 +149,10 @@ namespace Manga_Omelette.Controllers
 		}
 
 		//==============================================Page ManageStory==============================================
-		public IActionResult ManageStory(int page = 1)
+		public async Task<IActionResult> ManageStory(int page = 1)
 		{
 			var items_per_page = 10;
-            IQueryable<Story> storyList = _storyService.GetStoriesForEachPage(page, items_per_page);
+            List<Story> storyList = await _storyService.GetStoriesForEachPage(page, items_per_page);
             int totalStories = _db.Story.Count();
             int totalPages = (int)Math.Ceiling((double)totalStories / items_per_page);
 

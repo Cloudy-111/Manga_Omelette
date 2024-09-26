@@ -47,17 +47,28 @@ namespace MangaASP.Controllers
             return stories;
         }
         //[CustomRoute("titles")]
-        public IActionResult SearchView(int page = 1)
+        public async Task<IActionResult> SearchView(string keyword = "", int page = 1)
         {
             int items_per_page = 10;
-            IQueryable<Story> storyList = _storyService.GetStoriesForEachPage(page, items_per_page).OrderBy(s => s.Title);
-            int totalStories = _db.Story.Count();
+			int totalStories = 0;
+			List<Story> storyList = new List<Story>();
+
+            if (string.IsNullOrEmpty(keyword)) {
+                storyList = await _storyService.GetStoriesForEachPage(page, items_per_page);
+                totalStories = _db.Story.Count();
+			}
+			else
+			{
+                storyList = await _storyService.GetStoriesFilterAsync(keyword, page, items_per_page);
+                totalStories = storyList.Count();//calculator this again
+            }
+            
             int totalPages = (int)Math.Ceiling((double)totalStories / items_per_page);
             
             ViewBag.TotalPages = totalPages;
             ViewBag.Page = page;
-            
-            return View(storyList);
+
+            return View("SearchView", storyList);
         }
         [Authorize]
         public IActionResult FollowList(int page = 1)
@@ -70,10 +81,10 @@ namespace MangaASP.Controllers
             return View(storyList);
         }
         //[CustomRoute("latest-update")]
-        public IActionResult Latest_Update(int page = 1)
+        public async Task<IActionResult> Latest_Update(int page = 1)
         {
             int items_per_page = 10;
-            IEnumerable<Story> storyList = _storyService.GetStoriesForEachPage(page, items_per_page).OrderBy(s => s.UpdateDate);
+            List<Story> storyList = await _storyService.GetStoriesForEachPage(page, items_per_page);
             int totalStories = _db.Story.Count();
             int totalPages = (int)Math.Ceiling((double)totalStories / items_per_page);
 
@@ -418,5 +429,12 @@ namespace MangaASP.Controllers
 			};
 			return View(modelView);
 		}
-	}
+
+		//==============================================Post Edit Story==============================================
+		[HttpGet]
+		public async Task<IActionResult> FilterStory(string keyword, int page = 1)
+		{
+			return await SearchView(keyword, page);
+        }
+    }
 }

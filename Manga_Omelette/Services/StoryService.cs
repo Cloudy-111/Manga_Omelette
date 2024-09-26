@@ -47,12 +47,13 @@ namespace Manga_Omelette.Services
 			}
 			return new List<Genre>();
 		}
-		public IQueryable<Story> GetStoriesForEachPage(int page, int items_per_page)
+		public async Task<List<Story>> GetStoriesForEachPage(int page, int items_per_page)
 		{
-			return _db.Story
+			return await _db.Story
 				//.OrderBy(s => s.Title)
 				.Skip((page - 1) * items_per_page)
-				.Take(items_per_page);
+				.Take(items_per_page)
+				.ToListAsync();
 		}
 		public IQueryable<Story> GetStoriesFollowEachPage(int page, int items_per_page, string userId)
 		{
@@ -209,5 +210,19 @@ namespace Manga_Omelette.Services
 							.ToList();
 			return results;
 		}
+
+        public async Task<List<Story>> GetStoriesFilterAsync(string keyword, int page, int items_per_page)
+        {
+			if (string.IsNullOrEmpty(keyword))
+			{
+				return null;
+			}
+			var results = await _db.Story
+							.Where(s => s.Title.ToLower().Contains(keyword.ToLower()))
+                            .Skip((page - 1) * items_per_page)
+							.Take(items_per_page)
+							.ToListAsync();
+			return results;
+        }
     }
 }

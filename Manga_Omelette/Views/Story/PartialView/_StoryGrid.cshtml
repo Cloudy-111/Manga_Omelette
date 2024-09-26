@@ -1,0 +1,46 @@
+﻿@using MangaASP.Models
+
+@model IEnumerable<Story>
+
+@{
+    ViewData["Title"] = "Advance Search";
+}
+<link rel="stylesheet" href="~/css/PageCSS/SearchView.css" />
+
+<div class="grid-container">
+    @foreach (var obj in Model)
+    {
+        <div class="grid-item">
+            <img src="@obj.CoverImage" />
+            <div class="grid-item-overlay">
+                <a href="/titles/@obj.Id/@obj.Title"><p>@obj.Title</p></a>
+            </div>
+        </div>
+    }
+</div>
+<p id="page_number" style="display: none;">@ViewBag.Page</p>
+<p id="total_page" style="display: none;">@ViewBag.TotalPages</p>
+<div class="pagination_container">
+    <ul class="pagination_list">
+        <li class="pagination_item" id="previousBtn">
+            <a class="pagination_link" href="@Url.Action("SearchView", new { page = ViewBag.Page > 1 ? ViewBag.Page - 1 : 1 })" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        @if (ViewBag.TotalPages > 1)
+        {
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="pagination_item" id="pagination_@i">
+                    <a class="pagination_link @(i == ViewBag.Page ? "active" : "")" href="@Url.Action("SearchView", new { page = i })">@i</a>
+                </li>
+            }
+        }
+        <li class="pagination_item" id="nextBtn">
+            <a class="pagination_link" href="@Url.Action("SearchView", new { page = ViewBag.Page < ViewBag.TotalPages ? ViewBag.Page + 1 : ViewBag.TotalPages })" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</div>
+

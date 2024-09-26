@@ -268,6 +268,11 @@ app.UseEndpoints(endpoints =>
         pattern: "/Home/Search",
         defaults: new { controller = "Home", action = "Search" }
         );
+    endpoints.MapControllerRoute(
+        name: "Filter Story",
+        pattern: "/filter",
+        defaults: new { controller = "Story", action = "FilterStory" }
+        );
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 
