@@ -8,7 +8,7 @@
         performSearch(keyword); 
     }
 
-    $(document).on('submit', '#filter_search', function (e) {
+    $(document).off('submit', '#filter_search').on('submit', '#filter_search', function (e) {
         e.preventDefault();
 
         var keyword = $('#search_bar').val();
@@ -18,8 +18,8 @@
             type: 'get',
             data: { keyword: keyword },
             success: function (response) {
-                $('body').html(response);
-                window.history.pushState({ keyword: keyword }, '', '/titles?keyword=' + encodeURIComponent(keyword));
+                $('.story_grid').html(response);
+                window.history.replaceState({ keyword: keyword }, '', '/titles?keyword=' + encodeURIComponent(keyword));
             },
             error: function () {
                 alert("Error Search");
@@ -33,8 +33,8 @@ function performSearch(keyword) {
         url: `/filter?keyword=${keyword}`,
         type: 'get',
         success: function (response) {
-            $('body').html(response);
-            window.history.pushState({ keyword: keyword }, '', '/titles?keyword=' + encodeURIComponent(keyword));
+            $('.story_grid').html(response);
+            window.history.replaceState({ keyword: keyword }, '', '/titles?keyword=' + encodeURIComponent(keyword));
         },
         error: function () {
             alert("Error Search");

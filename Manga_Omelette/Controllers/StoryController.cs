@@ -47,28 +47,37 @@ namespace MangaASP.Controllers
             return stories;
         }
         //[CustomRoute("titles")]
-        public async Task<IActionResult> SearchView(string keyword = "", int page = 1)
+        public async Task<IActionResult> SearchView(StoryFilterViewModel filterModel, int page = 1)
         {
             int items_per_page = 10;
 			int totalStories = 0;
 			List<Story> storyList = new List<Story>();
 
-            if (string.IsNullOrEmpty(keyword)) {
+            if (string.IsNullOrEmpty(filterModel.Keyword)) {
                 storyList = await _storyService.GetStoriesForEachPage(page, items_per_page);
                 totalStories = _db.Story.Count();
 			}
 			else
 			{
-                storyList = await _storyService.GetStoriesFilterAsync(keyword, page, items_per_page);
-                totalStories = storyList.Count();//calculator this again
+                storyList = await _storyService.GetStoriesFilterAsync(filterModel.Keyword, page, items_per_page);
+                totalStories = _db.Story
+                            .Where(s => s.Title.ToLower().Contains(filterModel.Keyword.ToLower())).Count();
             }
             
             int totalPages = (int)Math.Ceiling((double)totalStories / items_per_page);
-            
-            ViewBag.TotalPages = totalPages;
-            ViewBag.Page = page;
 
-            return View("SearchView", storyList);
+            filterModel.TotalPages = totalPages;
+            filterModel.Page = page;
+
+			filterModel.stories = storyList;
+
+			//If request from AJAX, return partialView
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("PartialView/_StoryGrid", filterModel); 
+            }
+
+            return View("SearchView", filterModel);
         }
         [Authorize]
         public IActionResult FollowList(int page = 1)
@@ -432,9 +441,9 @@ namespace MangaASP.Controllers
 
 		//==============================================Post Edit Story==============================================
 		[HttpGet]
-		public async Task<IActionResult> FilterStory(string keyword, int page = 1)
+		public async Task<IActionResult> FilterStory(StoryFilterViewModel filterModel, int page = 1)
 		{
-			return await SearchView(keyword, page);
+			return await SearchView(filterModel, page);
         }
     }
 }

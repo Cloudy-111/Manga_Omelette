@@ -127,6 +127,12 @@
     position: absolute;
     right: 1rem;
     transform: translateY(50%);
+    display: none;
+    cursor: pointer;
+}
+
+#filter_search .clear_icon:hover{
+    color: #cfcfcf;
 }
 
 .search_keyword #search_bar {

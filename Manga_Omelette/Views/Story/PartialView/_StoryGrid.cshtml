@@ -1,6 +1,4 @@
-﻿@using MangaASP.Models
-
-@model IEnumerable<Story>
+﻿@model Manga_Omelette.Models_Secondary.StoryFilterViewModel
 
 @{
     ViewData["Title"] = "Advance Search";
@@ -8,7 +6,7 @@
 <link rel="stylesheet" href="~/css/PageCSS/SearchView.css" />
 
 <div class="grid-container">
-    @foreach (var obj in Model)
+    @foreach (var obj in Model.stories)
     {
         <div class="grid-item">
             <img src="@obj.CoverImage" />
@@ -18,26 +16,26 @@
         </div>
     }
 </div>
-<p id="page_number" style="display: none;">@ViewBag.Page</p>
-<p id="total_page" style="display: none;">@ViewBag.TotalPages</p>
+<p id="page_number" style="display: none;">@Model.Page</p>
+<p id="total_page" style="display: none;">@Model.TotalPages</p>
 <div class="pagination_container">
     <ul class="pagination_list">
         <li class="pagination_item" id="previousBtn">
-            <a class="pagination_link" href="@Url.Action("SearchView", new { page = ViewBag.Page > 1 ? ViewBag.Page - 1 : 1 })" aria-label="Previous">
+            <a class="pagination_link"@*  href="@Url.Action("SearchView", new { page = Model.Page > 1 ? Model.Page - 1 : 1 })" *@ aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
-        @if (ViewBag.TotalPages > 1)
+        @if (Model.TotalPages > 1)
         {
-            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            @for (int i = 1; i <= Model.TotalPages; i++)
             {
-                <li class="pagination_item" id="pagination_@i">
-                    <a class="pagination_link @(i == ViewBag.Page ? "active" : "")" href="@Url.Action("SearchView", new { page = i })">@i</a>
+                <li class="pagination_item @(i == Model.Page ? "active" : "") pagination_page" id="page_@i">
+                    <a class="pagination_link" @* href="@Url.Action("SearchView", new { page = i })" *@>@i</a>
                 </li>
             }
         }
         <li class="pagination_item" id="nextBtn">
-            <a class="pagination_link" href="@Url.Action("SearchView", new { page = ViewBag.Page < ViewBag.TotalPages ? ViewBag.Page + 1 : ViewBag.TotalPages })" aria-label="Next">
+            <a class="pagination_link" @* href="@Url.Action("SearchView", new { page = Model.Page < Model.TotalPages ? Model.Page + 1 : Model.TotalPages })" *@ aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>

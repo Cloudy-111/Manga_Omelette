@@ -1,5 +1,5 @@
-﻿@using MangaASP.Models
-@model IEnumerable<Story>
+﻿
+@model Manga_Omelette.Models_Secondary.StoryFilterViewModel
 @{
     ViewData["Title"] = "Advance Search";
     <link rel="stylesheet" href="/css/PageCSS/SearchView.css"/>
@@ -13,7 +13,7 @@
     <form id="filter_search">
         <div class="search_keyword">
             <span class="search_icon"><i class="bi bi-search"></i></span>
-            <input id="search_bar" placeholder="Search..." autocomplete="off"/>
+            <input asp-for="Keyword" name="keyword" id="search_bar" placeholder="Search..." autocomplete="off"/>
             <span class="clear_icon"><i class="bi bi-x-circle-fill"></i></span>
         </div>
         <div class="filter_box"></div>
@@ -26,6 +26,6 @@
 </div>
 
 @section Scripts{
-    <script src="~/js/script_pagination.js"></script>
+    @* <script src="~/js/script_pagination.js"></script> *@
     <script type="module" src="~/js/ScriptSearchView/main_script.js"></script>
 }
