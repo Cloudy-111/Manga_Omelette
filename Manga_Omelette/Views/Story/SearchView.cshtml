@@ -13,11 +13,60 @@
     <form id="filter_search">
         <div class="search_keyword">
             <span class="search_icon"><i class="bi bi-search"></i></span>
-            <input asp-for="Keyword" name="keyword" id="search_bar" placeholder="Search..." autocomplete="off"/>
+            <input name="keyword" id="search_bar" placeholder="Search..." autocomplete="off"/>
             <span class="clear_icon"><i class="bi bi-x-circle-fill"></i></span>
         </div>
-        <div class="filter_box"></div>
-        <div class="action_btn"></div>
+        <div class="filter_box">
+            <div class="select_box">
+                <label>Filter Genre</label>
+                <div class="box" id="select_genre">
+                    <p>Choose any tags</p>
+                </div>
+                <div class="box_list_select">
+                    <label>Genre</label>
+                    <div class="list_all_genres">
+                        @foreach (var genre in Model.Genres)
+                        {
+                            <div class="genre_item" id="@genre.Id" name="@genre.Name">
+                                @genre.Name
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="select_box">
+                <label>Filter Genre</label>
+                <div class="box">
+                </div>
+                <div class="box_list_select"></div>
+            </div>
+            <div class="select_box">
+                <label>Filter Genre</label>
+                <div class="box">
+                </div>
+                <div class="box_list_select"></div>
+            </div>
+            <div class="select_box">
+                <label>Filter Genre</label>
+                <div class="box">
+                </div>
+                <div class="box_list_select"></div>
+            </div>
+            <div class="select_box">
+                <label>Filter Genre</label>
+                <div class="box">
+                </div>
+                <div class="box_list_select"></div>
+            </div>
+        </div>
+        <div class="action_btn">
+            <div class="button" id="search_button">
+                <button>
+                    <i class="bi bi-search"></i>
+                    Search
+                </button>
+            </div>
+        </div>
     </form>
 </div>
 

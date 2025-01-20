@@ -1,4 +1,6 @@
-﻿export function Pagination() {
+﻿import sharedData from './shared_data.js'; // dùng export default thì không cần dùng {}
+
+export function Pagination() {
     $(document).on('click', '.pagination_page', function (e) {
         e.preventDefault();
         ClickPage("page", $(this));
@@ -28,29 +30,36 @@ function ClickPage(typePage, element) {
 
     if (page === currentPage) return;
 
-    //console.log(page);
-    var filterData = $('#filter_search').serializeArray()
-        .filter(function (item) {
-            return item.value.trim() !== "";
-        })
-        .map(function (item) {
-            return `${encodeURIComponent(item.name)}=${encodeURIComponent(item.value)}`;
-        }).join('&');
+    var localRequestData = { ...sharedData.requestData };
+    localRequestData.page = page;
 
-    var requestData = filterData ? filterData + `&page=${page}` : `page=${page}`;
+    var filteredRequestData = Object.fromEntries( 
+        Object.entries(localRequestData).filter(([key, value]) => { 
+            if (Array.isArray(value)) {
+                return value.length > 0;
+            }
+            return value;
+        })
+    );
+
+    var queryParams = $.param(filteredRequestData, true);
+
+    // Update URL on Browser
+    if (queryParams) {
+        var newUrl = `${window.location.pathname}?${queryParams}`;
+        history.pushState({ filteredRequestData }, '', newUrl);
+    }
 
     $.ajax({
-        url: '/filter',
-        data: requestData,
+        url: `/filter`,
         type: 'get',
+        data: filteredRequestData,
+        traditional: true,
         success: function (response) {
-            console.log(requestData);
             $('.story_grid').html(response);
-            var newUrl = filterData ? `/titles?page=${page}&${filterData}` : `/titles?page=${page}`;
-            window.history.replaceState({ page: page }, '', newUrl);
         },
-        error: function (err) {
+        error: function () {
             alert("Error Search");
         }
-    })
+    });
 }

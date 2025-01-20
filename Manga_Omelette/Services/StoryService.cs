@@ -211,18 +211,32 @@ namespace Manga_Omelette.Services
 			return results;
 		}
 
-        public async Task<List<Story>> GetStoriesFilterAsync(string keyword, int page, int items_per_page)
+        public async Task<StoryFilterResult> GetStoriesFilterAsync(StoryFilterViewModel model, int items_per_page)
         {
-			if (string.IsNullOrEmpty(keyword))
+			var query = _db.Story.AsQueryable();
+			if (!string.IsNullOrEmpty(model.Keyword))
 			{
-				return null;
+				query = query.Where(s => s.Title.ToLower().Contains(model.Keyword.ToLower()));
 			}
-			var results = await _db.Story
-							.Where(s => s.Title.ToLower().Contains(keyword.ToLower()))
-                            .Skip((page - 1) * items_per_page)
+			if (model.IncludeGenres.Any())
+			{
+				// Những thể loại nào có trong IncludeGenres đều phải có trong genres của story đó
+				query = query.Where(s => model.IncludeGenres.All(genreId => s.Story_Genres.Any(g => g.GenreId == genreId)));
+				//query = query.Where(s => s.Story_Genres.All(g => model.IncludeGenres.Contains(g.GenreId)));
+			}
+			if (model.ExcludeGenres.Any())
+			{
+				query = query.Where(s => !model.ExcludeGenres.All(genreId => s.Story_Genres.Any(g => g.GenreId == genreId)));
+				//query = query.Where(s => !s.Story_Genres.All(g => model.ExcludeGenres.Contains(g.GenreId)));
+			}
+			List<Story> storyList = await query.Skip((model.Page - 1) * items_per_page)
 							.Take(items_per_page)
 							.ToListAsync();
-			return results;
+			int TotalCount = await query.CountAsync();
+			return new StoryFilterResult
+			{
+				Stories = storyList, TotalCount = TotalCount
+			};
         }
     }
 }

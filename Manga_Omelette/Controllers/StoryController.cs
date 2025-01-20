@@ -30,16 +30,24 @@ namespace MangaASP.Controllers
         private UserManager<User> _userManager;
         private readonly ChapterService _chapterServices;
         private readonly StoryService _storyService;
+		private readonly GenreService _genreService;
         private readonly CloudinaryService _cloudinaryService;
 
 		private readonly string[] permittedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
-		public StoryController(Manga_OmeletteDBContext db, UserManager<User> userManager, ChapterService chapterService, StoryService storyService, CloudinaryService cloudinaryService)
+		public StoryController(
+			Manga_OmeletteDBContext db, 
+			UserManager<User> userManager, 
+			ChapterService chapterService, 
+			StoryService storyService, 
+			GenreService genreService,
+			CloudinaryService cloudinaryService)
         {
             _db = db;
             _userManager = userManager;
 			_chapterServices = chapterService;
             _storyService = storyService;
             _cloudinaryService = cloudinaryService;
+			_genreService = genreService;
 		}
         private IEnumerable<Story> GetStoriesForEachPage(int page)
         {
@@ -50,26 +58,28 @@ namespace MangaASP.Controllers
         public async Task<IActionResult> SearchView(StoryFilterViewModel filterModel, int page = 1)
         {
             int items_per_page = 10;
-			int totalStories = 0;
-			List<Story> storyList = new List<Story>();
+            int totalStories = 0;
+            List<Story> storyList = new List<Story>();
 
-            if (string.IsNullOrEmpty(filterModel.Keyword)) {
+			if(filterModel.IsEmpty())
+			{
                 storyList = await _storyService.GetStoriesForEachPage(page, items_per_page);
                 totalStories = _db.Story.Count();
 			}
 			else
 			{
-                storyList = await _storyService.GetStoriesFilterAsync(filterModel.Keyword, page, items_per_page);
-                totalStories = _db.Story
-                            .Where(s => s.Title.ToLower().Contains(filterModel.Keyword.ToLower())).Count();
-            }
-            
-            int totalPages = (int)Math.Ceiling((double)totalStories / items_per_page);
+				var result = await _storyService.GetStoriesFilterAsync(filterModel, items_per_page);
+				storyList = result.Stories;
+				totalStories = result.TotalCount;
+			}
 
-            filterModel.TotalPages = totalPages;
-            filterModel.Page = page;
+			int totalPages = (int)Math.Ceiling((double)totalStories / items_per_page);
+
+			filterModel.TotalPages = totalPages;
 
 			filterModel.stories = storyList;
+			filterModel.Genres = _genreService.getAllGenre(); 
+			filterModel.Page = page;
 
 			//If request from AJAX, return partialView
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
