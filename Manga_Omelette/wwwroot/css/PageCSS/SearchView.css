@@ -174,7 +174,7 @@
 }
 
 .select_box .box_list_select {
-    width: 300%;
+    width: 100%;
     position: absolute;
     height: auto;
     padding: 10px;
@@ -223,4 +223,101 @@
     border-color: #fe0404;
     background-color: #570000;
     color: #fe0404;
+}
+
+.select_box .box_list_select.spec{
+    width: 300%;
+}
+
+/*==============================SEARCH BOX LIVE AUTHOR==============================*/
+
+.box_list_select .search_box{
+    width: 100%;
+}
+
+.box_list_select .search_box input{
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 8px;
+    outline: none;
+    color: white;
+    transition: ease 0.3s;
+    background-color: #808080;
+}
+
+.box_list_select .search_box input:focus{
+    border: 1px solid #ff6a00;
+}
+
+.search_box .list_search ul{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 16px;
+    padding-top: 10px;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.search_box .list_search ul li {
+    display: flex;
+    justify-content:flex-start;
+    align-items: center;
+    width: 100%;
+    border-radius: 8px;
+    transition: ease 0.2s;
+    padding: 10px;
+    text-overflow: ellipsis; 
+}
+
+.search_box .list_search ul li:hover{
+    background-color: #808080;
+}
+
+.search_box .list_search ul li input[type="checkbox"]{
+    display: none;
+}
+
+.search_box .list_search ul li .custom_checkbox{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #333;
+    border-radius: 50%;
+    margin-right: 10px;
+    background-color: white;
+    position: relative;
+}
+
+.search_box .list_search ul li input[type="checkbox"]:checked + .custom_checkbox{
+    background-color: #ff6a00;
+}
+
+.search_box .list_search ul li label{
+    font-size: 16px;
+    /*line-height: 1.2;*/
+    height: 100%;
+    cursor: pointer;
+}
+
+.search_box .list_selected{
+    padding-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.search_box .list_selected .items_selected{
+    display: flex;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: #5a5a5a;
+    transition: 0.2s all;
+    color: #ff6a00;
+}
+
+.search_box .list_selected .items_selected:hover{
+    background-color: #909090;
 }

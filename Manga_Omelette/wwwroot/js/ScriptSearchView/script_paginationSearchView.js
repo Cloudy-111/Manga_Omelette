@@ -30,7 +30,7 @@ function ClickPage(typePage, element) {
 
     if (page === currentPage) return;
 
-    var localRequestData = { ...sharedData.requestData };
+    var localRequestData = { ...sharedData.requestData }; // Sử dụng Spread Operator để copy sang localRequestData
     localRequestData.page = page;
 
     var filteredRequestData = Object.fromEntries( 

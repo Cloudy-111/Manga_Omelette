@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Advance Search";
     <link rel="stylesheet" href="/css/PageCSS/SearchView.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
 }
 
 <div class="text-center">
@@ -22,7 +24,7 @@
                 <div class="box" id="select_genre">
                     <p>Choose any tags</p>
                 </div>
-                <div class="box_list_select">
+                <div class="box_list_select spec">
                     <label>Genre</label>
                     <div class="list_all_genres">
                         @foreach (var genre in Model.Genres)
@@ -35,16 +37,30 @@
                 </div>
             </div>
             <div class="select_box">
-                <label>Filter Genre</label>
-                <div class="box">
+                <label>Authors</label>
+                <div class="box"></div>
+                <div class="box_list_select">
+                    <div class="search_box" id="search_author">
+                        <input placeholder="Enter Author name"/>
+                        <div class="list_selected"></div>
+                        <div class="list_search">
+                            <ul></ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="box_list_select"></div>
             </div>
             <div class="select_box">
-                <label>Filter Genre</label>
-                <div class="box">
+                <label>Artists</label>
+                <div class="box"></div>
+                <div class="box_list_select">
+                    <div class="search_box" id="search_artist">
+                        <input placeholder="Enter Artist name" />
+                        <div class="list_search">
+                        </div>
+                        <div class="list_selected">
+                        </div>
+                    </div>
                 </div>
-                <div class="box_list_select"></div>
             </div>
             <div class="select_box">
                 <label>Filter Genre</label>

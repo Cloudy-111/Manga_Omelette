@@ -27,5 +27,23 @@ namespace Manga_Omelette.Services
                             .ToList();
             return results;
         }
+
+        public IEnumerable<AuthorSearchResultViewModel> GetAuthorLiveSearch(string search_author)
+        {
+            if (string.IsNullOrEmpty(search_author))
+            {
+                return null;
+            }
+            var results = _db.Author
+                            .Where(au => au.Name.ToLower().Contains(search_author.ToLower()))
+                            .Select(au => new AuthorSearchResultViewModel
+                            {
+                                Name = au.Name,
+                                Id = au.Id,
+                            })
+                            .Take(10)
+                            .ToList();
+            return results;
+        }
     }
 }
